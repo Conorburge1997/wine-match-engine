@@ -1,202 +1,214 @@
-<title>Wine Match Engine — Sapphire Panda</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find Your Match — Sapphire Panda</title>
+<meta name="description" content="Tell us what you're looking for and our matching engine will find independent Australian wines that fit — rare, verified, and often exported for the first time.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* Layout: two-column intake (buyer request / wine library) feeding a scored, sorted
-   results list, each with a clock-dial match gauge. Single page, tab-switched.
-   All choices are visible button groups — nothing is hidden behind a drag or a click-to-reveal. */
-:root{
-  --bg:#060810; --surface:#0e1324; --surface-2:#121a30; --border:#212c4a;
-  --ink:#f4f5fa; --ink-dim:#b3bad2; --accent:#3a6ede; --accent-2:#5fd4e0;
-  --good:#5fd4a0; --warn:#e0b273; --bad:#e58a8a;
-  --radius:2px;
-  color-scheme:dark;
-}
+  :root{
+    --bg:#060810; --bg-2:#0a0e1c; --surface:#0e1324; --surface-2:#121a30;
+    --border:#212c4a; --border-soft:#161d34;
+    --ink:#f4f5fa; --ink-dim:#b3bad2; --ink-faint:#7c85a6;
+    --sapphire:#3a6ede; --sapphire-bright:#6f93e8; --sapphire-glint:#a6c4ff; --sapphire-deep:#0f1a3d;
+    --cyan:#5fd4e0;
+    --good:#5fd4a0; --warn:#e0b273; --bad:#e58a8a;
+    --radius:2px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif; -webkit-font-smoothing:antialiased;
+    line-height:1.6; font-size:15px;
+  }
+  body{
+    background-image:
+      radial-gradient(ellipse 900px 500px at 15% -8%, rgba(58,110,222,0.14), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 5%, rgba(95,212,224,0.06), transparent 55%);
+  }
+  h1,h2,h3{font-family:'Fraunces',serif; font-weight:400; letter-spacing:-0.005em; margin:0;}
+  a{color:inherit;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 32px;}
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap');
+  header.site-header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(6,8,16,0.9); backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border-soft);
+  }
+  .nav{display:flex; align-items:center; justify-content:space-between; padding:18px 0;}
+  .brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink);}
+  .brand-word{font-family:'Fraunces',serif; font-weight:400; font-size:16px; letter-spacing:0.02em;}
+  .nav-links{display:flex; align-items:center; gap:32px;}
+  .nav-links .links{display:flex; gap:28px; font-size:12px;}
+  .nav-links a.navlink{text-decoration:none; color:var(--ink-dim); transition:color .2s; text-transform:uppercase; letter-spacing:0.06em; font-weight:500; position:relative; padding-bottom:2px;}
+  .nav-links a.navlink:hover{color:var(--sapphire-glint);}
+  .nav-links a.navlink.active{color:var(--cyan);}
+  .nav-links a.navlink.active::after{
+    content:''; position:absolute; left:0; right:0; bottom:-6px; height:2px;
+    background:linear-gradient(90deg, var(--sapphire-bright), var(--cyan));
+  }
 
-*{box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{
-  background:var(--bg); color:var(--ink);
-  font-family:'Inter',system-ui,sans-serif;
-  padding:0 20px; padding-block:0 60px;
-  margin:0;
-  font-size:15px;
-}
-.site-header{
-  position:sticky; top:0; z-index:50;
-  background:rgba(6,8,16,0.9); backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--border);
-  margin:0 -20px 24px;
-}
-.site-nav{
-  max-width:1080px; margin:0 auto; padding:18px 32px;
-  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
-}
-.site-brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink);}
-.site-brand svg{display:block;}
-.site-brand-word{font-family:'Fraunces',Georgia,serif; font-weight:400; font-size:16px; letter-spacing:0.02em;}
-.site-nav-links{display:flex; align-items:center; gap:32px; flex-wrap:wrap;}
-.site-nav-links .site-links{display:flex; gap:28px; flex-wrap:wrap;}
-.site-links a{
-  text-decoration:none; color:var(--ink-dim); font-size:12px; font-weight:500;
-  text-transform:uppercase; letter-spacing:0.06em; transition:color .2s;
-  position:relative; padding-bottom:2px;
-}
-.site-links a:hover{color:var(--accent-2);}
-.site-links a.active{color:var(--accent-2);}
-.site-links a.active::after{
-  content:''; position:absolute; left:0; right:0; bottom:-6px; height:2px;
-  background:linear-gradient(90deg, var(--accent), var(--accent-2));
-}
-.site-cta{
-  display:inline-flex; align-items:center; gap:8px;
-  background:linear-gradient(120deg, var(--accent) 0%, #6f93e8 55%, var(--accent-2) 100%);
-  color:#060810; padding:10px 20px; border-radius:2px;
-  font-size:12px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase;
-  text-decoration:none; border:1px solid #6f93e8;
-}
-.site-cta.active{box-shadow:0 0 0 3px rgba(95,212,224,0.35);}
-.wrap-inner{max-width:1180px; margin:0 auto;}
-h1,h2,h3{font-family:'Fraunces',Georgia,serif; font-weight:600; text-wrap:balance; margin:0;}
-.eyebrow{font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-2); font-weight:600;}
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    background:transparent; color:var(--ink);
+    padding:12px 24px; border-radius:var(--radius);
+    font-size:12.5px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase;
+    text-decoration:none; border:1px solid var(--sapphire);
+    cursor:pointer; transition:all .2s; position:relative; overflow:hidden;
+    font-family:inherit;
+  }
+  .btn:disabled{opacity:0.4; cursor:not-allowed;}
+  .btn-solid{background:linear-gradient(120deg, var(--sapphire) 0%, var(--sapphire-bright) 55%, var(--sapphire-glint) 100%); color:#060810; border-color:var(--sapphire-bright); font-weight:700;}
+  .btn-solid:hover:not(:disabled){filter:brightness(1.08);}
+  .btn-ghost{border-color:var(--border); color:var(--ink-dim);}
+  .btn-ghost:hover{color:var(--ink); border-color:var(--ink-dim);}
 
-header.top{display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:22px;}
-header.top h1{font-size:26px;}
-header.top p{margin:4px 0 0; color:var(--ink-dim); font-size:14.5px; max-width:56ch;}
+  /* ---- Progress ---- */
+  .progress{display:flex; align-items:center; gap:0; margin:40px 0 8px;}
+  .progress-step{display:flex; align-items:center; gap:10px; color:var(--ink-faint); font-size:12.5px; text-transform:uppercase; letter-spacing:0.06em; font-weight:600;}
+  .progress-step .dot{
+    width:26px; height:26px; border-radius:50%; border:1.5px solid var(--border);
+    display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-style:italic; font-size:13px;
+    color:var(--ink-faint); flex-shrink:0;
+  }
+  .progress-step.done .dot{background:var(--sapphire); border-color:var(--sapphire-bright); color:#060810; font-style:normal; font-weight:700;}
+  .progress-step.current .dot{border-color:var(--cyan); color:var(--cyan); box-shadow:0 0 0 3px rgba(95,212,224,0.18);}
+  .progress-step.current, .progress-step.done{color:var(--ink);}
+  .progress-line{flex:1; height:1px; background:var(--border-soft); margin:0 14px; min-width:24px;}
+  .progress-line.done{background:linear-gradient(90deg, var(--sapphire-bright), var(--cyan));}
 
-.tabs{display:flex; gap:6px; margin-bottom:20px; border-bottom:1px solid var(--border); flex-wrap:wrap;}
-.tab{
-  font-family:inherit; font-size:15px; font-weight:600; color:var(--ink-dim);
-  background:none; border:none; padding:11px 14px; cursor:pointer;
-  border-bottom:3px solid transparent; margin-bottom:-1px;
-}
-.tab[aria-selected="true"]{color:var(--accent); border-bottom-color:var(--accent);}
-.tab:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  section.step{padding:32px 0 100px;}
+  .step-intro{max-width:620px; margin-bottom:40px;}
+  .step-eyebrow{font-size:11px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--cyan); margin-bottom:14px; display:flex; align-items:center; gap:12px;}
+  .step-eyebrow::before{content:''; width:26px; height:1px; background:var(--cyan);}
+  .step-intro h1{font-size:clamp(24px, 3.2vw, 34px); margin-bottom:12px; font-weight:400;}
+  .step-intro p{color:var(--ink-dim); font-size:15px; max-width:560px;}
 
-.panel{display:none;}
-.panel.active{display:block;}
+  .card{
+    background:var(--surface); border:1px solid var(--border-soft);
+    padding:28px 30px; margin-bottom:20px;
+  }
+  .card h2{font-size:17px; margin-bottom:4px; font-weight:500;}
+  .card .sub{color:var(--ink-dim); font-size:13px; margin:0 0 20px; max-width:60ch;}
 
-.card{
-  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
-  padding:20px 22px; margin-bottom:16px;
-}
-.card h2{font-size:18px; margin-bottom:2px;}
-.card .sub{color:var(--ink-dim); font-size:13.5px; margin:0 0 16px; max-width:60ch;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  @media (max-width:640px){ .grid2{grid-template-columns:1fr;} }
 
-.grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
-.grid.wide{grid-template-columns:1fr 1fr 1fr;}
-@media (max-width:640px){ .grid, .grid.wide{grid-template-columns:1fr;} }
+  label{display:block; font-size:13px; font-weight:600; color:var(--ink); margin-bottom:8px;}
+  label .opt{color:var(--ink-faint); font-weight:400; text-transform:none;}
+  input[type=text], input[type=number]{
+    width:100%; font-family:inherit; font-size:15px; color:var(--ink);
+    background:var(--bg); border:1px solid var(--border); border-radius:2px;
+    padding:11px 12px;
+  }
+  input::placeholder{color:var(--ink-faint);}
+  input:focus{outline:none; border-color:var(--sapphire-bright); box-shadow:0 0 0 3px rgba(58,110,222,0.18);}
+  .field{margin-bottom:18px;}
+  .field:last-child{margin-bottom:0;}
+  .hint{font-size:12px; color:var(--ink-faint); margin-top:6px;}
 
-label{display:block; font-size:13.5px; font-weight:700; color:var(--ink); margin-bottom:7px;}
-label .req{color:var(--bad);}
-label .opt{color:var(--ink-dim); font-weight:500; text-transform:none; letter-spacing:0;}
-.field-help{font-size:12.5px; color:var(--ink-dim); margin:-3px 0 8px;}
-.field-warning{
-  font-size:12.5px; font-weight:600; color:var(--bad); margin-top:6px;
-  padding:7px 10px; background:color-mix(in srgb, var(--bad) 12%, transparent); border-radius:6px;
-}
-input[type=text], input[type=number], textarea{
-  width:100%; font-family:inherit; font-size:15px; color:var(--ink);
-  background:var(--surface-2); border:1.5px solid var(--border); border-radius:8px;
-  padding:11px 12px;
-}
-textarea{resize:vertical; min-height:52px;}
-input:focus, textarea:focus{outline:2px solid var(--accent); outline-offset:1px;}
-.field{margin-bottom:18px;}
-.hint{font-size:12px; color:var(--ink-dim); margin-top:5px;}
+  .pickrow{display:flex; flex-wrap:wrap; gap:8px;}
+  .pick{
+    font-family:inherit; font-size:13.5px; font-weight:500; color:var(--ink-dim);
+    padding:10px 16px; border-radius:2px; border:1px solid var(--border);
+    background:var(--bg); cursor:pointer; text-align:center; line-height:1.3; transition:all .15s;
+  }
+  .pick:hover{border-color:var(--sapphire); color:var(--ink);}
+  .pick[aria-pressed="true"]{background:var(--sapphire); border-color:var(--sapphire-bright); color:#fff; font-weight:600;}
+  .pick:focus-visible{outline:2px solid var(--cyan); outline-offset:2px;}
 
-/* ---- Visible button-group picker: every option always shown, one tap to choose ---- */
-.pickrow{display:flex; flex-wrap:wrap; gap:8px;}
-.pickrow.pickrow-wrap-full .pick{flex:1 1 auto;}
-.pick{
-  font-family:inherit; font-size:14px; font-weight:600; color:var(--ink);
-  padding:10px 14px; border-radius:8px; border:1.5px solid var(--border);
-  background:var(--surface-2); cursor:pointer; text-align:center; line-height:1.25;
-}
-.pick .pick-sub{display:block; font-size:11px; font-weight:500; color:var(--ink-dim); margin-top:1px;}
-.pick[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:#fff;}
-.pick[aria-pressed="true"] .pick-sub{color:rgba(255,255,255,.8);}
-.pick-other{border-style:dashed; color:var(--ink-dim); font-style:italic;}
-.pick-other[aria-pressed="true"]{background:var(--ink-dim); border-color:var(--ink-dim); font-style:normal;}
-.other-note{margin-top:8px;}
-.pick:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .btnrow{display:flex; gap:12px; flex-wrap:wrap; margin-top:12px; align-items:center;}
 
-.weight-row{padding:14px 0; border-bottom:1px dashed var(--border);}
-.weight-row:last-child{border-bottom:none;}
-.weight-row .wname{font-size:14.5px; font-weight:700; margin-bottom:3px;}
-.weight-row .wdesc{font-size:12.5px; color:var(--ink-dim); line-height:1.45; margin-bottom:9px; max-width:60ch;}
-.weight-row .wpicks{display:flex; gap:6px; flex-wrap:wrap;}
-.wpick{
-  font-family:inherit; font-size:12px; font-weight:600; color:var(--ink-dim);
-  padding:7px 10px; border-radius:6px; border:1.5px solid var(--border); background:var(--surface-2); cursor:pointer;
-}
-.wpick[aria-pressed="true"]{background:var(--accent-2); border-color:var(--accent-2); color:#fff;}
+  /* ---- Loading / scanning state ---- */
+  .scan-panel{
+    border:1px solid var(--border); background:linear-gradient(160deg, var(--surface) 0%, var(--bg-2) 100%);
+    padding:64px 40px; text-align:center; position:relative; overflow:hidden;
+  }
+  .scan-ring{
+    width:80px; height:80px; margin:0 auto 28px; position:relative;
+  }
+  .scan-ring svg{width:100%; height:100%; animation:spin 1.6s linear infinite;}
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .scan-title{font-family:'Fraunces',serif; font-size:20px; margin-bottom:10px;}
+  .scan-line{font-size:13px; color:var(--ink-dim); font-family:'JetBrains Mono',monospace; min-height:18px;}
+  .scan-progress{width:280px; max-width:80%; height:2px; background:var(--border-soft); margin:24px auto 0; overflow:hidden;}
+  .scan-progress-bar{height:100%; width:0%; background:linear-gradient(90deg, var(--sapphire), var(--cyan)); transition:width .3s ease;}
 
-.btnrow{display:flex; gap:10px; flex-wrap:wrap; margin-top:16px;}
-button.primary{
-  font-family:inherit; font-weight:700; font-size:15px; color:#fff; background:var(--accent);
-  border:none; border-radius:9px; padding:13px 22px; cursor:pointer;
-}
-button.primary:hover{filter:brightness(1.08);}
-button.secondary{
-  font-family:inherit; font-weight:600; font-size:14px; color:var(--ink);
-  background:var(--surface-2); border:1.5px solid var(--border); border-radius:9px;
-  padding:12px 18px; cursor:pointer;
-}
-button.ghost{
-  font-family:inherit; font-size:13px; color:var(--ink-dim); background:none; border:none;
-  cursor:pointer; text-decoration:underline; padding:2px 0;
-}
+  /* ---- Match results ---- */
+  .results-summary{display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; margin-bottom:24px;}
+  .results-summary .count{color:var(--ink-dim); font-size:13.5px;}
+  .results-list{display:flex; flex-direction:column; gap:1px; background:var(--border-soft); border:1px solid var(--border-soft); margin-bottom:32px;}
+  .result{
+    background:var(--bg); padding:24px 28px; display:grid;
+    grid-template-columns:auto 1fr auto auto; gap:24px; align-items:center;
+  }
+  @media (max-width:760px){ .result{grid-template-columns:1fr; text-align:left;} }
+  .result-check{
+    width:22px; height:22px; border-radius:50%; border:1.5px solid var(--border);
+    display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;
+    background:var(--surface); transition:all .15s;
+  }
+  .result-check.checked{background:var(--sapphire); border-color:var(--sapphire-bright);}
+  .result-check svg{opacity:0; transition:opacity .1s;}
+  .result-check.checked svg{opacity:1;}
+  .result-main h3{font-size:16.5px; font-weight:500; margin-bottom:6px;}
+  .result-meta{display:flex; flex-wrap:wrap; gap:6px 14px; font-size:12.5px; color:var(--ink-dim);}
+  .result-meta span b{color:var(--ink);}
+  .result-tag{
+    display:inline-block; font-size:10.5px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase;
+    padding:3px 8px; border-radius:2px; margin-top:8px;
+  }
+  .result-tag.gem{background:rgba(95,212,224,0.14); color:var(--cyan);}
+  .result-price{text-align:right; font-family:'Fraunces',serif; font-size:17px;}
+  .result-price .per{display:block; font-size:11px; color:var(--ink-faint); font-family:'Inter',sans-serif; font-weight:500; text-transform:uppercase; letter-spacing:0.04em; margin-top:2px;}
+  .result-score{text-align:center; min-width:70px;}
+  .result-score .num{font-family:'Fraunces',serif; font-size:22px; line-height:1;
+    background:linear-gradient(100deg, var(--sapphire-bright), var(--cyan));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .result-score .lbl{font-size:10px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.06em; margin-top:4px;}
 
-/* Wine library table */
-.wine-table{width:100%; border-collapse:collapse; font-size:13.5px;}
-.wine-table th{text-align:left; font-size:11px; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-dim); padding:7px 8px; border-bottom:1px solid var(--border);}
-.wine-table td{padding:9px 8px; border-bottom:1px solid var(--border); vertical-align:top;}
-.wine-table tr:last-child td{border-bottom:none;}
-.wine-table .wname{font-weight:700;}
-.wine-table .wsub{color:var(--ink-dim); font-size:12px;}
-.tblwrap{overflow-x:auto;}
+  /* ---- Checkout ---- */
+  .checkout-grid{display:grid; grid-template-columns:1.6fr 1fr; gap:24px; align-items:start;}
+  @media (max-width:860px){ .checkout-grid{grid-template-columns:1fr;} }
+  .line-item{display:flex; justify-content:space-between; gap:16px; padding:16px 0; border-bottom:1px solid var(--border-soft);}
+  .line-item:last-child{border-bottom:none;}
+  .line-item .li-name{font-size:14.5px; font-weight:500;}
+  .line-item .li-meta{font-size:12.5px; color:var(--ink-dim); margin-top:3px;}
+  .line-item .li-price{font-family:'Fraunces',serif; font-size:15px; white-space:nowrap;}
+  .summary-row{display:flex; justify-content:space-between; padding:10px 0; font-size:13.5px; color:var(--ink-dim);}
+  .summary-row.total{color:var(--ink); font-size:16px; font-weight:600; border-top:1px solid var(--border); margin-top:8px; padding-top:16px;}
+  .summary-row.total .val{font-family:'Fraunces',serif; font-weight:400;
+    background:linear-gradient(100deg, var(--sapphire-bright), var(--cyan));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .checkout-note{font-size:12.5px; color:var(--ink-faint); margin-top:16px; line-height:1.6;}
 
-/* Results */
-.result-list{display:flex; flex-direction:column; gap:12px;}
-.result{
-  display:grid; grid-template-columns:120px 1fr; gap:18px; align-items:center;
-  background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius); padding:18px 20px;
-}
-@media (max-width:560px){ .result{grid-template-columns:1fr; text-align:center;} .result .dialwrap{justify-self:center;} }
-.result.gated{border-color:var(--bad);}
-.rname{font-family:'Fraunces',Georgia,serif; font-weight:600; font-size:18px; margin:0 0 2px;}
-.rmeta{font-size:13px; color:var(--ink-dim); margin:0 0 8px;}
-.rbadges{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:6px;}
-.rcallout{font-size:13.5px; color:var(--ink); line-height:1.5; margin-bottom:6px;}
-.badge{font-size:11.5px; padding:4px 9px; border-radius:5px; font-weight:700;}
-.badge.good{background:color-mix(in srgb, var(--good) 18%, transparent); color:var(--good);}
-.badge.warn{background:color-mix(in srgb, var(--warn) 18%, transparent); color:var(--warn);}
-.badge.bad{background:color-mix(in srgb, var(--bad) 18%, transparent); color:var(--bad);}
-.breakdown{margin-top:8px; font-size:12.5px; color:var(--ink-dim); display:none;}
-.breakdown.open{display:block;}
-.breakdown table{width:100%; border-collapse:collapse;}
-.breakdown td{padding:3px 4px;}
-.breakdown td:last-child{text-align:right; font-variant-numeric:tabular-nums;}
+  .empty-state{padding:60px 20px; text-align:center; color:var(--ink-dim);}
 
-.dialwrap{display:flex; flex-direction:column; align-items:center; gap:4px;}
-.dial-score{font-family:'Fraunces',Georgia,serif; font-weight:600; font-size:23px;}
-.dial-label{font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-dim);}
+  footer{border-top:1px solid var(--border-soft); padding:40px 0; margin-top:40px;}
+  .footer-row{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; max-width:1080px; margin:0 auto; padding:0 32px;}
+  .footer-brand{display:flex; align-items:center; gap:8px; font-family:'Fraunces',serif; font-weight:400; color:var(--ink-dim); font-size:13px;}
+  footer .fine{color:var(--ink-faint); font-size:11.5px;}
 
-.empty{color:var(--ink-dim); font-size:14.5px; padding:32px 10px; text-align:center;}
+  [data-panel]{display:none;}
+  [data-panel].active{display:block;}
 
-.footer-note{font-size:12.5px; color:var(--ink-dim); margin-top:24px; text-align:center;}
-
-.derived-box{
-  background:var(--surface-2); border:1px dashed var(--border); border-radius:8px;
-  padding:12px 14px; font-size:13px; color:var(--ink-dim); margin-top:4px;
-}
-.derived-box b{color:var(--ink); font-weight:700;}
+  @media (max-width:640px){
+    .progress-step span.label{display:none;}
+  }
 </style>
+</head>
+<body>
 
 <header class="site-header">
-  <div class="site-nav">
-    <a href="/" class="site-brand">
+  <div class="wrap nav">
+    <a href="/" class="brand">
       <svg width="20" height="20" viewBox="0 0 44 44" fill="none">
         <circle cx="14" cy="15" r="4" fill="#8e97b8"/>
         <circle cx="30" cy="15" r="4" fill="#8e97b8"/>
@@ -204,1099 +216,489 @@ button.ghost{
         <circle cx="17" cy="22" r="3" fill="#060810"/>
         <circle cx="27" cy="22" r="3" fill="#060810"/>
       </svg>
-      <span class="site-brand-word">Sapphire Panda</span>
+      <span class="brand-word">Sapphire Panda</span>
     </a>
-    <div class="site-nav-links">
-      <div class="site-links">
-        <a href="/">Home</a>
-        <a href="/#engine">The Engine</a>
-        <a href="/#difference">The Difference</a>
-        <a href="/#how">How It Works</a>
+    <div class="nav-links">
+      <div class="links">
+        <a href="/" class="navlink">Home</a>
+        <a href="/#engine" class="navlink">The Engine</a>
+        <a href="/#difference" class="navlink">The Difference</a>
+        <a href="/#how" class="navlink">How It Works</a>
       </div>
-      <a href="/match" class="site-cta active">Find Your Match</a>
+      <a href="/match" class="btn btn-solid" style="padding:10px 20px;">Find Your Match</a>
     </div>
   </div>
 </header>
 
-<div class="wrap-inner">
-<header class="top">
-  <div>
-    <div class="eyebrow">Vineyard &amp; Wine Export</div>
-    <h1>Wine Match Engine</h1>
-    <p>Score any buyer request against your wine library — a 0–100 match rating, weighted by what the buyer says matters most. Everything is click-to-choose; nothing is hidden behind a slider.</p>
-  </div>
-</header>
+<main class="wrap">
 
-<div class="tabs" role="tablist">
-  <button class="tab" role="tab" data-tab="customer" aria-selected="true">1. Buyer Request</button>
-  <button class="tab" role="tab" data-tab="library" aria-selected="false">2. Wine Library</button>
-  <button class="tab" role="tab" data-tab="results" aria-selected="false">3. Match Results</button>
-</div>
-
-<!-- ===================== TAB 1: CUSTOMER / BUYER REQUEST ===================== -->
-<section class="panel active" id="panel-customer">
-
-  <div class="card">
-    <h2>Who's asking</h2>
-    <p class="sub">Basic details about the buyer making the request.</p>
-    <div class="grid wide">
-      <div class="field">
-        <label>Buyer / restaurant name</label>
-        <input type="text" id="c-name" placeholder="e.g. Fook Lam Moon">
-      </div>
-      <div class="field">
-        <label>Market</label>
-        <div class="pickrow" id="c-market-picks" data-group="market"></div>
-      </div>
-      <div class="field">
-        <label>Venue type</label>
-        <div class="pickrow" id="c-venuetype-picks" data-group="venuetype"></div>
-      </div>
-    </div>
+  <div class="progress" id="progress">
+    <div class="progress-step current" data-step="1"><span class="dot">1</span><span class="label">Your Brief</span></div>
+    <div class="progress-line" id="line1"></div>
+    <div class="progress-step" data-step="2"><span class="dot">2</span><span class="label">Your Matches</span></div>
+    <div class="progress-line" id="line2"></div>
+    <div class="progress-step" data-step="3"><span class="dot">3</span><span class="label">Checkout</span></div>
   </div>
 
-  <div class="card">
-    <h2>What they're looking for</h2>
-    <p class="sub">Tap every wine style the buyer would accept. These are the buyer's own stated preferences — there's no wrong answer here.</p>
-
-    <div class="field">
-      <label>Wine style(s) wanted <span class="req">*</span></label>
-      <div class="pickrow" id="c-style-picks" data-group="style"></div>
+  <!-- ===================== STEP 1: BRIEF ===================== -->
+  <section class="step active" data-panel="1" data-panel-name="brief">
+    <div class="step-intro">
+      <div class="step-eyebrow">Step 1 of 3</div>
+      <h1>Tell us what you're after.</h1>
+      <p>No wine jargon required — just what matters to you. Our matching engine will score it against independent Australian vineyards to find your fit.</p>
     </div>
 
-    <div class="field">
-      <label>Preferred variety <span class="opt">(optional — tap any that would work)</span></label>
-      <div class="pickrow" id="c-variety-picks" data-group="variety"></div>
-      <input type="text" id="c-variety-other" class="other-note" hidden placeholder="Tell us what they're after — this won't affect the match score, just noted for follow-up">
-      <div class="hint">Leave all unselected if open to any variety within the style above.</div>
-    </div>
-
-    <div class="field">
-      <label>Preferred region <span class="opt">(optional — tap any that would work)</span></label>
-      <div class="pickrow" id="c-region-picks" data-group="region"></div>
-      <input type="text" id="c-region-other" class="other-note" hidden placeholder="Tell us what they're after — this won't affect the match score, just noted for follow-up">
-      <div class="hint">Leave all unselected if open to any region.</div>
-    </div>
-
-    <div class="field">
-      <label>How full-bodied? <span class="opt">(their own taste — pick what they said)</span></label>
-      <div class="pickrow pickrow-wrap-full" id="c-body-picks" data-group="body"></div>
-    </div>
-    <div class="field">
-      <label>Tannin / grip (reds) or acidity (whites) <span class="opt">(optional)</span></label>
-      <div class="pickrow pickrow-wrap-full" id="c-tannin-picks" data-group="tannin"></div>
-    </div>
-    <div class="field">
-      <label>Oak character wanted <span class="opt">(optional)</span></label>
-      <div class="pickrow pickrow-wrap-full" id="c-oak-picks" data-group="oak"></div>
-    </div>
-    <div class="field">
-      <label>Sweetness <span class="opt">(optional)</span></label>
-      <div class="pickrow pickrow-wrap-full" id="c-sweet-picks" data-group="sweet"></div>
-    </div>
-
-    <div class="field">
-      <label>Flavour notes wanted <span class="opt">(optional, comma-separated)</span></label>
-      <input type="text" id="c-flavour" placeholder="e.g. white pepper, blackberry, cedar">
-    </div>
-
-    <div class="grid">
-      <div class="field">
-        <label>Target price band <span class="opt">(AUD wholesale, per bottle)</span></label>
-        <div style="display:flex; gap:8px;">
-          <input type="number" id="c-pricemin" placeholder="Min" min="0" step="1">
-          <input type="number" id="c-pricemax" placeholder="Max" min="0" step="1">
+    <div class="card">
+      <h2>Who's asking</h2>
+      <p class="sub">So we know who to prepare the match for.</p>
+      <div class="grid2">
+        <div class="field">
+          <label>Your name / venue</label>
+          <input type="text" id="f-name" placeholder="e.g. The Envoy Club">
         </div>
-        <div class="field-warning" id="c-price-warning" hidden>Min is higher than Max — swap these or fix one, or no wine can ever match.</div>
+        <div class="field">
+          <label>Market <span class="opt">(optional)</span></label>
+          <div class="pickrow" id="f-market" data-picker="single">
+            <button class="pick" type="button" data-value="Hong Kong">Hong Kong</button>
+            <button class="pick" type="button" data-value="Mainland China">Mainland China</button>
+            <button class="pick" type="button" data-value="Japan">Japan</button>
+            <button class="pick" type="button" data-value="Singapore">Singapore</button>
+            <button class="pick" type="button" data-value="Other">Other</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>What you're looking for</h2>
+      <p class="sub">Tap everything that would work — there's no wrong answer.</p>
+
+      <div class="field">
+        <label>Wine style</label>
+        <div class="pickrow" id="f-style" data-picker="multi">
+          <button class="pick" type="button" data-value="Red">Red</button>
+          <button class="pick" type="button" data-value="White">White</button>
+          <button class="pick" type="button" data-value="Rosé">Rosé</button>
+          <button class="pick" type="button" data-value="Sparkling">Sparkling</button>
+          <button class="pick" type="button" data-value="Dessert">Dessert / fortified</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Body <span class="opt">(optional)</span></label>
+        <div class="pickrow" id="f-body" data-picker="single">
+          <button class="pick" type="button" data-value="Light">Light</button>
+          <button class="pick" type="button" data-value="Medium">Medium</button>
+          <button class="pick" type="button" data-value="Full">Full</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Region preference <span class="opt">(optional)</span></label>
+        <div class="pickrow" id="f-region" data-picker="multi">
+          <button class="pick" type="button" data-value="Yarra Valley">Yarra Valley</button>
+          <button class="pick" type="button" data-value="Barossa Valley">Barossa Valley</button>
+          <button class="pick" type="button" data-value="McLaren Vale">McLaren Vale</button>
+          <button class="pick" type="button" data-value="Margaret River">Margaret River</button>
+          <button class="pick" type="button" data-value="Adelaide Hills">Adelaide Hills</button>
+          <button class="pick" type="button" data-value="Tasmania">Tasmania</button>
+          <button class="pick" type="button" data-value="Hunter Valley">Hunter Valley</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Flavour notes <span class="opt">(optional, comma-separated)</span></label>
+        <input type="text" id="f-flavour" placeholder="e.g. blackberry, white pepper, cedar">
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Budget &amp; volume</h2>
+      <p class="sub">Helps us prioritise what's realistic for your order.</p>
+      <div class="grid2">
+        <div class="field">
+          <label>Price band <span class="opt">(AUD landed, per bottle)</span></label>
+          <div style="display:flex; gap:10px;">
+            <input type="number" id="f-pricemin" placeholder="Min">
+            <input type="number" id="f-pricemax" placeholder="Max">
+          </div>
+        </div>
+        <div class="field">
+          <label>Order volume <span class="opt">(bottles, optional)</span></label>
+          <input type="number" id="f-volume" placeholder="e.g. 96">
+        </div>
       </div>
       <div class="field">
-        <label>Order volume needed <span class="opt">(bottles)</span></label>
-        <input type="number" id="c-volume" placeholder="e.g. 96" min="0">
+        <label>Exclusivity <span class="opt">(optional)</span></label>
+        <div class="pickrow" id="f-novelty" data-picker="single">
+          <button class="pick" type="button" data-value="none">No requirement</button>
+          <button class="pick" type="button" data-value="market">Never sold in my market</button>
+        </div>
       </div>
-    </div>
-
-    <div class="field">
-      <label>Novelty requirement</label>
-      <div class="pickrow pickrow-wrap-full" id="c-novelty-picks" data-group="novelty"></div>
-      <div class="hint">If set, any wine that fails this is flagged and capped at a low score — never silently hidden.</div>
-    </div>
-
-    <div class="field">
-      <label>Any other notes <span class="opt">(optional)</span></label>
-      <textarea id="c-notes" placeholder="Anything else the buyer mentioned — occasion, existing list gaps, etc."></textarea>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>What matters most to them</h2>
-    <p class="sub">For each attribute, tap how much this buyer cares. This sets the weighting behind the match score — you don't need to touch this if you're not sure, the defaults are sensible.</p>
-    <div id="weights-list"></div>
-  </div>
-
-  <div class="btnrow">
-    <button class="primary" id="btn-run-match">Run match against wine library →</button>
-    <button class="secondary" id="btn-load-sample-customer">Load example request</button>
-  </div>
-</section>
-
-<!-- ===================== TAB 2: WINE LIBRARY ===================== -->
-<section class="panel" id="panel-library">
-  <div class="card">
-    <h2>Add a wine</h2>
-    <p class="sub">These questions ask only for things you'd know directly about your own wine — no need to judge whether it counts as "medium" or "full" bodied. The tool works that out for you.</p>
-
-    <div class="grid wide">
-      <div class="field"><label>Vineyard name</label><input type="text" id="w-vineyard" placeholder="e.g. Seville Estate"></div>
-      <div class="field"><label>Wine name</label><input type="text" id="w-name" placeholder="e.g. Dr McMahon Shiraz"></div>
-      <div class="field"><label>Vintage <span class="opt">(optional)</span></label><input type="text" id="w-vintage" placeholder="e.g. 2021"></div>
-    </div>
-
-    <div class="field">
-      <label>Wine style</label>
-      <div class="pickrow pickrow-wrap-full" id="w-style-picks" data-group="style"></div>
-    </div>
-
-    <div class="field">
-      <label>Variety <span class="opt">(tap all grapes in this wine)</span></label>
-      <div class="pickrow" id="w-variety-picks" data-group="variety"></div>
-      <input type="text" id="w-variety-other" class="other-note" hidden placeholder="Which grape(s)? — this won't be used for matching, just kept as a note">
-    </div>
-    <div class="field">
-      <label>Blend detail <span class="opt">(optional, e.g. exact %)</span></label>
-      <input type="text" id="w-blend-detail" placeholder="e.g. 60% Cabernet Sauvignon, 40% Merlot">
-    </div>
-
-    <div class="field">
-      <label>Region</label>
-      <div class="pickrow" id="w-region-picks" data-group="region"></div>
-      <input type="text" id="w-region-other" class="other-note" hidden placeholder="Which region? — this won't be used for matching, just kept as a note">
-    </div>
-
-    <div class="grid">
-      <div class="field">
-        <label>Alcohol (ABV %) <span class="opt">(on your label — leave blank if unsure)</span></label>
-        <input type="number" id="w-abv" min="0" max="25" step="0.1" placeholder="e.g. 14.5">
-      </div>
-      <div class="field" id="w-rs-field">
-        <label>Residual sugar / dryness</label>
-        <div class="pickrow pickrow-wrap-full" id="w-rs-picks" data-group="rs"></div>
-        <div class="field-help">Pick what's on your spec sheet or tech notes if you have it. Not sure is fine — we'll flag it rather than guess.</div>
-      </div>
-    </div>
-
-    <div id="w-dosage-field" class="field" hidden>
-      <label>Dosage <span class="opt">(sparkling — how dry/sweet the finished wine is)</span></label>
-      <div class="pickrow pickrow-wrap-full" id="w-dosage-picks" data-group="dosage"></div>
-    </div>
-
-    <div class="grid" id="w-oak-row">
-      <div class="field">
-        <label>Oak treatment</label>
-        <div class="pickrow pickrow-wrap-full" id="w-oaktype-picks" data-group="oaktype"></div>
-      </div>
-      <div class="field" id="w-oaktime-field" hidden>
-        <label>Time in oak</label>
-        <div class="pickrow pickrow-wrap-full" id="w-oaktime-picks" data-group="oaktime"></div>
-      </div>
-    </div>
-
-    <div class="field" id="w-maceration-field">
-      <label>Extended skin contact / maceration? <span class="opt">(affects tannin grip)</span></label>
-      <div class="pickrow pickrow-wrap-full" id="w-maceration-picks" data-group="maceration"></div>
-    </div>
-
-    <div class="field" id="w-mlf-field" hidden>
-      <label>Went through malolactic fermentation? <span class="opt">(the process that softens sharp acidity into a rounder feel — most winemakers will know this)</span></label>
-      <div class="pickrow pickrow-wrap-full" id="w-mlf-picks" data-group="mlf"></div>
-    </div>
-
-    <div class="derived-box" id="w-derived-box">
-      Based on these facts, we'll estimate: <b>body</b> —, <b>tannin/acidity</b> —, <b>oak character</b> —, <b>sweetness</b> —.
-    </div>
-
-    <div class="grid" style="margin-top:18px;">
-      <div class="field"><label>Flavour descriptors <span class="opt">(comma-separated)</span></label><input type="text" id="w-flavour" placeholder="e.g. blackberry, white pepper, cedar"></div>
-      <div class="field"><label>FOB export price <span class="opt">(AUD/bottle)</span></label><input type="number" id="w-price" min="0" placeholder="e.g. 55"></div>
-    </div>
-
-    <div class="grid">
-      <div class="field"><label>MOQ available <span class="opt">(bottles)</span></label><input type="number" id="w-moq" min="0" placeholder="e.g. 48"></div>
-      <div class="field"><label>Awards / recognition <span class="opt">(optional)</span></label><input type="text" id="w-awards" placeholder="e.g. Halliday 95pts"></div>
-    </div>
-
-    <div class="field">
-      <label>Ever sold in Hong Kong?</label>
-      <div class="pickrow" id="w-soldhk-picks" data-group="soldhk"></div>
-    </div>
-    <div class="field">
-      <label>Ever imported into mainland China?</label>
-      <div class="pickrow" id="w-soldchina-picks" data-group="soldchina"></div>
     </div>
 
     <div class="btnrow">
-      <button class="primary" id="btn-add-wine">Add wine to library</button>
-      <button class="secondary" id="btn-load-sample-library">Load example wines</button>
+      <button class="btn btn-solid" id="btn-submit-brief" style="padding:14px 32px;">Find My Match →</button>
     </div>
-  </div>
+  </section>
 
-  <div class="card">
-    <h2>Library (<span id="wine-count">0</span> wines)</h2>
-    <div class="tblwrap">
-      <table class="wine-table" id="wine-table">
-        <thead><tr><th>Wine</th><th>Style</th><th>Estimated profile</th><th>Price</th><th>MOQ</th><th>HK</th><th>China</th><th></th></tr></thead>
-        <tbody id="wine-tbody"></tbody>
-      </table>
+  <!-- ===================== STEP 2: MATCHING / RESULTS ===================== -->
+  <section class="step" data-panel="2" data-panel-name="matches">
+    <div id="scan-view">
+      <div class="scan-panel">
+        <div class="scan-ring">
+          <svg viewBox="0 0 80 80" fill="none">
+            <circle cx="40" cy="40" r="34" stroke="#212c4a" stroke-width="4"/>
+            <circle cx="40" cy="40" r="34" stroke="url(#g)" stroke-width="4" stroke-linecap="round" stroke-dasharray="90 300"/>
+            <defs><linearGradient id="g" x1="0" y1="0" x2="80" y2="80">
+              <stop offset="0%" stop-color="#3a6ede"/><stop offset="100%" stop-color="#5fd4e0"/>
+            </linearGradient></defs>
+          </svg>
+        </div>
+        <div class="scan-title">Scoring the vineyard library…</div>
+        <div class="scan-line mono" id="scan-line">Initializing match engine</div>
+        <div class="scan-progress"><div class="scan-progress-bar" id="scan-bar"></div></div>
+      </div>
     </div>
-    <div class="empty" id="wine-empty">No wines added yet — add one above or load examples.</div>
-  </div>
-</section>
 
-<!-- ===================== TAB 3: RESULTS ===================== -->
-<section class="panel" id="panel-results">
-  <div class="card">
-    <h2>Match results</h2>
-    <p class="sub" id="results-sub">Run a match from the Buyer Request tab to see ranked wines here.</p>
-    <div class="result-list" id="result-list"></div>
-    <div class="empty" id="results-empty">No results yet.</div>
-  </div>
-</section>
+    <div id="results-view" style="display:none;">
+      <div class="step-intro">
+        <div class="step-eyebrow">Step 2 of 3</div>
+        <h1>Your matches.</h1>
+        <p>Ranked by fit to your brief. Select the wines you'd like to include, then continue to review your pallet.</p>
+      </div>
+      <div class="results-summary">
+        <div class="count" id="results-count"></div>
+        <button class="btn btn-ghost" id="btn-edit-brief" style="padding:8px 16px; font-size:11px;">← Edit Brief</button>
+      </div>
+      <div class="results-list" id="results-list"></div>
+      <div class="btnrow">
+        <button class="btn btn-solid" id="btn-to-checkout" style="padding:14px 32px;" disabled>Continue to Checkout →</button>
+      </div>
+    </div>
+  </section>
 
-<div class="footer-note">Scores are a weighted comparison of stated preferences vs. wine facts — a guide for prioritising outreach, not a guarantee of fit.</div>
-</div>
+  <!-- ===================== STEP 3: CHECKOUT ===================== -->
+  <section class="step" data-panel="3" data-panel-name="checkout">
+    <div class="step-intro">
+      <div class="step-eyebrow">Step 3 of 3</div>
+      <h1>Review your pallet.</h1>
+      <p>Here's what you've selected. Submitting sends a request to our team — nothing is charged yet.</p>
+    </div>
+
+    <div class="checkout-grid">
+      <div>
+        <div class="card" id="checkout-items"></div>
+      </div>
+      <div>
+        <div class="card">
+          <h2>Estimated Summary</h2>
+          <div id="checkout-summary"></div>
+          <button class="btn btn-solid" id="btn-request" style="width:100%; padding:14px; margin-top:20px;">Request This Pallet →</button>
+          <div class="checkout-note">This is an estimate based on listed wholesale prices and standard consolidated freight. Final pricing is confirmed once your pallet is locked with other buyers' orders.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btnrow">
+      <button class="btn btn-ghost" id="btn-back-results" style="padding:10px 20px;">← Back to Matches</button>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-row">
+    <div class="footer-brand">
+      <svg width="16" height="16" viewBox="0 0 44 44" fill="none">
+        <circle cx="14" cy="15" r="4" fill="#8e97b8"/>
+        <circle cx="30" cy="15" r="4" fill="#8e97b8"/>
+        <ellipse cx="22" cy="24" rx="11" ry="9.5" fill="#8e97b8"/>
+      </svg>
+      Sapphire Panda
+    </div>
+    <div class="fine">© 2026 Sapphire Panda. AI-matched Australian wine, exported.</div>
+  </div>
+</footer>
 
 <script>
 (function(){
   "use strict";
 
-  // ---------- shared 0..N scales used for scoring (buyer picks these directly; wine derives them) ----------
-  const SCALES = {
-    body:   ["Light","Medium","Full"],
-    tannin: ["Low","Medium","High"],
-    oak:    ["None / subtle","Light oak","Medium oak","Heavy / new oak"],
-    sweet:  ["Bone dry","Dry","Off-dry","Medium sweet","Sweet"],
-  };
-  const STYLES = ["Red — still","White — still","Rosé","Sparkling","Dessert / fortified","Orange / skin-contact"];
-
-  // Shared lists — identical on buyer and supplier side, so matching is exact, not text-guessing.
-  // MECE lists: every common Australian export variety/region gets its own option, plus one
-  // explicit "Other" catch-all so the set is exhaustive without needing to guess every edge case.
-  // "Other" is intentionally excluded from scoring — see OTHER_VAL below — and only recorded as
-  // a free-text note for follow-up, never fed into the match calculation.
-  const OTHER_VAL = "__other__";
-  const VARIETIES = [
-    "Shiraz","Cabernet Sauvignon","Pinot Noir","Merlot","Grenache","Sangiovese","Tempranillo","Malbec",
-    "Nebbiolo","Cabernet Franc","Durif","Zinfandel/Primitivo","Mourvèdre/Mataro","Petit Verdot",
-    "Chardonnay","Sauvignon Blanc","Riesling","Pinot Gris/Grigio","Semillon","Viognier","Moscato",
-    "Marsanne/Roussanne","Fiano","Vermentino","Gewürztraminer","Verdelho",
-    {val: OTHER_VAL, label:"Other (please specify)"},
-  ];
-  const REGIONS = [
-    "Yarra Valley","Mornington Peninsula","Macedon Ranges","Geelong","Gippsland","Sunbury","Heathcote","Bendigo","Grampians","Pyrenees",
-    "Barossa Valley","Eden Valley","McLaren Vale","Adelaide Hills","Clare Valley","Coonawarra","Langhorne Creek","Padthaway","Wrattonbully",
-    "Hunter Valley","Orange","Mudgee","Riverina","Canberra District","Hilltops","Tumbarumba",
-    "Margaret River","Great Southern","Swan Valley","Pemberton","Geographe",
-    "Tasmania","Riverland","Rutherglen","King Valley","Beechworth","Granite Belt","South Burnett",
-    {val: OTHER_VAL, label:"Other (please specify)"},
-  ];
-
-  // Every weight gets a plain-English explainer — this section rates importance on
-  // wine-trade concepts the person filling it out may never have needed a name for before.
-  const WEIGHT_DEFS = [
-    {key:"style",   label:"Wine style match",      def:5,
-     desc:"The broad category — red, white, rosé, sparkling, dessert. How much does it matter that we only show what they asked for here?"},
-    {key:"variety", label:"Grape variety match",   def:4,
-     desc:"The specific grape — Shiraz, Chardonnay, etc. Different from style: two reds can be totally different grapes. How much does the exact grape matter to them?"},
-    {key:"region",  label:"Region match",          def:2,
-     desc:"Which Australian wine region it's from (e.g. Yarra Valley, Barossa). How much does it matter that it's from the area they asked for?"},
-    {key:"body",    label:"Body (how full it feels)", def:3,
-     desc:"How light or heavy the wine feels in the mouth — a light Pinot Noir vs. a full-bodied Shiraz. How much does matching their stated preference here matter?"},
-    {key:"tannin",  label:"Tannin / acidity",      def:3,
-     desc:"For reds: how much grip or dryness on the palate (think strong black tea vs. none). For whites: how crisp/tart it is. How much does matching this matter?"},
-    {key:"oak",     label:"Oak character",         def:2,
-     desc:"Whether it tastes of vanilla/toast/spice from oak barrels, or none at all. How much does matching their stated oak preference matter?"},
-    {key:"sweet",   label:"Sweetness",             def:3,
-     desc:"Bone dry through to noticeably sweet. How much does matching their stated preference here matter?"},
-    {key:"flavour", label:"Flavour notes",         def:3,
-     desc:"Specific tasting notes they mentioned (e.g. blackberry, white pepper). How much does overlap on these specific notes matter?"},
-    {key:"price",   label:"Price fit",             def:4,
-     desc:"Whether the wholesale price falls inside the band they gave you. How much does staying within budget matter?"},
-    {key:"volume",  label:"Order volume fit",      def:5,
-     desc:"Whether the buyer's order size actually clears the wine's minimum order quantity (MOQ). This is usually critical — a wine below MOQ can't be supplied at that volume at all."},
-    {key:"novelty", label:"\"New to market\" requirement", def:4,
-     desc:"Whether the wine must never have been sold in the buyer's market before (a genuine exclusive/first-to-market story). Only relevant if they asked for this — how much does it matter if they did?"},
+  /* ============================================================
+     SAMPLE WINE LIBRARY
+     Stand-in for the real vineyard inventory, which lives in our
+     own systems — never shown to the customer. Structure mirrors
+     what the matching engine actually scores against.
+     ============================================================ */
+  const WINES = [
+    {id:"w1", name:"Hollow Creek Shiraz 2021", vineyard:"3rd-gen family vineyard", region:"McLaren Vale", style:"Red", body:"Full", flavour:"blackberry, pepper, cedar", price:24, moq:24, neverExported:true},
+    {id:"w2", name:"Denny's Ridge Chardonnay 2022", vineyard:"Family-owned since 1978", region:"Adelaide Hills", style:"White", body:"Medium", flavour:"stone fruit, citrus, flint", price:19, moq:36, neverExported:true},
+    {id:"w3", name:"Ashgrove Pinot Noir 2021", vineyard:"Small-batch, boutique", region:"Yarra Valley", style:"Red", body:"Light", flavour:"cherry, forest floor, spice", price:28, moq:12, neverExported:false},
+    {id:"w4", name:"Coppervale Cabernet Sauvignon 2020", vineyard:"Independent, 4th-gen", region:"Margaret River", style:"Red", body:"Full", flavour:"blackcurrant, cedar, tobacco", price:32, moq:24, neverExported:true},
+    {id:"w5", name:"Fenwick Riesling 2023", vineyard:"Family-run, single vineyard", region:"Barossa Valley", style:"White", body:"Light", flavour:"lime, green apple, mineral", price:16, moq:48, neverExported:false},
+    {id:"w6", name:"Sorrel Hill Grenache 2021", vineyard:"Independent, dry-grown", region:"McLaren Vale", style:"Red", body:"Medium", flavour:"raspberry, white pepper, herbs", price:22, moq:24, neverExported:true},
+    {id:"w7", name:"Nightjar Rosé 2023", vineyard:"Family-owned, low intervention", region:"Yarra Valley", style:"Rosé", body:"Light", flavour:"strawberry, rose petal, citrus", price:18, moq:24, neverExported:true},
+    {id:"w8", name:"Kestrel Point Sparkling NV", vineyard:"Independent producer", region:"Tasmania", style:"Sparkling", body:"Light", flavour:"green apple, brioche, citrus", price:29, moq:12, neverExported:false},
+    {id:"w9", name:"Wollemi Cabernet Merlot 2020", vineyard:"Family vineyard, 2nd-gen", region:"Hunter Valley", style:"Red", body:"Full", flavour:"plum, dark chocolate, oak", price:21, moq:36, neverExported:true},
+    {id:"w10", name:"Stonefield Sauvignon Blanc 2023", vineyard:"Small independent estate", region:"Adelaide Hills", style:"White", body:"Light", flavour:"passionfruit, gooseberry, herbs", price:17, moq:48, neverExported:false},
+    {id:"w11", name:"Brindle Barossa Shiraz 2019", vineyard:"Family-owned, old vines", region:"Barossa Valley", style:"Red", body:"Full", flavour:"black cherry, licorice, vanilla oak", price:38, moq:12, neverExported:true},
+    {id:"w12", name:"Halcyon Fiano 2023", vineyard:"Independent, low-yield", region:"McLaren Vale", style:"White", body:"Medium", flavour:"pear, honeysuckle, almond", price:20, moq:24, neverExported:true},
   ];
 
   // ---------- state ----------
-  let wines = [];
+  const state = { brief: null, results: [], selected: new Set() };
 
   // ---------- helpers ----------
   function $(id){ return document.getElementById(id); }
-  function el(tag, attrs, children){
-    const e = document.createElement(tag);
-    if(attrs) for(const k in attrs){
-      if(k === "class") e.className = attrs[k];
-      else if(k === "html") e.innerHTML = attrs[k];
-      else e.setAttribute(k, attrs[k]);
-    }
-    (children||[]).forEach(c => e.appendChild(c));
-    return e;
-  }
-  function tokenize(s){
-    return (s||"").split(",").map(x=>x.trim().toLowerCase()).filter(Boolean);
-  }
+  function tokenize(s){ return (s||"").split(",").map(x=>x.trim().toLowerCase()).filter(Boolean); }
   function clamp01(x){ return Math.max(0, Math.min(1, x)); }
-  function escapeHtml(s){
-    return String(s||"").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-  }
 
-  // ---------- generic single-select button-group picker ----------
-  // options: [{val, label, sub}]  container gets data attribute storing selected val
-  function buildPicker(containerId, options, opts){
-    opts = opts || {};
-    const row = $(containerId);
-    row.innerHTML = "";
-    row.dataset.value = opts.def!=null ? opts.def : options[0].val;
-    options.forEach(o=>{
-      const btn = el("button", {
-        class:"pick", type:"button", "aria-pressed": String(o.val === row.dataset.value),
-        "data-val": o.val,
-      });
-      btn.appendChild(document.createTextNode(o.label));
-      if(o.sub) btn.appendChild(el("span", {class:"pick-sub", html:o.sub}));
-      btn.addEventListener("click", ()=>{
-        row.querySelectorAll(".pick").forEach(p=>p.setAttribute("aria-pressed","false"));
+  // ---------- picker wiring ----------
+  document.querySelectorAll("[data-picker]").forEach(function(group){
+    const mode = group.dataset.picker;
+    group.addEventListener("click", function(e){
+      const btn = e.target.closest(".pick");
+      if(!btn) return;
+      if(mode === "single"){
+        group.querySelectorAll(".pick").forEach(function(b){ b.setAttribute("aria-pressed","false"); });
         btn.setAttribute("aria-pressed","true");
-        row.dataset.value = o.val;
-        if(opts.onChange) opts.onChange(o.val);
-      });
-      row.appendChild(btn);
-    });
-    return row;
-  }
-  // multi-select chip-style picker (style tags) — returns selected vals via data-values (comma list)
-  function buildMultiPicker(containerId, options, opts){
-    opts = opts || {};
-    const row = $(containerId);
-    row.innerHTML = "";
-    row.dataset.values = "";
-    options.forEach(raw=>{
-      const o = (typeof raw === "string") ? {val:raw, label:raw} : raw;
-      const isOther = o.val === OTHER_VAL;
-      const btn = el("button", {
-        class:"pick" + (isOther ? " pick-other" : ""), type:"button",
-        "aria-pressed":"false", "data-val":o.val,
-      });
-      btn.appendChild(document.createTextNode(o.label));
-      btn.addEventListener("click", ()=>{
-        const pressed = btn.getAttribute("aria-pressed")==="true";
-        btn.setAttribute("aria-pressed", pressed ? "false":"true");
-        const vals = Array.from(row.querySelectorAll('.pick[aria-pressed="true"]')).map(b=>b.dataset.val);
-        row.dataset.values = vals.join("|");
-        if(isOther && opts.otherFieldId){
-          $(opts.otherFieldId).hidden = !(pressed ? false : true);
-        }
-      });
-      row.appendChild(btn);
-    });
-    return row;
-  }
-  function pickerValue(id){ return $(id).dataset.value; }
-  function multiPickerValues(id){ const v = $(id).dataset.values; return v ? v.split("|") : []; }
-  function setPicker(id, val){
-    const row = $(id);
-    row.dataset.value = val;
-    row.querySelectorAll(".pick").forEach(b=> b.setAttribute("aria-pressed", String(b.dataset.val===val)));
-  }
-  function setMultiPicker(id, vals){
-    const row = $(id);
-    row.dataset.values = vals.join("|");
-    row.querySelectorAll(".pick").forEach(b=> b.setAttribute("aria-pressed", String(vals.includes(b.dataset.val))));
-  }
-
-  // ---------- tabs ----------
-  document.querySelectorAll(".tab").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected", b===btn ? "true":"false"));
-      document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
-      $("panel-"+btn.dataset.tab).classList.add("active");
+      } else {
+        const pressed = btn.getAttribute("aria-pressed") === "true";
+        btn.setAttribute("aria-pressed", pressed ? "false" : "true");
+      }
     });
   });
-
-  // ================= BUYER-SIDE PICKERS (subjective preference is fine here — it's their own taste) =================
-  buildPicker("c-market-picks", [
-    {val:"Hong Kong", label:"Hong Kong"}, {val:"Mainland China", label:"Mainland China"},
-    {val:"Japan", label:"Japan"}, {val:"South Korea", label:"South Korea"},
-    {val:"Singapore", label:"Singapore"}, {val:"Other", label:"Other"},
-  ], {def:"Hong Kong"});
-  buildPicker("c-venuetype-picks", [
-    {val:"Restaurant", label:"Restaurant"}, {val:"Private club", label:"Private club"},
-    {val:"Hotel", label:"Hotel"}, {val:"Wine bar / retail", label:"Wine bar / retail"}, {val:"Other", label:"Other"},
-  ], {def:"Restaurant"});
-  buildMultiPicker("c-style-picks", STYLES);
-  buildMultiPicker("c-variety-picks", VARIETIES, {otherFieldId:"c-variety-other"});
-  buildMultiPicker("c-region-picks", REGIONS, {otherFieldId:"c-region-other"});
-  // Reference examples anchor both sides to the same real-world point on each scale, so a
-  // buyer's "High tannin" and a supplier's derived "High tannin" are more likely to mean the
-  // same thing rather than two people's differently-calibrated sense of the same word.
-  buildPicker("c-body-picks", [
-    {val:"0", label:"Light", sub:"like a Pinot Noir"},
-    {val:"1", label:"Medium", sub:"like a Merlot"},
-    {val:"2", label:"Full", sub:"like a Shiraz"},
-  ], {def:"1"});
-  buildPicker("c-tannin-picks", [
-    {val:"0", label:"Low", sub:"soft, barely noticeable grip"},
-    {val:"1", label:"Medium", sub:"noticeable but not drying"},
-    {val:"2", label:"High", sub:"firm grip, like a young Cabernet"},
-  ], {def:"1"});
-  buildPicker("c-oak-picks", [
-    {val:"0", label:"None", sub:"no vanilla/toast character"},
-    {val:"1", label:"Light", sub:"subtle vanilla/spice"},
-    {val:"2", label:"Medium", sub:"clear toast/vanilla"},
-    {val:"3", label:"Heavy", sub:"strong toast, smoky/charred"},
-  ], {def:"1"});
-  buildPicker("c-sweet-picks", [
-    {val:"0", label:"Bone dry", sub:"no perceptible sugar"},
-    {val:"1", label:"Dry", sub:"most table wine"},
-    {val:"2", label:"Off-dry", sub:"a touch of sweetness"},
-    {val:"3", label:"Medium sweet", sub:"noticeably sweet"},
-    {val:"4", label:"Sweet", sub:"dessert-wine sweet"},
-  ], {def:"1"});
-  buildPicker("c-novelty-picks", [
-    {val:"none", label:"No requirement"},
-    {val:"market", label:"Never sold in buyer's market"},
-    {val:"china", label:"Never imported into mainland China"},
-  ], {def:"none"});
-
-  // ================= SUPPLIER-SIDE PICKERS: concrete, factual, derive body/tannin/oak/sweet =================
-  buildMultiPickerSingle("w-style-picks", STYLES, "Red — still");
-
-  function buildMultiPickerSingle(id, options, def){
-    // single-select styled the same as multi, used for wine style (only one style per wine)
-    buildPicker(id, options.map(o=>({val:o, label:o})), {def});
+  function singleValue(id){
+    const el = document.querySelector("#"+id+" .pick[aria-pressed='true']");
+    return el ? el.dataset.value : null;
+  }
+  function multiValues(id){
+    return Array.prototype.slice.call(document.querySelectorAll("#"+id+" .pick[aria-pressed='true']")).map(function(b){ return b.dataset.value; });
   }
 
-  buildMultiPicker("w-variety-picks", VARIETIES, {otherFieldId:"w-variety-other"});
-  buildMultiPicker("w-region-picks", REGIONS, {otherFieldId:"w-region-other"});
+  // ---------- scoring (simplified, fixed-weight version of the internal engine) ----------
+  function scoreWine(brief, wine){
+    let points = 0, maxPoints = 0;
+    const notes = [];
 
-  buildPicker("w-rs-picks", [
-    {val:"unsure", label:"Not sure", sub:"We'll flag this, not guess"},
-    {val:"0", label:"Bone dry", sub:"< 2 g/L"},
-    {val:"1", label:"Dry", sub:"2–8 g/L"},
-    {val:"2", label:"Off-dry", sub:"8–20 g/L"},
-    {val:"3", label:"Medium sweet", sub:"20–45 g/L"},
-    {val:"4", label:"Sweet", sub:"45+ g/L"},
-  ], {def:"unsure", onChange: updateDerived});
+    // Style — critical
+    maxPoints += 5;
+    if(brief.styles.length === 0){ points += 5*0.7; }
+    else if(brief.styles.includes(wine.style)){ points += 5; }
+    else { points += 5*0.1; }
 
-  buildPicker("w-dosage-picks", [
-    {val:"unsure", label:"Not sure"},
-    {val:"0", label:"Brut Nature / Zero", sub:"0–3 g/L"},
-    {val:"1", label:"Brut", sub:"< 12 g/L"},
-    {val:"2", label:"Extra Dry", sub:"12–17 g/L"},
-    {val:"3", label:"Dry / Demi-sec", sub:"17–50 g/L"},
-    {val:"4", label:"Doux / Sweet", sub:"50+ g/L"},
-  ], {def:"unsure", onChange: updateDerived});
+    // Region — moderate
+    maxPoints += 2;
+    if(brief.regions.length === 0){ points += 2*0.7; }
+    else if(brief.regions.includes(wine.region)){ points += 2; notes.push("Region match"); }
+    else { points += 2*0.3; }
 
-  buildPicker("w-oaktype-picks", [
-    {val:"unsure", label:"Not sure"},
-    {val:"none", label:"No oak", sub:"Stainless / unoaked"},
-    {val:"old", label:"Old / neutral oak", sub:"Minimal flavour impact"},
-    {val:"american", label:"American oak"},
-    {val:"french", label:"French oak"},
-  ], {def:"unsure", onChange: updateDerived});
+    // Body — moderate
+    maxPoints += 3;
+    if(!brief.body){ points += 3*0.7; }
+    else if(brief.body === wine.body){ points += 3; }
+    else { points += 3*0.4; }
 
-  buildPicker("w-oaktime-picks", [
-    {val:"unsure", label:"Not sure"},
-    {val:"1", label:"Under 6 months"},
-    {val:"2", label:"6–12 months"},
-    {val:"3", label:"12–18 months"},
-    {val:"4", label:"18+ months"},
-  ], {def:"unsure", onChange: updateDerived});
-
-  buildPicker("w-maceration-picks", [
-    {val:"unsure", label:"Not sure"},
-    {val:"short", label:"Short / gentle", sub:"Softer tannin"},
-    {val:"standard", label:"Standard"},
-    {val:"extended", label:"Extended", sub:"Firmer tannin, more grip"},
-  ], {def:"unsure", onChange: updateDerived});
-
-  buildPicker("w-mlf-picks", [
-    {val:"unsure", label:"Not sure"},
-    {val:"yes", label:"Yes, full MLF", sub:"Rounder, softer acid"},
-    {val:"partial", label:"Partial MLF", sub:"Some softening"},
-    {val:"no", label:"No / blocked", sub:"Keeps it crisp, higher acid"},
-  ], {def:"unsure", onChange: updateDerived});
-
-  buildPicker("w-soldhk-picks", [
-    {val:"no", label:"No"}, {val:"yes", label:"Yes"}, {val:"unsure", label:"Unsure"},
-  ], {def:"no"});
-  buildPicker("w-soldchina-picks", [
-    {val:"no", label:"No"}, {val:"yes", label:"Yes"}, {val:"unsure", label:"Unsure"},
-  ], {def:"no"});
-
-  $("w-abv").addEventListener("input", updateDerived);
-
-  // ---------- style-conditional fields: only show questions relevant to this wine's style ----------
-  function refreshFieldVisibility(){
-    const style = pickerValue("w-style-picks");
-    const isSparkling = style === "Sparkling";
-    const isDessert = style === "Dessert / fortified";
-    const isWhiteish = style === "White — still" || style === "Rosé" || style === "Orange / skin-contact";
-
-    $("w-rs-field").hidden = isSparkling;
-    $("w-dosage-field").hidden = !isSparkling;
-    $("w-maceration-field").hidden = (style === "White — still"); // still whites: no meaningful maceration question
-    $("w-mlf-field").hidden = !isWhiteish; // MLF is the more reliable acidity signal for white-style wines
-    void isDessert; // reserved for future style-specific fields
-    updateDerived();
-  }
-  document.querySelectorAll('#w-style-picks .pick').forEach(btn=>{
-    btn.addEventListener("click", refreshFieldVisibility);
-  });
-
-  function fieldShown(el){ return el && !el.hidden; }
-
-  // ---------- derive body / tannin / oak / sweetness from concrete facts ----------
-  // Any dimension returns null when we don't have enough to estimate it — callers must NOT
-  // silently default a null to a mid-scale value, since that would fabricate a fact.
-  function deriveProfile(){
-    const style = pickerValue("w-style-picks");
-    const abv = parseFloat($("w-abv").value);
-    const rsRaw = pickerValue("w-rs-picks");
-    const dosageRaw = pickerValue("w-dosage-picks");
-    const oaktype = pickerValue("w-oaktype-picks");
-    const oaktimeRaw = pickerValue("w-oaktime-picks");
-    const maceration = pickerValue("w-maceration-picks");
-
-    const isSparkling = style === "Sparkling";
-    const rs = isSparkling
-      ? (dosageRaw && dosageRaw !== "unsure" ? +dosageRaw : null)
-      : (rsRaw && rsRaw !== "unsure" ? +rsRaw : null);
-    const oaktime = (oaktimeRaw && oaktimeRaw !== "unsure") ? +oaktimeRaw : null;
-    const oaktypeKnown = oaktype && oaktype !== "unsure";
-    const mlfRaw = pickerValue("w-mlf-picks");
-    const mlf = (mlfRaw && mlfRaw !== "unsure") ? mlfRaw : null;
-
-    // Body: driven by alcohol (a reliable, objective proxy), nudged by oak/time-in-barrel.
-    let body = null;
-    if(!isNaN(abv)){
-      if(abv < 12.5) body = 0;
-      else if(abv < 13.8) body = 1;
-      else body = 2;
-      if(oaktime != null && oaktime >= 3 && body < 2) body += 1;
-      body = Math.max(0, Math.min(2, body));
+    // Flavour overlap
+    maxPoints += 3;
+    if(brief.flavour.length === 0){ points += 3*0.7; }
+    else {
+      const wf = tokenize(wine.flavour);
+      const overlap = brief.flavour.filter(function(f){ return wf.some(function(x){ return x.indexOf(f)>-1 || f.indexOf(x)>-1; }); }).length;
+      points += 3 * clamp01(overlap / brief.flavour.length);
+      if(overlap > 0) notes.push(overlap+" flavour note"+(overlap>1?"s":"")+" matched");
     }
 
-    // Tannin/acidity: driven by maceration for reds. For whites/rosé/orange, malolactic
-    // fermentation is the direct, reliable signal (a fact winemakers know) — full MLF softens
-    // acid, blocked MLF keeps it crisp/high. Only fall back to the weaker sugar/oak proxy if
-    // MLF wasn't given, and even then only when there's enough to say anything at all.
-    let tannin = null;
-    if($("w-maceration-field") && !$("w-maceration-field").hidden){
-      if(maceration === "short") tannin = 0;
-      else if(maceration === "extended") tannin = 2;
-      else if(maceration === "standard") tannin = 1;
-    } else if(style === "White — still" || style === "Rosé" || style === "Orange / skin-contact"){
-      if(mlf === "yes") tannin = 0;
-      else if(mlf === "partial") tannin = 1;
-      else if(mlf === "no") tannin = 2;
-      else if(oaktypeKnown && rs != null){
-        tannin = (oaktype==="none" && rs<=1) ? 2 : (rs>=2 ? 0 : 1);
+    // Price fit — critical
+    maxPoints += 4;
+    let hardFail = false;
+    if(brief.priceMin==null && brief.priceMax==null){ points += 4*0.7; }
+    else {
+      const lo = brief.priceMin ?? 0, hi = brief.priceMax ?? Infinity;
+      if(wine.price >= lo && wine.price <= hi){ points += 4; notes.push("Within price band"); }
+      else {
+        const dist = wine.price < lo ? lo-wine.price : wine.price-hi;
+        const ref = hi===Infinity ? (lo||1) : hi;
+        points += 4 * clamp01(1 - dist/(ref*0.6||1));
       }
     }
 
-    // Oak character: from oak type + time in barrel — both must be known to estimate.
-    let oak = null;
-    if(oaktypeKnown){
-      if(oaktype === "none"){
-        oak = 0;
-      } else if(oaktime != null){
-        if(oaktime <= 1) oak = 1;
-        else if(oaktime === 2) oak = 2;
-        else oak = 3;
-        if(oaktype === "old" && oak > 1) oak -= 1;
-        oak = Math.max(0, Math.min(3, oak));
-      }
-    }
+    // Volume / MOQ — critical, hard fail if below
+    maxPoints += 5;
+    if(brief.volume==null){ points += 5*0.7; }
+    else if(brief.volume >= wine.moq){ points += 5; }
+    else { hardFail = true; }
 
-    // Sweetness / dosage maps straight from residual sugar (or dosage, for sparkling) band.
-    const sweet = rs;
+    // Exclusivity
+    maxPoints += 3;
+    if(brief.novelty !== "market"){ points += 3*0.7; }
+    else if(wine.neverExported){ points += 3; notes.push("Never exported — genuine exclusive"); }
+    else { points += 3*0.2; }
 
-    return {body, tannin, oak, sweet};
+    let score = Math.round((points/maxPoints)*100);
+    if(hardFail) score = Math.min(score, 38);
+    return {wine:wine, score:score, notes:notes, hardFail:hardFail};
   }
 
-  function updateDerived(){
-    const {body, tannin, oak, sweet} = deriveProfile();
-    const fmt = (arr, v) => v==null ? '<span style="color:var(--warn)">not enough info yet</span>' : `<b>${arr[v]}</b>`;
-    $("w-derived-box").innerHTML =
-      `Based on these facts, we estimate: body — ${fmt(SCALES.body,body)} · ` +
-      `tannin/acidity — ${fmt(SCALES.tannin,tannin)} · oak character — ${fmt(SCALES.oak,oak)} · sweetness — ${fmt(SCALES.sweet,sweet)}. ` +
-      `Anything marked "not enough info" is left blank rather than guessed — it'll show as unconfirmed when buyers see it, not silently as a mismatch or a false match.`;
-  }
-  refreshFieldVisibility();
-
-  // ---------- weights (buyer side: how much each attribute matters) ----------
-  const weightsList = $("weights-list");
-  const WEIGHT_OPTS = [
-    {v:0, l:"Not important"}, {v:2, l:"Slightly"}, {v:3, l:"Moderate"}, {v:4, l:"Very"}, {v:5, l:"Critical"},
-  ];
-  const weightState = {};
-  WEIGHT_DEFS.forEach(w=>{
-    weightState[w.key] = w.def;
-    const row = el("div", {class:"weight-row"});
-    const head = el("div", {class:"wname", html:w.label});
-    row.appendChild(head);
-    if(w.desc) row.appendChild(el("div", {class:"wdesc", html: w.desc}));
-    const picks = el("div", {class:"wpicks"});
-    WEIGHT_OPTS.forEach(opt=>{
-      const b = el("button", {class:"wpick", type:"button", "aria-pressed": String(opt.v===w.def), html:opt.l});
-      b.addEventListener("click", ()=>{
-        picks.querySelectorAll(".wpick").forEach(x=>x.setAttribute("aria-pressed","false"));
-        b.setAttribute("aria-pressed","true");
-        weightState[w.key] = opt.v;
-      });
-      picks.appendChild(b);
-    });
-    row.appendChild(picks);
-    weightsList.appendChild(row);
-  });
-
-  // ---------- wine library ----------
-  function renderWineTable(){
-    const tbody = $("wine-tbody");
-    tbody.innerHTML = "";
-    $("wine-count").textContent = wines.length;
-    $("wine-empty").style.display = wines.length ? "none" : "block";
-    $("wine-table").style.display = wines.length ? "table" : "none";
-    wines.forEach((w, i)=>{
-      const tr = el("tr");
-      tr.appendChild(el("td", {}, [
-        el("div", {class:"wname", html: escapeHtml(w.name)}),
-        el("div", {class:"wsub", html: escapeHtml(w.vineyard) + (w.vintage ? " · "+escapeHtml(w.vintage) : "")}),
-      ]));
-      const sc = (arr,v)=> v==null ? '<span style="color:var(--warn)">unconfirmed</span>' : arr[v];
-      tr.appendChild(el("td", {html: escapeHtml(w.style) + `<div class="wsub">${escapeHtml((w.variety||[]).join(", "))}</div>`}));
-      tr.appendChild(el("td", {class:"wsub", html: `${escapeHtml((w.region||[]).join(", ")||"—")}<br>${sc(SCALES.body,w.body)} body · ${sc(SCALES.tannin,w.tannin)} · ${sc(SCALES.oak,w.oak)}`}));
-      tr.appendChild(el("td", {html: w.price ? "$"+w.price : "—"}));
-      tr.appendChild(el("td", {html: w.moq ? w.moq+" btl" : "—"}));
-      tr.appendChild(el("td", {html: soldBadge(w.soldHK)}));
-      tr.appendChild(el("td", {html: soldBadge(w.soldChina)}));
-      const del = el("button", {class:"ghost", type:"button", html:"Remove"});
-      del.addEventListener("click", ()=>{ wines.splice(i,1); renderWineTable(); });
-      tr.appendChild(el("td", {}, [del]));
-      tbody.appendChild(tr);
-    });
-  }
-  function soldBadge(v){
-    if(v==="yes") return '<span style="color:var(--bad)">Yes</span>';
-    if(v==="no") return '<span style="color:var(--good)">No</span>';
-    return '<span style="color:var(--ink-dim)">Unsure</span>';
-  }
-
-  $("btn-add-wine").addEventListener("click", ()=>{
-    const name = $("w-name").value.trim();
-    if(!name){ $("w-name").focus(); return; }
-    const {body, tannin, oak, sweet} = deriveProfile();
-    wines.push({
-      vineyard: $("w-vineyard").value.trim(),
-      name,
-      vintage: $("w-vintage").value.trim(),
-      style: pickerValue("w-style-picks"),
-      variety: multiPickerValues("w-variety-picks"),
-      varietyOtherNote: $("w-variety-other").value.trim(),
-      blendDetail: $("w-blend-detail").value.trim(),
-      region: multiPickerValues("w-region-picks"),
-      regionOtherNote: $("w-region-other").value.trim(),
-      abv: $("w-abv").value ? +$("w-abv").value : null,
-      body, tannin, oak, sweet,
-      flavour: $("w-flavour").value.trim(),
-      price: $("w-price").value ? +$("w-price").value : null,
-      moq: $("w-moq").value ? +$("w-moq").value : null,
-      soldHK: pickerValue("w-soldhk-picks"),
-      soldChina: pickerValue("w-soldchina-picks"),
-      awards: $("w-awards").value.trim(),
-    });
-    ["w-vineyard","w-name","w-vintage","w-blend-detail","w-flavour","w-price","w-moq","w-awards","w-abv","w-variety-other","w-region-other"].forEach(id=>$(id).value="");
-    setPicker("w-style-picks", "Red — still");
-    setMultiPicker("w-variety-picks", []);
-    setMultiPicker("w-region-picks", []);
-    $("w-variety-other").hidden = true;
-    $("w-region-other").hidden = true;
-    setPicker("w-rs-picks", "unsure");
-    setPicker("w-dosage-picks", "unsure");
-    setPicker("w-oaktype-picks", "unsure");
-    setPicker("w-oaktime-picks", "unsure");
-    setPicker("w-maceration-picks", "unsure");
-    setPicker("w-mlf-picks", "unsure");
-    setPicker("w-soldhk-picks", "no");
-    setPicker("w-soldchina-picks", "no");
-    refreshFieldVisibility();
-    renderWineTable();
-  });
-
-  $("btn-load-sample-library").addEventListener("click", ()=>{
-    wines = wines.concat([
-      {vineyard:"Seville Estate", name:"Dr McMahon Shiraz", vintage:"2021", style:"Red — still", variety:["Shiraz"], blendDetail:"100% Shiraz", region:["Yarra Valley"],
-       abv:14.5, body:2, tannin:2, oak:2, sweet:0, flavour:"blackberry, white pepper, cedar, clove", price:107.25, moq:48, soldHK:"no", soldChina:"no", awards:"Halliday 95pts"},
-      {vineyard:"Seville Estate", name:"Estate Chardonnay", vintage:"2022", style:"White — still", variety:["Chardonnay"], blendDetail:"100% Chardonnay", region:["Yarra Valley"],
-       abv:13.0, body:1, tannin:1, oak:1, sweet:0, flavour:"stone fruit, citrus, grilled nuts", price:33, moq:48, soldHK:"no", soldChina:"no", awards:""},
-      {vineyard:"Bindi Wines", name:"Kostas Rind Pinot Noir", vintage:"2021", style:"Red — still", variety:["Pinot Noir"], blendDetail:"100% Pinot Noir", region:["Macedon Ranges"],
-       abv:13.2, body:1, tannin:1, oak:1, sweet:0, flavour:"cherry, forest floor, spice", price:85, moq:24, soldHK:"yes", soldChina:"unsure", awards:"Halliday 96pts"},
-      {vineyard:"Tar & Roses", name:"Sangiovese", vintage:"2022", style:"Red — still", variety:["Sangiovese"], blendDetail:"100% Sangiovese", region:["Heathcote"],
-       abv:13.0, body:1, tannin:1, oak:0, sweet:0, flavour:"sour cherry, herb, dried tomato leaf", price:35, moq:36, soldHK:"yes", soldChina:"no", awards:""},
-      {vineyard:"Seville Estate", name:"Reserve Chardonnay", vintage:"2021", style:"White — still", variety:["Chardonnay"], blendDetail:"100% Chardonnay", region:["Yarra Valley"],
-       abv:13.5, body:2, tannin:1, oak:3, sweet:0, flavour:"peach, toasted oak, brioche", price:55, moq:24, soldHK:"no", soldChina:"no", awards:"Halliday 97pts"},
-    ]);
-    renderWineTable();
-  });
-
-  // ---------- example buyer request ----------
-  $("btn-load-sample-customer").addEventListener("click", ()=>{
-    $("c-name").value = "The Envoy Club, Hong Kong";
-    setPicker("c-market-picks", "Hong Kong");
-    setPicker("c-venuetype-picks", "Private club");
-    setMultiPicker("c-style-picks", ["Red — still"]);
-    setMultiPicker("c-variety-picks", ["Shiraz"]);
-    setMultiPicker("c-region-picks", ["Yarra Valley"]);
-    setPicker("c-body-picks", "2");
-    setPicker("c-tannin-picks", "2");
-    setPicker("c-oak-picks", "2");
-    setPicker("c-sweet-picks", "0");
-    $("c-flavour").value = "white pepper, blackberry, cedar";
-    $("c-pricemin").value = 60; $("c-pricemax").value = 120;
-    $("c-volume").value = 96;
-    setPicker("c-novelty-picks", "china");
-    $("c-notes").value = "Looking to add one standout full-bodied Shiraz to the by-the-glass list, ideally a story we can tell guests.";
-  });
-
-  // ---------- price range validation ----------
-  // Catches the fat-finger case ($300 min / $1 max) the moment it happens, rather than letting
-  // it silently feed the scorer an empty range that would mis-score every wine as "outside band".
-  function checkPriceRange(){
-    const minEl = $("c-pricemin"), maxEl = $("c-pricemax");
-    const min = minEl.value ? +minEl.value : null;
-    const max = maxEl.value ? +maxEl.value : null;
-    const invalid = (min != null && max != null && min > max);
-    $("c-price-warning").hidden = !invalid;
-    minEl.style.borderColor = invalid ? "var(--bad)" : "";
-    maxEl.style.borderColor = invalid ? "var(--bad)" : "";
-    return !invalid;
-  }
-  $("c-pricemin").addEventListener("input", checkPriceRange);
-  $("c-pricemax").addEventListener("input", checkPriceRange);
-
-  // ---------- matching engine ----------
-  function readCustomerRequest(){
-    const styles = multiPickerValues("c-style-picks");
-    let priceMin = $("c-pricemin").value ? +$("c-pricemin").value : null;
-    let priceMax = $("c-pricemax").value ? +$("c-pricemax").value : null;
-    // Safety net: even if the inline warning was somehow missed, never hand the scorer an
-    // inverted range — swap so matching still runs sensibly rather than silently zeroing everyone.
-    if(priceMin != null && priceMax != null && priceMin > priceMax){
-      [priceMin, priceMax] = [priceMax, priceMin];
-    }
+  function readBrief(){
+    let priceMin = $("f-pricemin").value ? +$("f-pricemin").value : null;
+    let priceMax = $("f-pricemax").value ? +$("f-pricemax").value : null;
+    if(priceMin != null && priceMax != null && priceMin > priceMax){ const t=priceMin; priceMin=priceMax; priceMax=t; }
     return {
-      name: $("c-name").value.trim() || "Unnamed buyer",
-      market: pickerValue("c-market-picks"),
-      styles,
-      variety: multiPickerValues("c-variety-picks"),
-      varietyOtherNote: $("c-variety-other").value.trim(),
-      region: multiPickerValues("c-region-picks"),
-      regionOtherNote: $("c-region-other").value.trim(),
-      body: +pickerValue("c-body-picks"),
-      tannin: +pickerValue("c-tannin-picks"),
-      oak: +pickerValue("c-oak-picks"),
-      sweet: +pickerValue("c-sweet-picks"),
-      flavour: tokenize($("c-flavour").value),
-      priceMin, priceMax,
-      volume: $("c-volume").value ? +$("c-volume").value : null,
-      novelty: pickerValue("c-novelty-picks"),
+      name: $("f-name").value.trim() || "Your request",
+      market: singleValue("f-market"),
+      styles: multiValues("f-style"),
+      body: singleValue("f-body"),
+      regions: multiValues("f-region"),
+      flavour: tokenize($("f-flavour").value),
+      priceMin: priceMin, priceMax: priceMax,
+      volume: $("f-volume").value ? +$("f-volume").value : null,
+      novelty: singleValue("f-novelty") || "none",
     };
   }
 
-  function scaleCloseness(a, b, span){
-    return clamp01(1 - Math.abs(a-b)/span);
-  }
-
-  function scoreWine(req, wine, weights){
-    const dims = {};
-    let hardFail = false;
-    let hardFailReasons = [];
-
-    if(req.styles.length === 0){
-      dims.style = {score:1, note:"No style specified"};
-    } else if(req.styles.includes(wine.style)){
-      dims.style = {score:1, note:"Matches "+wine.style};
-    } else {
-      dims.style = {score:0, note:"Wanted "+req.styles.join("/")+", wine is "+wine.style};
-    }
-
-    // "Other" is excluded from matching entirely — it's a free-text note for follow-up, not a
-    // category the scorer can compare, so strip it from both sides before checking overlap.
-    const reqVariety = req.variety.filter(v => v !== OTHER_VAL);
-    const reqRegion = req.region.filter(r => r !== OTHER_VAL);
-    const wineVariety = (wine.variety || []).filter(v => v !== OTHER_VAL);
-    const wineRegion = (wine.region || []).filter(r => r !== OTHER_VAL);
-
-    if(reqVariety.length === 0){
-      dims.variety = {score:0.7, note:"No variety specified"};
-    } else {
-      const hit = reqVariety.some(v => wineVariety.includes(v));
-      dims.variety = hit ? {score:1, note:"Variety match ("+wineVariety.join(", ")+")"} : {score:0.15, note:"No variety overlap — wanted "+reqVariety.join("/")+", wine is "+(wineVariety.join(", ")||"unspecified")};
-    }
-
-    if(reqRegion.length === 0){
-      dims.region = {score:0.7, note:"No region specified"};
-    } else {
-      const hit = reqRegion.some(r => wineRegion.includes(r));
-      dims.region = hit ? {score:1, note:"Region match ("+wineRegion.join(", ")+")"} : {score:0.3, note:"Different region — wanted "+reqRegion.join("/")+", wine is "+(wineRegion.join(", ")||"unspecified")};
-    }
-
-    // Estimated-profile dimensions: if the supplier didn't give us enough facts to derive this,
-    // wine.<dim> is null. Score it neutral (not a match, not a miss) and say so plainly —
-    // never silently default it, or a buyer's exact requirement could show a false match.
-    function scoreScale(reqVal, wineVal, span, scale){
-      if(wineVal == null){
-        return {score:0.5, note:"Not provided by supplier — unconfirmed, verify before pitching"};
-      }
-      return {score: scaleCloseness(reqVal, wineVal, span), note: scale[wineVal]};
-    }
-    dims.body   = scoreScale(req.body, wine.body, 2, SCALES.body);
-    dims.tannin = scoreScale(req.tannin, wine.tannin, 2, SCALES.tannin);
-    dims.oak    = scoreScale(req.oak, wine.oak, 3, SCALES.oak);
-    dims.sweet  = scoreScale(req.sweet, wine.sweet, 4, SCALES.sweet);
-
-    if(req.flavour.length === 0){
-      dims.flavour = {score:0.7, note:"No flavour notes specified"};
-    } else {
-      const wf = tokenize(wine.flavour);
-      const overlap = req.flavour.filter(f => wf.some(x=>x.includes(f)||f.includes(x))).length;
-      dims.flavour = {score: clamp01(overlap / req.flavour.length), note: overlap+" of "+req.flavour.length+" notes found"};
-    }
-
-    if(req.priceMin==null && req.priceMax==null){
-      dims.price = {score:0.7, note:"No price band specified"};
-    } else if(wine.price==null){
-      dims.price = {score:0.5, note:"Wine has no listed price"};
-    } else {
-      const lo = req.priceMin ?? 0, hi = req.priceMax ?? Infinity;
-      if(wine.price >= lo && wine.price <= hi){
-        dims.price = {score:1, note:"$"+wine.price+" within band"};
-      } else {
-        const dist = wine.price < lo ? lo - wine.price : wine.price - hi;
-        const ref = hi===Infinity ? lo||1 : hi;
-        dims.price = {score: clamp01(1 - dist/(ref*0.6||1)), note:"$"+wine.price+" outside band"};
-      }
-    }
-
-    if(req.volume==null){
-      dims.volume = {score:0.7, note:"No volume specified"};
-    } else if(wine.moq==null){
-      dims.volume = {score:0.5, note:"Wine has no listed MOQ"};
-    } else if(req.volume >= wine.moq){
-      dims.volume = {score:1, note:"Order of "+req.volume+" clears MOQ of "+wine.moq};
-    } else {
-      dims.volume = {score:0, note:"Order of "+req.volume+" below MOQ of "+wine.moq};
-      hardFail = true; hardFailReasons.push("Below MOQ ("+req.volume+" < "+wine.moq+")");
-    }
-
-    if(req.novelty === "none"){
-      dims.novelty = {score:0.7, note:"No novelty requirement"};
-    } else {
-      const field = req.novelty === "china" ? wine.soldChina : wine.soldHK;
-      const marketLabel = req.novelty === "china" ? "mainland China" : req.market;
-      if(field === "no"){
-        dims.novelty = {score:1, note:"Confirmed never sold in "+marketLabel};
-      } else if(field === "unsure"){
-        dims.novelty = {score:0.4, note:"Export history to "+marketLabel+" unconfirmed — verify before pitching as new-to-market"};
-      } else {
-        dims.novelty = {score:0, note:"Already sold in "+marketLabel};
-        hardFail = true; hardFailReasons.push("Already sold in "+marketLabel);
-      }
-    }
-
-    let wsum = 0, total = 0;
-    Object.keys(dims).forEach(k=>{
-      const w = weights[k] ?? 3;
-      wsum += w;
-      total += w * dims[k].score;
+  // ---------- panel switching ----------
+  function showPanel(n){
+    document.querySelectorAll("[data-panel]").forEach(function(p){ p.classList.remove("active"); });
+    document.querySelector("[data-panel='"+n+"']").classList.add("active");
+    document.querySelectorAll(".progress-step").forEach(function(s){
+      const step = +s.dataset.step;
+      s.classList.toggle("current", step===n);
+      s.classList.toggle("done", step<n);
     });
-    let raw = wsum > 0 ? (total/wsum) : 0;
-    let score = Math.round(raw * 100);
-    if(hardFail) score = Math.min(score, 40);
-
-    const unconfirmedCount = ["body","tannin","oak","sweet"].filter(k => (wine[k]==null)).length;
-
-    return {wine, score, dims, hardFail, hardFailReasons, unconfirmedCount};
+    $("line1").classList.toggle("done", n>1);
+    $("line2").classList.toggle("done", n>2);
+    window.scrollTo({top:0, behavior:"smooth"});
   }
 
-  function scoreLabel(score){
-    if(score >= 80) return {label:"Strong match", cls:"good"};
-    if(score >= 55) return {label:"Possible match", cls:"warn"};
-    return {label:"Weak match", cls:"bad"};
-  }
+  // ---------- Step 1 -> 2: run "matching" ----------
+  const SCAN_LINES = [
+    "Initializing match engine",
+    "Scoring style & body fit",
+    "Checking region overlap",
+    "Comparing flavour profiles",
+    "Verifying price & volume fit",
+    "Checking exclusivity requirements",
+    "Ranking independent vineyards",
+    "Finalizing your matches"
+  ];
 
-  function dialSVG(score){
-    const size = 96, cx = size/2, cy = size/2, r = 38;
-    const angle = (score/100) * 360 - 90;
-    const rad = angle * Math.PI/180;
-    const nx = cx + r*0.8*Math.cos(rad), ny = cy + r*0.8*Math.sin(rad);
-    let color = "var(--bad)";
-    if(score>=80) color = "var(--good)"; else if(score>=55) color = "var(--warn)";
-    const ticks = [];
-    for(let i=0;i<12;i++){
-      const a = (i/12)*360 - 90, ar = a*Math.PI/180;
-      const x1 = cx + (r+2)*Math.cos(ar), y1 = cy + (r+2)*Math.sin(ar);
-      const x2 = cx + (r+7)*Math.cos(ar), y2 = cy + (r+7)*Math.sin(ar);
-      ticks.push(`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="var(--border)" stroke-width="2"/>`);
-    }
-    return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" role="img" aria-label="Match score ${score} out of 100">
-      <circle cx="${cx}" cy="${cy}" r="${r+9}" fill="var(--surface-2)" />
-      ${ticks.join("")}
-      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--border)" stroke-width="3"/>
-      <line x1="${cx}" y1="${cy}" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}" stroke="${color}" stroke-width="3.5" stroke-linecap="round"/>
-      <circle cx="${cx}" cy="${cy}" r="4" fill="${color}"/>
-    </svg>`;
-  }
-
-  // ---------- callout sentence: a template filled from whatever data exists on the wine + match ----------
-  // Written the way someone sourcing for a restaurant would actually read a shortlist — lead with
-  // why it fits, then the one or two things worth mentioning to the buyer (awards, story, novelty).
-  function buildCallout(req, r){
-    const {wine, dims, hardFail} = r;
-    const bits = [];
-
-    // Opening: what matches best, in plain language. Always anchor on a real noun (the wine's
-    // own style/variety) so the sentence never reads as a dangling fragment like "A from X".
-    const styleNoun = wine.style ? wine.style.toLowerCase().replace(" — still","") : "wine";
-    const varietyKnown = (wine.variety||[]).filter(v=>v!==OTHER_VAL);
-    const regionKnown = (wine.region||[]).filter(v=>v!==OTHER_VAL);
-    const noun = (dims.variety && dims.variety.score === 1 && varietyKnown.length)
-      ? varietyKnown.join("/")
-      : styleNoun;
-    let opener = "A "+noun;
-    if(dims.region && dims.region.score === 1 && regionKnown.length){
-      opener += " from "+regionKnown.join("/");
-    }
-    const matchedWell = (dims.style && dims.style.score===1) || (dims.variety && dims.variety.score===1) || (dims.region && dims.region.score===1);
-    opener += matchedWell ? " that lines up well with what they're after." : " — not an exact style/variety match, but worth a look.";
-    bits.push(opener);
-
-    // Awards / recognition callout.
-    if(wine.awards){
-      bits.push("Callout: "+wine.awards+".");
-    }
-
-    // Novelty callout — the thing most worth telling a HK/China buyer.
-    if(req.novelty !== "none"){
-      if(dims.novelty && dims.novelty.score === 1){
-        const marketLabel = req.novelty === "china" ? "mainland China" : req.market;
-        bits.push("Genuinely new to "+marketLabel+" — a real story to tell.");
-      } else if(dims.novelty && dims.novelty.score < 1 && !hardFail){
-        bits.push("Export history here is unconfirmed — worth checking before pitching it as new-to-market.");
-      }
-    }
-
-    // Price/volume practicalities, only when worth flagging.
-    if(dims.volume && dims.volume.score === 1 && wine.moq!=null){
-      bits.push("Clears their volume at MOQ "+wine.moq+".");
-    }
-    if(dims.price && dims.price.score < 0.5 && wine.price!=null){
-      bits.push("Priced outside their stated band ($"+wine.price+"/bottle) — flag before quoting.");
-    }
-
-    return bits.join(" ");
-  }
-
-  function renderResults(req, results){
-    const list = $("result-list");
-    list.innerHTML = "";
-    const SURFACE_COUNT = 6;
-    const surfaced = results.slice(0, SURFACE_COUNT);
-    const rest = results.slice(SURFACE_COUNT);
-
-    $("results-empty").style.display = results.length ? "none" : "block";
-    $("results-sub").textContent = results.length
-      ? `Top ${surfaced.length} suggestion${surfaced.length===1?"":"s"} for ${escapeHtml(req.name)}, out of ${results.length} wine${results.length===1?"":"s"} in the library.`
-      : "Run a match from the Buyer Request tab to see ranked wines here.";
-
-    function renderCard(r){
-      const {wine, score, dims, hardFail, hardFailReasons, unconfirmedCount} = r;
-      const sl = scoreLabel(score);
-      const card = el("div", {class:"result" + (hardFail ? " gated":"")});
-      const dialWrap = el("div", {class:"dialwrap", html: dialSVG(score)});
-      dialWrap.appendChild(el("div", {class:"dial-score", html: score+"%"}));
-      dialWrap.appendChild(el("div", {class:"dial-label", html:"match"}));
-      card.appendChild(dialWrap);
-
-      const body = el("div");
-      body.appendChild(el("div", {class:"rname", html: escapeHtml(wine.name)}));
-      body.appendChild(el("div", {class:"rmeta", html: escapeHtml(wine.vineyard) + (wine.vintage?" · "+escapeHtml(wine.vintage):"") + " · " + escapeHtml(wine.style)}));
-      const badges = el("div", {class:"rbadges"});
-      badges.appendChild(el("span", {class:"badge "+sl.cls, html: sl.label}));
-      if(hardFail) hardFailReasons.forEach(reason=> badges.appendChild(el("span", {class:"badge bad", html: escapeHtml(reason)})));
-      if(unconfirmedCount > 0) badges.appendChild(el("span", {class:"badge warn", html: unconfirmedCount+" spec"+(unconfirmedCount>1?"s":"")+" unconfirmed"}));
-      body.appendChild(badges);
-
-      const callout = buildCallout(req, r);
-      if(callout) body.appendChild(el("div", {class:"rcallout", html: escapeHtml(callout)}));
-
-      const toggle = el("button", {class:"ghost", type:"button", html:"Show full scoring breakdown"});
-      const bd = el("div", {class:"breakdown"});
-      const tbl = el("table");
-      Object.keys(dims).forEach(k=>{
-        const def = WEIGHT_DEFS.find(w=>w.key===k);
-        const tr = el("tr");
-        tr.appendChild(el("td", {html: (def?def.label:k) }));
-        tr.appendChild(el("td", {html: Math.round(dims[k].score*100) + "% — " + escapeHtml(dims[k].note)}));
-        tbl.appendChild(tr);
-      });
-      bd.appendChild(tbl);
-      toggle.addEventListener("click", ()=>{
-        bd.classList.toggle("open");
-        toggle.textContent = bd.classList.contains("open") ? "Hide full scoring breakdown" : "Show full scoring breakdown";
-      });
-      body.appendChild(toggle);
-      body.appendChild(bd);
-
-      card.appendChild(body);
-      return card;
-    }
-
-    surfaced.forEach(r => list.appendChild(renderCard(r)));
-
-    if(rest.length){
-      const moreWrap = el("div", {});
-      const moreBtn = el("button", {class:"secondary", type:"button", html:"Show "+rest.length+" more lower-ranked wine"+(rest.length===1?"":"s")});
-      moreBtn.addEventListener("click", ()=>{
-        rest.forEach(r => list.insertBefore(renderCard(r), moreWrap));
-        moreWrap.remove();
-      });
-      moreWrap.appendChild(moreBtn);
-      list.appendChild(moreWrap);
-    }
-  }
-
-  $("btn-run-match").addEventListener("click", ()=>{
-    if(!checkPriceRange()){
-      $("c-pricemin").focus();
-      document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected", b.dataset.tab==="customer" ? "true":"false"));
-      document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
-      $("panel-customer").classList.add("active");
-      return;
-    }
-    const req = readCustomerRequest();
-    if(wines.length === 0){
-      alert("Add wines to the library first (Tab 2).");
-      return;
-    }
-    const results = wines.map(w => scoreWine(req, w, weightState)).sort((a,b)=> b.score - a.score);
-    renderResults(req, results);
-    document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected", b.dataset.tab==="results" ? "true":"false"));
-    document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
-    $("panel-results").classList.add("active");
+  $("btn-submit-brief").addEventListener("click", function(){
+    state.brief = readBrief();
+    showPanel(2);
+    $("scan-view").style.display = "";
+    $("results-view").style.display = "none";
+    runScan();
   });
 
-  // initial render
-  renderWineTable();
+  function runScan(){
+    let i = 0;
+    const bar = $("scan-bar"), line = $("scan-line");
+    bar.style.width = "0%";
+    const total = SCAN_LINES.length;
+    const interval = setInterval(function(){
+      line.textContent = SCAN_LINES[i];
+      bar.style.width = Math.round(((i+1)/total)*100) + "%";
+      i++;
+      if(i >= total){
+        clearInterval(interval);
+        setTimeout(function(){
+          $("scan-view").style.display = "none";
+          $("results-view").style.display = "";
+          renderResults();
+        }, 350);
+      }
+    }, 320);
+  }
+
+  // ---------- Step 2: results ----------
+  function renderResults(){
+    const scored = WINES.map(function(w){ return scoreWine(state.brief, w); })
+      .sort(function(a,b){ return b.score - a.score; });
+    state.results = scored;
+    state.selected.clear();
+
+    const list = $("results-list");
+    list.innerHTML = "";
+    $("results-count").textContent = scored.length + " wines scored against your brief";
+
+    scored.forEach(function(r){
+      const row = document.createElement("div");
+      row.className = "result";
+      const label = r.score>=80 ? "Strong match" : r.score>=55 ? "Possible match" : "Weak match";
+      row.innerHTML =
+        '<div class="result-check" data-id="'+r.wine.id+'"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#060810" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
+        '<div class="result-main">' +
+          '<h3>'+r.wine.name+'</h3>' +
+          '<div class="result-meta">' +
+            '<span>'+r.wine.region+'</span>' +
+            '<span>'+r.wine.style+', '+r.wine.body+'-bodied</span>' +
+            '<span>'+r.wine.vineyard+'</span>' +
+          '</div>' +
+          (r.wine.neverExported ? '<span class="result-tag gem">Never exported</span>' : '') +
+        '</div>' +
+        '<div class="result-score"><div class="num">'+r.score+'%</div><div class="lbl">'+label+'</div></div>' +
+        '<div class="result-price">$'+r.wine.price+'<span class="per">per bottle</span></div>';
+      list.appendChild(row);
+    });
+
+    list.querySelectorAll(".result-check").forEach(function(chk){
+      chk.addEventListener("click", function(){
+        const id = chk.dataset.id;
+        if(state.selected.has(id)){ state.selected.delete(id); chk.classList.remove("checked"); }
+        else { state.selected.add(id); chk.classList.add("checked"); }
+        $("btn-to-checkout").disabled = state.selected.size === 0;
+      });
+    });
+  }
+
+  $("btn-edit-brief").addEventListener("click", function(){ showPanel(1); });
+
+  $("btn-to-checkout").addEventListener("click", function(){
+    renderCheckout();
+    showPanel(3);
+  });
+
+  // ---------- Step 3: checkout ----------
+  function renderCheckout(){
+    const chosen = state.results.filter(function(r){ return state.selected.has(r.wine.id); });
+    const itemsBox = $("checkout-items");
+    itemsBox.innerHTML = '<h2>Your Pallet</h2><p class="sub">'+chosen.length+' wine'+(chosen.length===1?'':'s')+' selected, MOQ per wine applies.</p>';
+    let subtotal = 0;
+    chosen.forEach(function(r){
+      const lineTotal = r.wine.price * r.wine.moq;
+      subtotal += lineTotal;
+      const item = document.createElement("div");
+      item.className = "line-item";
+      item.innerHTML =
+        '<div><div class="li-name">'+r.wine.name+'</div><div class="li-meta">'+r.wine.region+' · '+r.wine.moq+' bottles (MOQ) · $'+r.wine.price+'/bottle</div></div>' +
+        '<div class="li-price">$'+lineTotal.toLocaleString()+'</div>';
+      itemsBox.appendChild(item);
+    });
+
+    const freight = chosen.length ? 480 + chosen.length*60 : 0;
+    const total = subtotal + freight;
+    const summary = $("checkout-summary");
+    summary.innerHTML =
+      '<div class="summary-row"><span>Wine subtotal</span><span>$'+subtotal.toLocaleString()+'</span></div>' +
+      '<div class="summary-row"><span>Est. consolidated freight</span><span>$'+freight.toLocaleString()+'</span></div>' +
+      '<div class="summary-row total"><span>Estimated total</span><span class="val">$'+total.toLocaleString()+'</span></div>';
+  }
+
+  $("btn-back-results").addEventListener("click", function(){ showPanel(2); });
+
+  $("btn-request").addEventListener("click", function(){
+    const chosen = state.results.filter(function(r){ return state.selected.has(r.wine.id); });
+    const subject = encodeURIComponent("Pallet request — " + (state.brief ? state.brief.name : ""));
+    const bodyLines = ["Requested wines:"].concat(chosen.map(function(r){ return "- "+r.wine.name+" ("+r.wine.moq+" bottles)"; }));
+    const body = encodeURIComponent(bodyLines.join("\n"));
+    window.location.href = "mailto:hello@sapphirepanda.com?subject="+subject+"&body="+body;
+  });
+
+  // Nav active-state (Home is never current on this page)
 })();
 </script>
+
+</body>
+</html>
