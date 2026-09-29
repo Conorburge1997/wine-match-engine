@@ -64,6 +64,37 @@
   .glint.d2{animation-delay:1.3s;}
   .glint.d3{animation-delay:2.6s;}
 
+  /* Glossy facet sheen — a diagonal light streak like light off a gem face */
+  .sheen{position:relative; overflow:hidden;}
+  .sheen::after{
+    content:''; position:absolute; top:0; left:0; width:60%; height:100%;
+    background:linear-gradient(115deg, transparent 30%, rgba(166,196,255,0.16) 45%, rgba(255,255,255,0.30) 50%, rgba(166,196,255,0.16) 55%, transparent 70%);
+    transform:translateX(-120%);
+    pointer-events:none;
+  }
+  @keyframes sweep{
+    0%{transform:translateX(-120%);}
+    35%, 100%{transform:translateX(220%);}
+  }
+  .sheen::after{animation:sweep 6s ease-in-out infinite;}
+
+  /* Faceted gem mark */
+  .gem-mark{display:block;}
+  .gem-mark .f1{fill:#8fb4ff;}
+  .gem-mark .f2{fill:#3a6ede;}
+  .gem-mark .f3{fill:#1c3f8f;}
+  .gem-mark .f4{fill:#5fd4e0;}
+  .gem-mark .f5{fill:#152a63;}
+  .gem-mark .f6{fill:#a6c4ff;}
+  .gem-mark .f7{fill:#274d9e;}
+
+  .hero-gem{
+    position:absolute; top:-10px; right:0; width:240px; height:240px;
+    opacity:0.95; z-index:1; pointer-events:none;
+    filter:drop-shadow(0 20px 50px rgba(58,110,222,0.45));
+  }
+  @media (max-width: 1024px){ .hero-gem{display:none;} }
+
   header{
     position:sticky; top:0; z-index:50;
     background:rgba(6,8,16,0.82);
@@ -94,7 +125,7 @@
   }
   .btn:hover{color:#060810;}
   .btn:hover::before{transform:scaleX(1);}
-  .btn-solid{background:linear-gradient(120deg, var(--sapphire) 0%, var(--sapphire-bright) 100%); color:#060810; border-color:var(--sapphire-bright); font-weight:600;}
+  .btn-solid{background:linear-gradient(120deg, var(--sapphire) 0%, var(--sapphire-bright) 55%, var(--sapphire-glint) 100%); color:#060810; border-color:var(--sapphire-bright); font-weight:600;}
   .btn-solid::before{background:linear-gradient(120deg, var(--sapphire-bright) 0%, var(--sapphire-glint) 100%);}
   .btn-ghost{border-color:var(--border); color:var(--ink-dim); font-size:12px;}
   .btn-ghost::before{background:var(--surface);}
@@ -131,6 +162,7 @@
     border:1px solid var(--border);
     background:linear-gradient(160deg, var(--surface) 0%, var(--bg-2) 100%);
     padding:0; overflow:hidden;
+    box-shadow:inset 0 1px 0 rgba(166,196,255,0.12), 0 30px 60px -30px rgba(58,110,222,0.35);
   }
   .engine-top{
     display:flex; align-items:center; justify-content:space-between;
@@ -280,14 +312,26 @@
       <div class="hero-eyebrow">AI-Matched Australian Wine Export</div>
       <h1>We use <em>artificial intelligence and machine learning</em> to match rare, independent Australian wine to your exact requirements — from region, to flavor profile, to price point, and everything in between.</h1>
       <p class="lead">Sapphire Panda's matching engine connects trade buyers with independent Australian family vineyards most have never heard of — then consolidates the wines onto shared pallets to make small-lot export economical.</p>
+      <svg class="hero-gem gem-mark" viewBox="0 0 200 200" fill="none">
+        <polygon class="f1" points="100,10 145,70 100,95"/>
+        <polygon class="f2" points="100,10 55,70 100,95"/>
+        <polygon class="f6" points="55,70 100,95 78,140"/>
+        <polygon class="f3" points="145,70 100,95 122,140"/>
+        <polygon class="f7" points="100,95 78,140 100,190"/>
+        <polygon class="f5" points="100,95 122,140 100,190"/>
+        <polygon class="f4" points="55,70 30,125 78,140"/>
+        <polygon class="f4" points="145,70 170,125 122,140"/>
+        <polygon class="f6" points="30,125 78,140 100,190"/>
+        <polygon class="f3" points="170,125 122,140 100,190"/>
+      </svg>
       <div class="hero-cta">
-        <a href="/match" class="btn btn-solid">Find Your Match →</a>
+        <a href="/match" class="btn btn-solid sheen">Find Your Match →</a>
         <a href="#engine" class="btn btn-ghost">See The Engine</a>
       </div>
     </div>
 
     <div class="wrap">
-      <div class="engine-panel" id="engine">
+      <div class="engine-panel sheen" id="engine">
         <div class="engine-top">
           <span class="engine-dot mono">MATCH ENGINE — LIVE SCORING</span>
           <span class="mono">v1.0</span>
@@ -426,7 +470,7 @@
 
   <section>
     <div class="wrap">
-      <div class="cta-band">
+      <div class="cta-band sheen">
         <h2>Let the engine find your match.</h2>
         <p>Tell us what you're looking for and get your top AI-matched wine picks in minutes.</p>
         <div class="btn-row">
