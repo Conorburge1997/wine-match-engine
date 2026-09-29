@@ -501,5 +501,46 @@
   </div>
 </footer>
 
+<script>
+  // Highlight the nav link for whichever section is currently in view.
+  (function(){
+    var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-links a.navlink[href^="#"]'));
+    var homeLink = document.querySelector('.nav-links a.navlink[href="/"]');
+    var sections = navLinks.map(function(a){ return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+
+    function clearActive(){
+      navLinks.forEach(function(a){ a.classList.remove('active'); });
+      if(homeLink) homeLink.classList.remove('active');
+    }
+    function setActive(link){
+      clearActive();
+      if(link) link.classList.add('active');
+    }
+
+    // Click: set immediately (don't wait for scroll/observer to catch up)
+    navLinks.forEach(function(a){
+      a.addEventListener('click', function(){ setActive(a); });
+    });
+
+    if('IntersectionObserver' in window && sections.length){
+      var observer = new IntersectionObserver(function(entries){
+        // Pick the entry closest to the top of the viewport that's intersecting
+        var visible = entries.filter(function(e){ return e.isIntersecting; });
+        if(visible.length === 0) return;
+        visible.sort(function(a,b){ return a.boundingClientRect.top - b.boundingClientRect.top; });
+        var id = '#' + visible[0].target.id;
+        var link = navLinks.find(function(a){ return a.getAttribute('href') === id; });
+        if(link) setActive(link);
+        else if(window.scrollY < 200) setActive(homeLink);
+      }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
+      sections.forEach(function(s){ observer.observe(s); });
+    }
+
+    window.addEventListener('scroll', function(){
+      if(window.scrollY < 120) setActive(homeLink);
+    }, { passive: true });
+  })();
+</script>
+
 </body>
 </html>
