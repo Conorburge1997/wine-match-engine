@@ -471,16 +471,43 @@
 
   const currency = { rates: FALLBACK_RATES, live: false };
 
+  // Re-render whichever step is currently visible, so prices update in place
+  // the moment live rates arrive — even if the buyer is already looking at
+  // the matches or checkout screen when the fetch resolves.
+  function refreshVisiblePrices(){
+    const active = document.querySelector("[data-panel].active");
+    if(!active) return;
+    const name = active.dataset.panelName;
+    if(name === "matches" && state.results.length) renderResults(true);
+    else if(name === "checkout" && state.selected.size) renderCheckout();
+  }
+
+  function applyRates(data, sourceIsAud){
+    if(!data) return false;
+    // exchangerate-api / exchangerate.host both key by 3-letter code under "rates"
+    const rates = data.rates || data.conversion_rates;
+    if(!rates) return false;
+    currency.rates = Object.assign({}, FALLBACK_RATES, rates);
+    currency.live = true;
+    return true;
+  }
+
   function fetchRates(){
     fetch("https://api.exchangerate-api.com/v4/latest/AUD")
       .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
       .then(function(data){
-        if(data && data.rates){
-          currency.rates = Object.assign({}, FALLBACK_RATES, data.rates);
-          currency.live = true;
-        }
+        if(!applyRates(data)) return Promise.reject();
+        refreshVisiblePrices();
       })
-      .catch(function(){ /* keep fallback rates — pricing still works, just not live */ });
+      .catch(function(){
+        // Primary failed (blocked, offline, CORS) — try a second free provider before giving up.
+        fetch("https://open.er-api.com/v6/latest/AUD")
+          .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+          .then(function(data){
+            if(applyRates(data)) refreshVisiblePrices();
+          })
+          .catch(function(){ /* keep fallback rates — pricing still works, just not live */ });
+      });
   }
   fetchRates();
 
@@ -666,11 +693,12 @@
   }
 
   // ---------- Step 2: results ----------
-  function renderResults(){
+  function renderResults(preserveSelection){
+    const previouslySelected = preserveSelection ? new Set(state.selected) : null;
     const scored = WINES.map(function(w){ return scoreWine(state.brief, w); })
       .sort(function(a,b){ return b.score - a.score; });
     state.results = scored;
-    state.selected.clear();
+    state.selected = previouslySelected || new Set();
 
     const list = $("results-list");
     list.innerHTML = "";
@@ -697,6 +725,7 @@
     });
 
     list.querySelectorAll(".result-check").forEach(function(chk){
+      if(state.selected.has(chk.dataset.id)) chk.classList.add("checked");
       chk.addEventListener("click", function(){
         const id = chk.dataset.id;
         if(state.selected.has(id)){ state.selected.delete(id); chk.classList.remove("checked"); }
@@ -704,6 +733,7 @@
         $("btn-to-checkout").disabled = state.selected.size === 0;
       });
     });
+    $("btn-to-checkout").disabled = state.selected.size === 0;
   }
 
   $("btn-edit-brief").addEventListener("click", function(){ showPanel(1); });
