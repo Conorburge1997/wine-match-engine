@@ -35,12 +35,27 @@ body{
 .site-brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink);}
 .site-brand svg{display:block;}
 .site-brand-word{font-family:'Fraunces',Georgia,serif; font-weight:600; font-size:16px;}
-.site-links{display:flex; align-items:center; gap:24px; flex-wrap:wrap;}
+.site-nav-links{display:flex; align-items:center; gap:32px; flex-wrap:wrap;}
+.site-nav-links .site-links{display:flex; gap:28px; flex-wrap:wrap;}
 .site-links a{
   text-decoration:none; color:var(--ink-dim); font-size:12px; font-weight:600;
   text-transform:uppercase; letter-spacing:0.06em; transition:color .2s;
+  position:relative; padding-bottom:2px;
 }
 .site-links a:hover{color:var(--accent-2);}
+.site-links a.active{color:var(--accent-2);}
+.site-links a.active::after{
+  content:''; position:absolute; left:0; right:0; bottom:-6px; height:2px;
+  background:linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+.site-cta{
+  display:inline-flex; align-items:center; gap:8px;
+  background:linear-gradient(120deg, var(--accent) 0%, #6f93e8 55%, var(--accent-2) 100%);
+  color:#060810; padding:10px 20px; border-radius:2px;
+  font-size:12px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
+  text-decoration:none; border:1px solid #6f93e8;
+}
+.site-cta.active{box-shadow:0 0 0 3px rgba(95,212,224,0.35);}
 .wrap-inner{max-width:1180px; margin:0 auto;}
 h1,h2,h3{font-family:'Fraunces',Georgia,serif; font-weight:600; text-wrap:balance; margin:0;}
 .eyebrow{font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-2); font-weight:600;}
@@ -191,11 +206,14 @@ button.ghost{
       </svg>
       <span class="site-brand-word">Sapphire Panda</span>
     </a>
-    <div class="site-links">
-      <a href="/">Home</a>
-      <a href="/#engine">The Engine</a>
-      <a href="/#difference">The Difference</a>
-      <a href="/#how">How It Works</a>
+    <div class="site-nav-links">
+      <div class="site-links">
+        <a href="/">Home</a>
+        <a href="/#engine">The Engine</a>
+        <a href="/#difference">The Difference</a>
+        <a href="/#how">How It Works</a>
+      </div>
+      <a href="/match" class="site-cta active">Find Your Match</a>
     </div>
   </div>
 </header>

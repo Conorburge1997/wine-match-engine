@@ -106,8 +106,13 @@
   .brand-word{font-family:'Fraunces',serif; font-weight:400; font-size:16px; letter-spacing:0.02em;}
   .nav-links{display:flex; align-items:center; gap:32px;}
   .nav-links .links{display:flex; gap:28px; font-size:12px;}
-  .nav-links a.navlink{text-decoration:none; color:var(--ink-dim); transition:color .2s; text-transform:uppercase; letter-spacing:0.06em; font-weight:500;}
+  .nav-links a.navlink{text-decoration:none; color:var(--ink-dim); transition:color .2s; text-transform:uppercase; letter-spacing:0.06em; font-weight:500; position:relative; padding-bottom:2px;}
   .nav-links a.navlink:hover{color:var(--sapphire-glint);}
+  .nav-links a.navlink.active{color:var(--cyan);}
+  .nav-links a.navlink.active::after{
+    content:''; position:absolute; left:0; right:0; bottom:-6px; height:2px;
+    background:linear-gradient(90deg, var(--sapphire-bright), var(--cyan));
+  }
 
   .btn{
     display:inline-flex; align-items:center; gap:8px;
@@ -297,6 +302,7 @@
     </a>
     <div class="nav-links">
       <div class="links">
+        <a href="/" class="navlink active">Home</a>
         <a href="#engine" class="navlink">The Engine</a>
         <a href="#difference" class="navlink">The Difference</a>
         <a href="#how" class="navlink">How It Works</a>
