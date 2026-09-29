@@ -3,26 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sapphire Panda — Independent Australian Wine, Exported</title>
-<meta name="description" content="Sapphire Panda consolidates independent, never-before-exported Australian family vineyards onto shared pallets — bringing small-producer wine to international trade buyers at export scale.">
+<title>Sapphire Panda — AI-Matched Australian Wine, Exported</title>
+<meta name="description" content="Sapphire Panda uses machine learning to match international trade buyers with independent, never-before-exported Australian family vineyards — consolidated onto shared pallets at export scale.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0a0c12;
-    --bg-2:#0e1118;
-    --surface:#12151f;
-    --border:#20242f;
-    --border-soft:#191c26;
-    --ink:#e9e7e0;
-    --ink-dim:#8d93a3;
-    --ink-faint:#565b6b;
+    --bg:#060810;
+    --bg-2:#0a0e1c;
+    --surface:#0e1324;
+    --surface-2:#121a30;
+    --border:#212c4a;
+    --border-soft:#161d34;
+    --ink:#eef0f8;
+    --ink-dim:#8e97b8;
+    --ink-faint:#525c7d;
     --sapphire:#3a6ede;
     --sapphire-bright:#6f93e8;
-    --sapphire-deep:#121a30;
+    --sapphire-glint:#a6c4ff;
+    --sapphire-deep:#0f1a3d;
+    --cyan:#5fd4e0;
     --gold:#b8935a;
-    --gold-bright:#cca86e;
     --radius:2px;
   }
   *{box-sizing:border-box;}
@@ -38,17 +40,33 @@
   }
   h1,h2,h3{font-family:'Fraunces',serif; font-weight:400; letter-spacing:-0.005em; margin:0;}
   a{color:inherit;}
+  .mono{font-family:'JetBrains Mono',monospace;}
   .wrap{max-width:1080px; margin:0 auto; padding:0 32px;}
 
   body{
     background-image:
-      radial-gradient(ellipse 800px 400px at 20% -5%, rgba(58,110,222,0.09), transparent 60%),
-      radial-gradient(ellipse 600px 400px at 100% 10%, rgba(184,147,90,0.05), transparent 55%);
+      radial-gradient(ellipse 900px 500px at 15% -8%, rgba(58,110,222,0.16), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 5%, rgba(95,212,224,0.07), transparent 55%),
+      radial-gradient(ellipse 600px 400px at 50% 100%, rgba(58,110,222,0.08), transparent 60%);
   }
+
+  /* Faceted shimmer texture — like light through crystal */
+  .facet-bg{
+    position:absolute; inset:0; overflow:hidden; pointer-events:none;
+  }
+  .facet-bg svg{position:absolute; opacity:0.5;}
+
+  @keyframes shimmer{
+    0%, 100%{opacity:0.35;}
+    50%{opacity:0.9;}
+  }
+  .glint{animation:shimmer 4s ease-in-out infinite;}
+  .glint.d2{animation-delay:1.3s;}
+  .glint.d3{animation-delay:2.6s;}
 
   header{
     position:sticky; top:0; z-index:50;
-    background:rgba(10,12,18,0.85);
+    background:rgba(6,8,16,0.82);
     backdrop-filter:blur(14px);
     border-bottom:1px solid var(--border-soft);
   }
@@ -58,70 +76,96 @@
   .nav-links{display:flex; align-items:center; gap:32px;}
   .nav-links .links{display:flex; gap:28px; font-size:12px;}
   .nav-links a.navlink{text-decoration:none; color:var(--ink-dim); transition:color .2s; text-transform:uppercase; letter-spacing:0.06em; font-weight:500;}
-  .nav-links a.navlink:hover{color:var(--ink);}
+  .nav-links a.navlink:hover{color:var(--sapphire-glint);}
 
   .btn{
     display:inline-flex; align-items:center; gap:8px;
     background:transparent; color:var(--ink);
     padding:10px 20px; border-radius:var(--radius);
     font-size:12px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase;
-    text-decoration:none; border:1px solid var(--gold);
+    text-decoration:none; border:1px solid var(--sapphire);
     cursor:pointer; transition:all .25s;
     position:relative; overflow:hidden;
   }
   .btn::before{
-    content:''; position:absolute; inset:0; background:var(--gold);
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(120deg, var(--sapphire) 0%, var(--sapphire-bright) 50%, var(--cyan) 100%);
     transform:scaleX(0); transform-origin:left; transition:transform .3s ease; z-index:-1;
   }
-  .btn:hover{color:#0a0c12;}
+  .btn:hover{color:#060810;}
   .btn:hover::before{transform:scaleX(1);}
-  .btn-solid{background:var(--gold); color:#0a0c12; border-color:var(--gold);}
-  .btn-solid::before{background:var(--gold-bright);}
+  .btn-solid{background:linear-gradient(120deg, var(--sapphire) 0%, var(--sapphire-bright) 100%); color:#060810; border-color:var(--sapphire-bright); font-weight:600;}
+  .btn-solid::before{background:linear-gradient(120deg, var(--sapphire-bright) 0%, var(--sapphire-glint) 100%);}
   .btn-ghost{border-color:var(--border); color:var(--ink-dim); font-size:12px;}
   .btn-ghost::before{background:var(--surface);}
   .btn-ghost:hover{color:var(--ink);}
 
   /* Hero */
-  .hero{padding:88px 0 72px;}
+  .hero{padding:88px 0 0; position:relative;}
   .hero-eyebrow{
     display:flex; align-items:center; gap:12px;
     font-size:11px; letter-spacing:0.16em; text-transform:uppercase;
-    color:var(--gold); margin-bottom:28px; font-weight:500;
+    color:var(--cyan); margin-bottom:28px; font-weight:500;
   }
-  .hero-eyebrow::before{content:''; width:26px; height:1px; background:var(--gold);}
+  .hero-eyebrow::before{content:''; width:26px; height:1px; background:var(--cyan);}
   .hero h1{
-    font-size:clamp(28px, 3.6vw, 42px);
+    font-size:clamp(28px, 3.6vw, 44px);
     line-height:1.22;
-    max-width:660px;
+    max-width:680px;
     margin-bottom:22px;
     font-weight:400;
   }
-  .hero h1 em{font-style:italic; color:var(--sapphire-bright); font-weight:400;}
+  .hero h1 em{
+    font-style:italic; font-weight:400;
+    background:linear-gradient(100deg, var(--sapphire-bright) 20%, var(--sapphire-glint) 50%, var(--cyan) 80%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
   .hero p.lead{
-    font-size:16px; color:var(--ink-dim); max-width:520px; margin-bottom:36px;
+    font-size:16px; color:var(--ink-dim); max-width:540px; margin-bottom:36px;
   }
-  .hero-cta{display:flex; align-items:center; gap:16px; flex-wrap:wrap;}
+  .hero-cta{display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:72px;}
 
-  .hero-visual{
-    margin-top:72px;
-    border:1px solid var(--border-soft);
+  /* AI match visual — a crystalline "engine" panel */
+  .engine-panel{
+    position:relative;
+    border:1px solid var(--border);
     background:linear-gradient(160deg, var(--surface) 0%, var(--bg-2) 100%);
-    padding:40px 48px;
+    padding:0; overflow:hidden;
   }
-  .stat-row{display:flex; gap:56px; flex-wrap:wrap;}
-  .stat{font-family:'Fraunces',serif; font-size:26px; color:var(--gold-bright); font-weight:400; margin-bottom:6px; line-height:1;}
+  .engine-top{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 24px; border-bottom:1px solid var(--border-soft);
+    font-size:11px; color:var(--ink-faint); letter-spacing:0.04em;
+  }
+  .engine-dot{display:inline-flex; align-items:center; gap:8px; color:var(--cyan);}
+  .engine-dot::before{content:''; width:6px; height:6px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan);}
+  .engine-body{display:grid; grid-template-columns:1fr 1fr 1fr; gap:1px; background:var(--border-soft);}
+  .engine-col{background:var(--bg); padding:28px 24px;}
+  .engine-col-label{font-size:10.5px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px;}
+  .engine-line{font-size:13px; color:var(--ink-dim); padding:5px 0; border-bottom:1px dashed var(--border-soft); display:flex; justify-content:space-between; gap:8px;}
+  .engine-line:last-child{border-bottom:none;}
+  .engine-line .val{color:var(--sapphire-glint);}
+  .engine-arrow{display:flex; align-items:center; justify-content:center; color:var(--sapphire-bright); font-size:18px;}
+  .stat-row{display:flex; gap:0; border-top:1px solid var(--border-soft);}
+  .stat{flex:1; padding:22px 24px; border-right:1px solid var(--border-soft);}
+  .stat:last-child{border-right:none;}
+  .stat-num{font-family:'Fraunces',serif; font-size:24px; font-weight:400; margin-bottom:6px; line-height:1;
+    background:linear-gradient(100deg, var(--sapphire-bright), var(--cyan));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
   .stat-label{font-size:11px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.06em;}
 
   section{padding:80px 0;}
-  .rule{width:100%; height:1px; background:var(--border-soft);}
-  .section-head{max-width:600px; margin-bottom:48px;}
+  .rule{width:100%; height:1px; background:linear-gradient(90deg, transparent, var(--border-soft) 20%, var(--border-soft) 80%, transparent);}
+  .section-head{max-width:620px; margin-bottom:48px;}
   .section-eyebrow{
     font-size:11px; font-weight:500; letter-spacing:.16em; text-transform:uppercase;
-    color:var(--gold); margin-bottom:16px; display:flex; align-items:center; gap:12px;
+    color:var(--cyan); margin-bottom:16px; display:flex; align-items:center; gap:12px;
   }
-  .section-eyebrow::before{content:''; width:26px; height:1px; background:var(--gold);}
+  .section-eyebrow::before{content:''; width:26px; height:1px; background:var(--cyan);}
   .section-head h2{font-size:clamp(22px, 2.8vw, 30px); margin-bottom:16px; font-weight:400; line-height:1.3;}
-  .section-head p{color:var(--ink-dim); font-size:15px; max-width:500px;}
+  .section-head h2 em{font-style:italic; color:var(--sapphire-glint);}
+  .section-head p{color:var(--ink-dim); font-size:15px; max-width:520px;}
 
   /* Differentiator block */
   .compare{
@@ -130,21 +174,23 @@
     margin-bottom:64px;
   }
   .compare-col{background:var(--bg); padding:36px 32px;}
-  .compare-col.them{opacity:0.7;}
+  .compare-col.them{opacity:0.65;}
   .compare-label{
     font-size:10.5px; letter-spacing:0.12em; text-transform:uppercase; font-weight:600;
     margin-bottom:18px; display:block;
   }
   .compare-col.them .compare-label{color:var(--ink-faint);}
-  .compare-col.us .compare-label{color:var(--gold);}
+  .compare-col.us .compare-label{color:var(--cyan);}
   .compare-col h3{font-size:17px; margin-bottom:14px; font-weight:400;}
   .compare-col p{color:var(--ink-dim); font-size:13.5px; margin:0; line-height:1.7;}
 
   .steps{display:grid; grid-template-columns:repeat(3, 1fr); gap:1px; background:var(--border-soft); border:1px solid var(--border-soft);}
-  .step{background:var(--bg); padding:36px 30px;}
+  .step{background:var(--bg); padding:36px 30px; position:relative;}
   .step-num{
-    font-family:'Fraunces',serif; font-style:italic; font-size:24px; color:var(--sapphire-bright);
+    font-family:'Fraunces',serif; font-style:italic; font-size:24px;
     margin-bottom:20px; display:block;
+    background:linear-gradient(100deg, var(--sapphire-bright), var(--sapphire-glint));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
   }
   .step h3{font-size:16px; margin-bottom:10px; font-weight:500; font-family:'Inter',sans-serif;}
   .step p{color:var(--ink-dim); font-size:13.5px; margin:0; line-height:1.7;}
@@ -156,23 +202,36 @@
   }
   .why-item:first-child{padding-top:0;}
   .why-index{
-    font-family:'Fraunces',serif; font-style:italic; color:var(--gold); font-size:16px;
+    font-family:'Fraunces',serif; font-style:italic; color:var(--cyan); font-size:16px;
     flex-shrink:0; width:26px;
   }
   .why-item h3{font-size:15px; margin-bottom:6px; font-weight:500; font-family:'Inter',sans-serif;}
   .why-item p{color:var(--ink-dim); font-size:13.5px; margin:0; line-height:1.7;}
 
+  /* Hidden gems strip */
+  .gem-strip{
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:1px;
+    background:var(--border-soft); border:1px solid var(--border-soft); margin-top:48px;
+  }
+  .gem{background:var(--bg); padding:24px 20px; text-align:center; position:relative;}
+  .gem svg{margin-bottom:12px;}
+  .gem-label{font-size:12px; color:var(--ink-dim); line-height:1.4;}
+
   .cta-band{
-    border:1px solid var(--border-soft);
+    border:1px solid var(--border);
     background:linear-gradient(135deg, var(--sapphire-deep) 0%, var(--bg-2) 70%);
     padding:64px 48px; text-align:center; position:relative; overflow:hidden;
   }
   .cta-band::before{
-    content:''; position:absolute; top:-40%; right:-10%; width:400px; height:400px;
-    background:radial-gradient(circle, rgba(184,147,90,0.08), transparent 70%);
+    content:''; position:absolute; top:-40%; right:-10%; width:420px; height:420px;
+    background:radial-gradient(circle, rgba(95,212,224,0.10), transparent 70%);
+  }
+  .cta-band::after{
+    content:''; position:absolute; bottom:-50%; left:-5%; width:360px; height:360px;
+    background:radial-gradient(circle, rgba(58,110,222,0.12), transparent 70%);
   }
   .cta-band h2{font-size:clamp(22px, 3vw, 28px); margin-bottom:14px; font-weight:400; position:relative;}
-  .cta-band p{color:var(--ink-dim); font-size:14.5px; max-width:420px; margin:0 auto 32px; position:relative;}
+  .cta-band p{color:var(--ink-dim); font-size:14.5px; max-width:440px; margin:0 auto 32px; position:relative;}
   .cta-band .btn-row{position:relative; display:flex; justify-content:center;}
 
   footer{border-top:1px solid var(--border-soft); padding:40px 0;}
@@ -183,7 +242,10 @@
   @media (max-width: 860px){
     .steps{grid-template-columns:1fr;}
     .compare{grid-template-columns:1fr;}
-    .stat-row{gap:32px;}
+    .engine-body{grid-template-columns:1fr;}
+    .stat-row{flex-direction:column;}
+    .stat{border-right:none; border-bottom:1px solid var(--border-soft);}
+    .gem-strip{grid-template-columns:1fr 1fr;}
   }
 </style>
 </head>
@@ -193,16 +255,17 @@
   <div class="wrap nav">
     <a href="/" class="brand">
       <svg width="20" height="20" viewBox="0 0 44 44" fill="none">
-        <circle cx="14" cy="15" r="4" fill="#8d93a3"/>
-        <circle cx="30" cy="15" r="4" fill="#8d93a3"/>
-        <ellipse cx="22" cy="24" rx="11" ry="9.5" fill="#8d93a3"/>
-        <circle cx="17" cy="22" r="3" fill="#0a0c12"/>
-        <circle cx="27" cy="22" r="3" fill="#0a0c12"/>
+        <circle cx="14" cy="15" r="4" fill="#8e97b8"/>
+        <circle cx="30" cy="15" r="4" fill="#8e97b8"/>
+        <ellipse cx="22" cy="24" rx="11" ry="9.5" fill="#8e97b8"/>
+        <circle cx="17" cy="22" r="3" fill="#060810"/>
+        <circle cx="27" cy="22" r="3" fill="#060810"/>
       </svg>
       <span class="brand-word">Sapphire Panda</span>
     </a>
     <div class="nav-links">
       <div class="links">
+        <a href="#engine" class="navlink">The Engine</a>
         <a href="#difference" class="navlink">The Difference</a>
         <a href="#how" class="navlink">How It Works</a>
       </div>
@@ -214,27 +277,56 @@
 <main>
   <section class="hero">
     <div class="wrap">
-      <div class="hero-eyebrow">Independent Australian Wine Export</div>
-      <h1>Rare, family-owned Australian wine — <em>consolidated</em> and exported at a scale no single vineyard could reach alone.</h1>
-      <p class="lead">Sapphire Panda brings together independent Australian family vineyards, many exported for the first time, and combines their small lots onto shared pallets for international trade buyers.</p>
+      <div class="hero-eyebrow">AI-Matched Australian Wine Export</div>
+      <h1>We use <em>artificial intelligence and machine learning</em> to match rare, independent Australian wine to your exact requirements — from region, to flavor profile, to price point, and everything in between.</h1>
+      <p class="lead">Sapphire Panda's matching engine connects trade buyers with independent Australian family vineyards most have never heard of — then consolidates the wines onto shared pallets to make small-lot export economical.</p>
       <div class="hero-cta">
         <a href="/match" class="btn btn-solid">Find Your Match →</a>
-        <a href="#difference" class="btn btn-ghost">The Difference</a>
+        <a href="#engine" class="btn btn-ghost">See The Engine</a>
       </div>
+    </div>
 
-      <div class="hero-visual">
-        <div class="stat-row">
-          <div>
-            <div class="stat">1–2</div>
-            <div class="stat-label">Labels per shipment, the old way</div>
+    <div class="wrap">
+      <div class="engine-panel" id="engine">
+        <div class="engine-top">
+          <span class="engine-dot mono">MATCH ENGINE — LIVE SCORING</span>
+          <span class="mono">v1.0</span>
+        </div>
+        <div class="engine-body">
+          <div class="engine-col">
+            <div class="engine-col-label">Buyer Requirements</div>
+            <div class="engine-line"><span>Profile</span><span class="val">Bold red, low intervention</span></div>
+            <div class="engine-line"><span>Price band</span><span class="val">$18–28 landed</span></div>
+            <div class="engine-line"><span>Volume</span><span class="val">40 cases / qtr</span></div>
+            <div class="engine-line"><span>Exclusivity</span><span class="val">Unlisted preferred</span></div>
           </div>
-          <div>
-            <div class="stat">20+</div>
+          <div class="engine-col">
+            <div class="engine-col-label">AI Match Score</div>
+            <div class="engine-line"><span>Flavor fit</span><span class="val">94%</span></div>
+            <div class="engine-line"><span>Price fit</span><span class="val">88%</span></div>
+            <div class="engine-line"><span>Supply confidence</span><span class="val">Verified</span></div>
+            <div class="engine-line"><span>Overall</span><span class="val">Strong match</span></div>
+          </div>
+          <div class="engine-col">
+            <div class="engine-col-label">Hidden Gem Surfaced</div>
+            <div class="engine-line"><span>Region</span><span class="val">McLaren Vale</span></div>
+            <div class="engine-line"><span>Vineyard</span><span class="val">Family-owned, 3rd gen</span></div>
+            <div class="engine-line"><span>Export history</span><span class="val">Never exported</span></div>
+            <div class="engine-line"><span>Lot size</span><span class="val">12 cases available</span></div>
+          </div>
+        </div>
+        <div class="stat-row">
+          <div class="stat">
+            <div class="stat-num">1000s</div>
+            <div class="stat-label">Wine profiles scored per search</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">20+</div>
             <div class="stat-label">Independent vineyards, one pallet</div>
           </div>
-          <div>
-            <div class="stat">First</div>
-            <div class="stat-label">Export for most of our producers</div>
+          <div class="stat">
+            <div class="stat-num">First</div>
+            <div class="stat-label">Export for most producers matched</div>
           </div>
         </div>
       </div>
@@ -247,20 +339,20 @@
     <div class="wrap">
       <div class="section-head">
         <div class="section-eyebrow">The Difference</div>
-        <h2>The large exporters ship their own labels. We ship everyone else's.</h2>
-        <p>Groups like Treasury Wine Estates export at scale because they own the labels — but that scale only reaches their own wineries. Independent family vineyards are locked out, because a container built around ten cases doesn't work economically on its own.</p>
+        <h2>Big exporters push the labels they already have. Our engine <em>finds</em> the ones you don't know exist.</h2>
+        <p>Groups like Treasury Wine Estates export at scale because they own the labels — but that scale only reaches their own wineries, and buyers only ever see what's already famous. We built a matching engine to surface the small, independent producers that never make it onto a distributor's list.</p>
       </div>
 
       <div class="compare">
         <div class="compare-col them">
           <span class="compare-label">The Old Model</span>
-          <h3>One producer, one shipment</h3>
-          <p>Export only works at volumes a single boutique vineyard can rarely produce — so independent, family-run wineries are priced out of international markets entirely, no matter how good the wine.</p>
+          <h3>Browse a catalogue, pick a label you already know</h3>
+          <p>Buyers choose from whatever a distributor already carries — usually the same handful of commercial-scale brands every competitor is also offering. Independent, family-run vineyards are invisible, and priced out of export entirely.</p>
         </div>
         <div class="compare-col us">
           <span class="compare-label">Sapphire Panda</span>
-          <h3>Twenty producers, one pallet</h3>
-          <p>We combine small lots — often just ten or so cases — from dozens of independent vineyards onto a single consolidated shipment. The economics work because no one producer has to carry it alone.</p>
+          <h3>Tell the engine what you need — it finds who matches</h3>
+          <p>Our AI scores hundreds of independent Australian wine profiles against your actual requirements — taste, price, volume, exclusivity — and surfaces the hidden gems that fit. Then we consolidate small lots from dozens of vineyards onto one pallet, so the economics work.</p>
         </div>
       </div>
     </div>
@@ -270,8 +362,8 @@
     <div class="wrap">
       <div class="section-head">
         <div class="section-eyebrow">How It Works</div>
-        <h2>From scattered family vineyards to a buyer's cellar.</h2>
-        <p>Tell us what you're looking for. We match it against a library of independent Australian wines, most never exported before.</p>
+        <h2>From a buyer's brief to a matched, verified shipment.</h2>
+        <p>Machine learning does the searching. We do the verifying and the consolidating.</p>
       </div>
       <div class="steps">
         <div class="step">
@@ -281,13 +373,13 @@
         </div>
         <div class="step">
           <span class="step-num">02</span>
-          <h3>We match against verified wines</h3>
-          <p>Every wine comes from a vetted, independent Australian family vineyard, with facts confirmed — not guessed.</p>
+          <h3>The engine scores every profile</h3>
+          <p>Our matching model ranks independent Australian wines against your brief and surfaces the hidden gems that fit best — not just the ones with the biggest marketing budget.</p>
         </div>
         <div class="step">
           <span class="step-num">03</span>
-          <h3>We build the pallet</h3>
-          <p>Your matches are consolidated alongside other buyers' orders into a single shipment, making rare, small-lot wine viable to export.</p>
+          <h3>We verify, then build the pallet</h3>
+          <p>Every match is confirmed against the real vineyard before it reaches you, then consolidated alongside other buyers' orders into a single shipment.</p>
         </div>
       </div>
     </div>
@@ -303,29 +395,29 @@
         <div class="why-item">
           <div class="why-index">01</div>
           <div>
-            <h3>Genuinely independent, not commercial-scale</h3>
-            <p>These are family vineyards outside the reach of the major distribution groups — not a second label from a large producer.</p>
+            <h3>Matched by data, not by who has the best sales rep</h3>
+            <p>Our engine scores wine against your brief on flavor profile, price and supply fit — so the match is based on what you actually need, not who's shouting loudest in a catalogue.</p>
           </div>
         </div>
         <div class="why-item">
           <div class="why-index">02</div>
           <div>
-            <h3>Often exported for the very first time</h3>
-            <p>Many of our producers have never had wine leave Australia before. What you're offering is genuinely new to your market.</p>
+            <h3>Genuinely independent, not commercial-scale</h3>
+            <p>These are family vineyards outside the reach of the major distribution groups — not a second label from a large producer.</p>
           </div>
         </div>
         <div class="why-item">
           <div class="why-index">03</div>
           <div>
-            <h3>Matched, not browsed</h3>
-            <p>Wines are scored against your actual requirements — taste profile, price, volume, exclusivity — so you see the right fit first.</p>
+            <h3>Often exported for the very first time</h3>
+            <p>Many of our producers have never had wine leave Australia before. What our engine surfaces for you is genuinely new to your market.</p>
           </div>
         </div>
         <div class="why-item">
           <div class="why-index">04</div>
           <div>
             <h3>Honest about what we don't know</h3>
-            <p>Where a spec isn't verified, we say so — no silent guessing that puts the wrong wine on your list.</p>
+            <p>Where a spec isn't verified, we say so — no silent guessing, from us or the model, that puts the wrong wine on your list.</p>
           </div>
         </div>
       </div>
@@ -335,8 +427,8 @@
   <section>
     <div class="wrap">
       <div class="cta-band">
-        <h2>Ready to see your matches?</h2>
-        <p>Tell us what you're looking for and get your top wine matches in minutes.</p>
+        <h2>Let the engine find your match.</h2>
+        <p>Tell us what you're looking for and get your top AI-matched wine picks in minutes.</p>
         <div class="btn-row">
           <a href="/match" class="btn btn-solid">Find Your Match →</a>
         </div>
@@ -349,13 +441,13 @@
   <div class="wrap footer-row">
     <div class="footer-brand">
       <svg width="16" height="16" viewBox="0 0 44 44" fill="none">
-        <circle cx="14" cy="15" r="4" fill="#8d93a3"/>
-        <circle cx="30" cy="15" r="4" fill="#8d93a3"/>
-        <ellipse cx="22" cy="24" rx="11" ry="9.5" fill="#8d93a3"/>
+        <circle cx="14" cy="15" r="4" fill="#8e97b8"/>
+        <circle cx="30" cy="15" r="4" fill="#8e97b8"/>
+        <ellipse cx="22" cy="24" rx="11" ry="9.5" fill="#8e97b8"/>
       </svg>
       Sapphire Panda
     </div>
-    <div class="fine">© 2026 Sapphire Panda. Independent Australian wine, exported.</div>
+    <div class="fine">© 2026 Sapphire Panda. AI-matched Australian wine, exported.</div>
   </div>
 </footer>
 
