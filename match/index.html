@@ -1,40 +1,47 @@
-<title>Wine Match Engine</title>
+<title>Wine Match Engine — Sapphire Panda</title>
 <style>
 /* Layout: two-column intake (buyer request / wine library) feeding a scored, sorted
    results list, each with a clock-dial match gauge. Single page, tab-switched.
    All choices are visible button groups — nothing is hidden behind a drag or a click-to-reveal. */
 :root{
-  --bg:#faf8f5; --surface:#ffffff; --surface-2:#f3efe8; --border:#e2dbd0;
-  --ink:#2a2420; --ink-dim:#6b6157; --accent:#7a2e2e; --accent-2:#b8863f;
-  --good:#3f7a4f; --warn:#b8863f; --bad:#a33a3a;
-  --radius:10px;
-  color-scheme:light;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#1b1815; --surface:#242019; --surface-2:#2c2721; --border:#3a332b;
-    --ink:#efe8de; --ink-dim:#a89c8c; --accent:#d98a8a; --accent-2:#e0b273;
-    --good:#7fc98f; --warn:#e0b273; --bad:#e58a8a;
-    color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#1b1815; --surface:#242019; --surface-2:#2c2721; --border:#3a332b;
-  --ink:#efe8de; --ink-dim:#a89c8c; --accent:#d98a8a; --accent-2:#e0b273;
-  --good:#7fc98f; --warn:#e0b273; --bad:#e58a8a;
+  --bg:#060810; --surface:#0e1324; --surface-2:#121a30; --border:#212c4a;
+  --ink:#f4f5fa; --ink-dim:#b3bad2; --accent:#3a6ede; --accent-2:#5fd4e0;
+  --good:#5fd4a0; --warn:#e0b273; --bad:#e58a8a;
+  --radius:2px;
   color-scheme:dark;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap');
 
 *{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
 body{
   background:var(--bg); color:var(--ink);
   font-family:'Inter',system-ui,sans-serif;
-  padding:0 20px; padding-block:24px 60px;
-  max-width:1180px; margin:0 auto;
+  padding:0 20px; padding-block:0 60px;
+  margin:0;
   font-size:15px;
 }
+.site-header{
+  position:sticky; top:0; z-index:50;
+  background:rgba(6,8,16,0.9); backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+  margin:0 -20px 24px;
+}
+.site-nav{
+  max-width:1180px; margin:0 auto; padding:16px 20px;
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
+}
+.site-brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink);}
+.site-brand svg{display:block;}
+.site-brand-word{font-family:'Fraunces',Georgia,serif; font-weight:600; font-size:16px;}
+.site-links{display:flex; align-items:center; gap:24px; flex-wrap:wrap;}
+.site-links a{
+  text-decoration:none; color:var(--ink-dim); font-size:12px; font-weight:600;
+  text-transform:uppercase; letter-spacing:0.06em; transition:color .2s;
+}
+.site-links a:hover{color:var(--accent-2);}
+.wrap-inner{max-width:1180px; margin:0 auto;}
 h1,h2,h3{font-family:'Fraunces',Georgia,serif; font-weight:600; text-wrap:balance; margin:0;}
 .eyebrow{font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-2); font-weight:600;}
 
@@ -172,6 +179,28 @@ button.ghost{
 .derived-box b{color:var(--ink); font-weight:700;}
 </style>
 
+<header class="site-header">
+  <div class="site-nav">
+    <a href="/" class="site-brand">
+      <svg width="20" height="20" viewBox="0 0 44 44" fill="none">
+        <circle cx="14" cy="15" r="4" fill="#8e97b8"/>
+        <circle cx="30" cy="15" r="4" fill="#8e97b8"/>
+        <ellipse cx="22" cy="24" rx="11" ry="9.5" fill="#8e97b8"/>
+        <circle cx="17" cy="22" r="3" fill="#060810"/>
+        <circle cx="27" cy="22" r="3" fill="#060810"/>
+      </svg>
+      <span class="site-brand-word">Sapphire Panda</span>
+    </a>
+    <div class="site-links">
+      <a href="/">Home</a>
+      <a href="/#engine">The Engine</a>
+      <a href="/#difference">The Difference</a>
+      <a href="/#how">How It Works</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap-inner">
 <header class="top">
   <div>
     <div class="eyebrow">Vineyard &amp; Wine Export</div>
@@ -415,6 +444,7 @@ button.ghost{
 </section>
 
 <div class="footer-note">Scores are a weighted comparison of stated preferences vs. wine facts — a guide for prioritising outreach, not a guarantee of fit.</div>
+</div>
 
 <script>
 (function(){
