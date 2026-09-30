@@ -214,20 +214,31 @@
   .section-head p{color:var(--ink-dim); font-size:15px; max-width:520px;}
 
   /* Differentiator block */
+  .compare-rows{display:flex; flex-direction:column; gap:18px; margin-bottom:64px;}
+  .compare-row-label{
+    font-family:'Fraunces',serif; font-style:italic; color:var(--sapphire-glint);
+    font-size:14px; margin-bottom:10px; display:block;
+  }
   .compare{
     display:grid; grid-template-columns:1fr 1fr; gap:1px;
     background:var(--border-soft); border:1px solid var(--border-soft);
-    margin-bottom:64px;
   }
-  .compare-col{background:var(--bg); padding:36px 32px;}
+  .compare-col{background:var(--bg); padding:30px 28px; position:relative;}
   .compare-col.them{opacity:0.65;}
+  .compare-col.us{background:linear-gradient(160deg, var(--surface), var(--surface-2));}
+  .compare-col.us::before{
+    content:"";
+    position:absolute; inset:0 0 auto 0; height:2px;
+    background:linear-gradient(90deg, var(--sapphire), var(--sapphire-glint), var(--cyan));
+    opacity:0.65;
+  }
   .compare-label{
     font-size:10.5px; letter-spacing:0.12em; text-transform:uppercase; font-weight:600;
-    margin-bottom:18px; display:block;
+    margin-bottom:16px; display:block;
   }
   .compare-col.them .compare-label{color:var(--ink-dim);}
   .compare-col.us .compare-label{color:var(--cyan);}
-  .compare-col h3{font-size:17px; margin-bottom:14px; font-weight:400;}
+  .compare-col h3{font-size:16px; margin-bottom:12px; font-weight:500;}
   .compare-col p{color:var(--ink-dim); font-size:13.5px; margin:0; line-height:1.7;}
 
   .steps{display:grid; grid-template-columns:repeat(4, 1fr); gap:18px;}
@@ -421,20 +432,41 @@
     <div class="wrap">
       <div class="section-head">
         <div class="section-eyebrow">The Difference</div>
-        <h2>Big exporters push the labels they already have. Our engine <em>finds</em> the ones you don't know exist.</h2>
-        <p>Large exporters push the labels they already own. We built an engine to surface the independent producers that never make it onto a distributor's list.</p>
+        <h2>Same producers, same shipment, every time. Our engine ends the repetition.</h2>
+        <p>Traditional export runs on one broker relationship and a static shortlist. Our engine runs on AI agents that re-score millions of combinations across the whole independent market — for every buyer, and every vineyard, on every order.</p>
       </div>
 
-      <div class="compare">
-        <div class="compare-col them">
-          <span class="compare-label">The Old Model</span>
-          <h3>Browse a catalogue, pick a label you already know</h3>
-          <p>The same handful of commercial-scale brands every competitor also offers. Independent, family-run vineyards are priced out entirely.</p>
+      <div class="compare-rows">
+        <div>
+          <span class="compare-row-label">For buyers</span>
+          <div class="compare">
+            <div class="compare-col them">
+              <span class="compare-label">The Old Model</span>
+              <h3>Same producers, container after container</h3>
+              <p>One broker relationship, one static shortlist. Buyers get whatever's already on the list — the same handful of labels, shipment after shipment.</p>
+            </div>
+            <div class="compare-col us">
+              <span class="compare-label">Sapphire Panda</span>
+              <h3>A different shipment every time</h3>
+              <p>AI agents re-score your brief against the whole independent market on every order — millions of combinations — so what's matched changes as stock, vintages and vineyards do.</p>
+            </div>
+          </div>
         </div>
-        <div class="compare-col us">
-          <span class="compare-label">Sapphire Panda</span>
-          <h3>Tell the engine what you need — it finds who matches</h3>
-          <p>Our AI scores independent Australian wine against your requirements, then we consolidate small lots from dozens of vineyards onto one pallet.</p>
+
+        <div>
+          <span class="compare-row-label">For vineyards</span>
+          <div class="compare">
+            <div class="compare-col them">
+              <span class="compare-label">The Old Model</span>
+              <h3>No full pallet, no export</h3>
+              <p>Export normally needs a full pallet of your own wine. Small, family-run vineyards without enough stock to fill one alone are locked out entirely.</p>
+            </div>
+            <div class="compare-col us">
+              <span class="compare-label">Sapphire Panda</span>
+              <h3>Small lots, consolidated by AI</h3>
+              <p>Our agents combine matched lots from multiple vineyards onto a single pallet, so producers who could never hit volume alone can still export.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
