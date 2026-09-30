@@ -188,6 +188,10 @@
     -webkit-background-clip:text; background-clip:text; color:transparent;
   }
   .price-secondary{font-size:11px; color:var(--ink-faint); font-family:'Inter',sans-serif; font-weight:400;}
+  .price-input-wrap{position:relative; flex:1;}
+  .price-input-wrap input{padding-left:44px !important; width:100%;}
+  .price-input-symbol{position:absolute; left:11px; top:50%; transform:translateY(-50%); color:var(--ink-dim); font-size:14px; pointer-events:none; white-space:nowrap;}
+  .price-aud-hint{font-size:12px; color:var(--ink-dim); margin-top:6px; min-height:16px;}
   .currency-note{color:var(--cyan) !important; font-size:12px !important;}
   .checkout-note{font-size:12.5px; color:var(--ink-faint); margin-top:16px; line-height:1.6;}
 
@@ -319,11 +323,18 @@
       <p class="sub">Helps us prioritise what's realistic for your order.</p>
       <div class="grid2">
         <div class="field">
-          <label>Price band <span class="opt">(AUD landed, per bottle)</span></label>
+          <label>Price band <span class="opt" id="f-price-currency-label">(landed, per bottle)</span></label>
           <div style="display:flex; gap:10px;">
-            <input type="number" id="f-pricemin" placeholder="Min">
-            <input type="number" id="f-pricemax" placeholder="Max">
+            <div class="price-input-wrap">
+              <span class="price-input-symbol" id="f-pricemin-symbol">$</span>
+              <input type="number" id="f-pricemin" placeholder="Min">
+            </div>
+            <div class="price-input-wrap">
+              <span class="price-input-symbol" id="f-pricemax-symbol">$</span>
+              <input type="number" id="f-pricemax" placeholder="Max">
+            </div>
           </div>
+          <div class="price-aud-hint" id="f-price-aud-hint"></div>
         </div>
         <div class="field">
           <label>Order volume <span class="opt">(bottles, optional)</span></label>
@@ -480,6 +491,7 @@
     const name = active.dataset.panelName;
     if(name === "matches" && state.results.length) renderResults(true);
     else if(name === "checkout" && state.selected.size) renderCheckout();
+    if(typeof updatePriceAudHint === "function") updatePriceAudHint();
   }
 
   function applyRates(data, sourceIsAud){
@@ -547,8 +559,46 @@
         const pressed = btn.getAttribute("aria-pressed") === "true";
         btn.setAttribute("aria-pressed", pressed ? "false" : "true");
       }
+      if(group.id === "f-market") updatePriceCurrencyUI();
     });
   });
+
+  // ---------- brief-form price band: buyer's own currency, with an AUD hint ----------
+  function briefCurrency(){
+    const market = singleValue("f-market");
+    return MARKET_CURRENCY[market] || "AUD";
+  }
+  function updatePriceCurrencyUI(){
+    const cur = briefCurrency();
+    const symbol = CURRENCY_SYMBOL[cur] || cur+" ";
+    $("f-pricemin-symbol").textContent = symbol;
+    $("f-pricemax-symbol").textContent = symbol;
+    $("f-price-currency-label").textContent = cur === "AUD" ? "(landed, per bottle, AUD)" : "(landed, per bottle, " + cur + ")";
+    updatePriceAudHint();
+  }
+  function updatePriceAudHint(){
+    const cur = briefCurrency();
+    const hintEl = $("f-price-aud-hint");
+    if(cur === "AUD"){ hintEl.textContent = ""; return; }
+    const rate = currency.rates[cur] || 1;
+    const minVal = $("f-pricemin").value ? +$("f-pricemin").value : null;
+    const maxVal = $("f-pricemax").value ? +$("f-pricemax").value : null;
+    if(minVal == null && maxVal == null){
+      hintEl.textContent = "Entered in " + cur + " — we'll show you the AUD equivalent as you type.";
+      return;
+    }
+    const toAud = function(v){ return v == null ? null : Math.round(v / rate).toLocaleString(); };
+    if(minVal != null && maxVal != null){
+      hintEl.textContent = "≈ A$" + toAud(minVal) + " – A$" + toAud(maxVal) + " AUD landed";
+    } else if(minVal != null){
+      hintEl.textContent = "≈ A$" + toAud(minVal) + " AUD landed (min)";
+    } else {
+      hintEl.textContent = "≈ A$" + toAud(maxVal) + " AUD landed (max)";
+    }
+  }
+  $("f-pricemin").addEventListener("input", updatePriceAudHint);
+  $("f-pricemax").addEventListener("input", updatePriceAudHint);
+  updatePriceCurrencyUI();
   function singleValue(id){
     const el = document.querySelector("#"+id+" .pick[aria-pressed='true']");
     return el ? el.dataset.value : null;
@@ -622,8 +672,13 @@
   }
 
   function readBrief(){
-    let priceMin = $("f-pricemin").value ? +$("f-pricemin").value : null;
-    let priceMax = $("f-pricemax").value ? +$("f-pricemax").value : null;
+    const briefMarket = singleValue("f-market");
+    const briefCur = MARKET_CURRENCY[briefMarket] || "AUD";
+    const briefRate = currency.rates[briefCur] || 1;
+    // Buyer types their budget in their own market currency; convert back to
+    // AUD here since wine prices (and all scoring) are stored in AUD.
+    let priceMin = $("f-pricemin").value ? (+$("f-pricemin").value) / briefRate : null;
+    let priceMax = $("f-pricemax").value ? (+$("f-pricemax").value) / briefRate : null;
     if(priceMin != null && priceMax != null && priceMin > priceMax){ const t=priceMin; priceMin=priceMax; priceMax=t; }
     return {
       name: $("f-name").value.trim() || "Your request",
