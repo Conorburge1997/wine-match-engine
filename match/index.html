@@ -308,6 +308,11 @@
         </div>
       </div>
 
+      <div class="field" id="f-variety-wrap" style="display:none;">
+        <label>Varietal <span class="opt">(optional)</span></label>
+        <div class="pickrow" id="f-variety" data-picker="multi"></div>
+      </div>
+
       <div class="field">
         <label>Body <span class="opt">(optional)</span></label>
         <div class="pickrow" id="f-body" data-picker="multi">
@@ -327,6 +332,19 @@
           <button class="pick" type="button" data-value="Adelaide Hills">Adelaide Hills</button>
           <button class="pick" type="button" data-value="Tasmania">Tasmania</button>
           <button class="pick" type="button" data-value="Hunter Valley">Hunter Valley</button>
+          <button class="pick" type="button" data-value="Clare Valley">Clare Valley</button>
+          <button class="pick" type="button" data-value="Coonawarra">Coonawarra</button>
+          <button class="pick" type="button" data-value="Mornington Peninsula">Mornington Peninsula</button>
+          <button class="pick" type="button" data-value="Eden Valley">Eden Valley</button>
+          <button class="pick" type="button" data-value="Grampians">Grampians</button>
+          <button class="pick" type="button" data-value="Great Southern">Great Southern</button>
+          <button class="pick" type="button" data-value="Orange">Orange</button>
+          <button class="pick" type="button" data-value="Canberra District">Canberra District</button>
+          <button class="pick" type="button" data-value="Rutherglen">Rutherglen</button>
+          <button class="pick" type="button" data-value="Riverland">Riverland</button>
+          <button class="pick" type="button" data-value="Swan Valley">Swan Valley</button>
+          <button class="pick" type="button" data-value="King Valley">King Valley</button>
+          <button class="pick" type="button" data-value="Geelong">Geelong</button>
         </div>
       </div>
 
@@ -464,22 +482,53 @@
      what the matching engine actually scores against.
      ============================================================ */
   const WINES = [
-    {id:"w1", name:"Hollow Creek Shiraz 2021", vineyard:"3rd-gen family vineyard", region:"McLaren Vale", style:"Red", body:"Full", flavour:"blackberry, pepper, cedar", price:24, moq:24, neverExported:true},
-    {id:"w2", name:"Denny's Ridge Chardonnay 2022", vineyard:"Family-owned since 1978", region:"Adelaide Hills", style:"White", body:"Medium", flavour:"stone fruit, citrus, flint", price:19, moq:36, neverExported:true},
-    {id:"w3", name:"Ashgrove Pinot Noir 2021", vineyard:"Small-batch, boutique", region:"Yarra Valley", style:"Red", body:"Light", flavour:"cherry, forest floor, spice", price:28, moq:12, neverExported:false},
-    {id:"w4", name:"Coppervale Cabernet Sauvignon 2020", vineyard:"Independent, 4th-gen", region:"Margaret River", style:"Red", body:"Full", flavour:"blackcurrant, cedar, tobacco", price:32, moq:24, neverExported:true},
-    {id:"w5", name:"Fenwick Riesling 2023", vineyard:"Family-run, single vineyard", region:"Barossa Valley", style:"White", body:"Light", flavour:"lime, green apple, mineral", price:16, moq:48, neverExported:false},
-    {id:"w6", name:"Sorrel Hill Grenache 2021", vineyard:"Independent, dry-grown", region:"McLaren Vale", style:"Red", body:"Medium", flavour:"raspberry, white pepper, herbs", price:22, moq:24, neverExported:true},
-    {id:"w7", name:"Nightjar Rosé 2023", vineyard:"Family-owned, low intervention", region:"Yarra Valley", style:"Rosé", body:"Light", flavour:"strawberry, rose petal, citrus", price:18, moq:24, neverExported:true},
-    {id:"w8", name:"Kestrel Point Sparkling NV", vineyard:"Independent producer", region:"Tasmania", style:"Sparkling", body:"Light", flavour:"green apple, brioche, citrus", price:29, moq:12, neverExported:false},
-    {id:"w9", name:"Wollemi Cabernet Merlot 2020", vineyard:"Family vineyard, 2nd-gen", region:"Hunter Valley", style:"Red", body:"Full", flavour:"plum, dark chocolate, oak", price:21, moq:36, neverExported:true},
-    {id:"w10", name:"Stonefield Sauvignon Blanc 2023", vineyard:"Small independent estate", region:"Adelaide Hills", style:"White", body:"Light", flavour:"passionfruit, gooseberry, herbs", price:17, moq:48, neverExported:false},
-    {id:"w11", name:"Brindle Barossa Shiraz 2019", vineyard:"Family-owned, old vines", region:"Barossa Valley", style:"Red", body:"Full", flavour:"black cherry, licorice, vanilla oak", price:38, moq:12, neverExported:true},
-    {id:"w12", name:"Halcyon Fiano 2023", vineyard:"Independent, low-yield", region:"McLaren Vale", style:"White", body:"Medium", flavour:"pear, honeysuckle, almond", price:20, moq:24, neverExported:true},
+    {id:"w1", name:"Hollow Creek Shiraz 2021", vineyard:"3rd-gen family vineyard", region:"McLaren Vale", style:"Red", variety:"Shiraz", body:"Full", flavour:"blackberry, pepper, cedar", price:24, moq:24, neverExported:true},
+    {id:"w2", name:"Denny's Ridge Chardonnay 2022", vineyard:"Family-owned since 1978", region:"Adelaide Hills", style:"White", variety:"Chardonnay", body:"Medium", flavour:"stone fruit, citrus, flint", price:19, moq:36, neverExported:true},
+    {id:"w3", name:"Ashgrove Pinot Noir 2021", vineyard:"Small-batch, boutique", region:"Yarra Valley", style:"Red", variety:"Pinot Noir", body:"Light", flavour:"cherry, forest floor, spice", price:28, moq:12, neverExported:false},
+    {id:"w4", name:"Coppervale Cabernet Sauvignon 2020", vineyard:"Independent, 4th-gen", region:"Margaret River", style:"Red", variety:"Cabernet Sauvignon", body:"Full", flavour:"blackcurrant, cedar, tobacco", price:32, moq:24, neverExported:true},
+    {id:"w5", name:"Fenwick Riesling 2023", vineyard:"Family-run, single vineyard", region:"Barossa Valley", style:"White", variety:"Riesling", body:"Light", flavour:"lime, green apple, mineral", price:16, moq:48, neverExported:false},
+    {id:"w6", name:"Sorrel Hill Grenache 2021", vineyard:"Independent, dry-grown", region:"McLaren Vale", style:"Red", variety:"Grenache", body:"Medium", flavour:"raspberry, white pepper, herbs", price:22, moq:24, neverExported:true},
+    {id:"w7", name:"Nightjar Rosé 2023", vineyard:"Family-owned, low intervention", region:"Yarra Valley", style:"Rosé", variety:null, body:"Light", flavour:"strawberry, rose petal, citrus", price:18, moq:24, neverExported:true},
+    {id:"w8", name:"Kestrel Point Sparkling NV", vineyard:"Independent producer", region:"Tasmania", style:"Sparkling", variety:null, body:"Light", flavour:"green apple, brioche, citrus", price:29, moq:12, neverExported:false},
+    {id:"w9", name:"Wollemi Cabernet Merlot 2020", vineyard:"Family vineyard, 2nd-gen", region:"Hunter Valley", style:"Red", variety:"Cabernet Sauvignon", body:"Full", flavour:"plum, dark chocolate, oak", price:21, moq:36, neverExported:true},
+    {id:"w10", name:"Stonefield Sauvignon Blanc 2023", vineyard:"Small independent estate", region:"Adelaide Hills", style:"White", variety:"Sauvignon Blanc", body:"Light", flavour:"passionfruit, gooseberry, herbs", price:17, moq:48, neverExported:false},
+    {id:"w11", name:"Brindle Barossa Shiraz 2019", vineyard:"Family-owned, old vines", region:"Barossa Valley", style:"Red", variety:"Shiraz", body:"Full", flavour:"black cherry, licorice, vanilla oak", price:38, moq:12, neverExported:true},
+    {id:"w12", name:"Halcyon Fiano 2023", vineyard:"Independent, low-yield", region:"McLaren Vale", style:"White", variety:"Fiano", body:"Medium", flavour:"pear, honeysuckle, almond", price:20, moq:24, neverExported:true},
   ];
 
   // ---------- state ----------
   const state = { brief: null, results: [], selected: new Set() };
+
+  // Varietal sub-options shown once a buyer picks a wine style. Rosé,
+  // Sparkling and Dessert/fortified aren't sold by single varietal the same
+  // way reds and whites are, so no sub-picker appears for those styles.
+  const VARIETY_BY_STYLE = {
+    Red: ["Shiraz", "Cabernet Sauvignon", "Pinot Noir", "Grenache", "Merlot", "Tempranillo"],
+    White: ["Chardonnay", "Sauvignon Blanc", "Riesling", "Semillon", "Pinot Gris", "Fiano"],
+  };
+  function updateVarietyOptions(){
+    const styles = multiValues("f-style");
+    const varieties = [];
+    styles.forEach(function(s){
+      (VARIETY_BY_STYLE[s] || []).forEach(function(v){ if(varieties.indexOf(v)===-1) varieties.push(v); });
+    });
+    const wrap = $("f-variety-wrap");
+    const row = $("f-variety");
+    if(varieties.length === 0){
+      wrap.style.display = "none";
+      row.innerHTML = "";
+      return;
+    }
+    // Keep any already-selected varieties still valid for the current styles.
+    const prevSelected = new Set(
+      Array.from(row.querySelectorAll(".pick[aria-pressed='true']")).map(function(b){ return b.dataset.value; })
+    );
+    row.innerHTML = varieties.map(function(v){
+      const pressed = prevSelected.has(v) ? "true" : "false";
+      return '<button class="pick" type="button" data-value="'+v+'" aria-pressed="'+pressed+'">'+v+'</button>';
+    }).join("");
+    wrap.style.display = "";
+  }
 
   /* ============================================================
      CURRENCY
@@ -606,8 +655,15 @@
           $("f-other-country").classList.remove("field-error");
         }
       }
+      if(group.id === "f-style"){
+        updateVarietyOptions();
+      }
     });
   });
+
+  // Varietal options depend on style, so make sure the row reflects
+  // whatever's pre-selected (none, on first load) once listeners are bound.
+  updateVarietyOptions();
 
   // ---------- brief-form price band: buyer's own currency, with an AUD hint ----------
   function briefCurrency(){
@@ -682,6 +738,13 @@
     else if(brief.styles.includes(wine.style)){ points += 5; }
     else { points += 5*0.1; }
 
+    // Varietal — moderate, only scored when the buyer actually picked one
+    if(brief.varieties && brief.varieties.length > 0){
+      maxPoints += 3;
+      if(wine.variety && brief.varieties.includes(wine.variety)){ points += 3; notes.push(wine.variety+" match"); }
+      else { points += 3*0.15; }
+    }
+
     // Region — moderate
     maxPoints += 2;
     if(brief.regions.length === 0){ points += 2*0.7; }
@@ -749,6 +812,7 @@
       market: singleValue("f-market"),
       otherCountry: singleValue("f-market") === "Other" ? $("f-other-country").value : null,
       styles: multiValues("f-style"),
+      varieties: multiValues("f-variety"),
       bodies: multiValues("f-body"),
       regions: multiValues("f-region"),
       flavour: tokenize($("f-flavour").value),
