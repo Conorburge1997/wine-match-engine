@@ -7,8 +7,8 @@
 // don't hammer the source feed on every page load.
 
 const FEED_URL = "https://winetitles.com.au/daily-wine-news/feed/";
-const FETCH_POOL_SIZE = 40; // pull a bigger pool from the feed, then filter down
-const MAX_ITEMS = 8;
+const FETCH_POOL_SIZE = 60; // pull a bigger pool from the feed, then filter down
+const MAX_ITEMS = 16;
 
 // Winetitles' "Daily Wine News" covers the whole primary-industries beat
 // (grants, appointments, forestry, general agriculture), not just wine a

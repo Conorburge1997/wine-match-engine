@@ -703,18 +703,78 @@
     prevBtn.addEventListener('click', function(){ prev(); startAutoplay(); });
     nextBtn.addEventListener('click', function(){ next(); startAutoplay(); });
 
+    // Rolling ~7-day backlog, kept in this browser: the live feed only ever
+    // shows its ~10 most recent items, so on its own the carousel would be
+    // thin on a quiet news day. Each visit merges freshly-fetched items into
+    // whatever this browser has already seen, drops anything older than 7
+    // days, and shows up to POOL_TARGET of them — so the carousel stays full
+    // and only slowly turns over as genuinely new stories appear.
+    var BACKLOG_KEY = 'sp_news_backlog_v1';
+    var BACKLOG_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+    var POOL_TARGET = 12;
+
+    function loadBacklog(){
+      try {
+        var raw = localStorage.getItem(BACKLOG_KEY);
+        if(!raw) return [];
+        var parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch(e){ return []; }
+    }
+    function saveBacklog(list){
+      try { localStorage.setItem(BACKLOG_KEY, JSON.stringify(list)); } catch(e){ /* storage unavailable — carry on without persistence */ }
+    }
+    function mergeBacklog(existing, fresh){
+      var now = Date.now();
+      var byLink = {};
+      existing.concat(fresh).forEach(function(item){
+        if(!item || !item.link) return;
+        // Prefer the freshly-fetched copy (in case description/date changed upstream).
+        byLink[item.link] = item;
+      });
+      var merged = Object.keys(byLink).map(function(link){ return byLink[link]; });
+      merged = merged.filter(function(item){
+        var seenAt = item._seenAt || now;
+        return (now - seenAt) < BACKLOG_MAX_AGE_MS;
+      });
+      merged.sort(function(a, b){
+        var da = new Date(a.pubDate).getTime() || 0;
+        var db = new Date(b.pubDate).getTime() || 0;
+        return db - da;
+      });
+      return merged.slice(0, POOL_TARGET);
+    }
+
     fetch('/api/news')
       .then(function(r){ return r.json(); })
       .then(function(data){
-        if(!data || !data.items || !data.items.length){ showEmpty(); return; }
-        items = data.items;
+        var fresh = (data && data.items) || [];
+        var now = Date.now();
+        fresh = fresh.map(function(item){ return Object.assign({}, item, { _seenAt: now }); });
+
+        var existing = loadBacklog();
+        var merged = mergeBacklog(existing, fresh);
+        saveBacklog(merged);
+
+        if(!merged.length){ showEmpty(); return; }
+        items = merged;
         current = 0;
         render();
         controls.style.display = '';
         if(footer) footer.style.display = '';
         if(items.length > 1) startAutoplay();
       })
-      .catch(showEmpty);
+      .catch(function(){
+        // Live fetch failed — fall back to whatever this browser already has stored.
+        var existing = loadBacklog();
+        if(!existing.length){ showEmpty(); return; }
+        items = existing;
+        current = 0;
+        render();
+        controls.style.display = '';
+        if(footer) footer.style.display = '';
+        if(items.length > 1) startAutoplay();
+      });
   })();
 </script>
 
