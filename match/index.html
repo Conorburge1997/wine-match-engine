@@ -101,6 +101,10 @@
 
   label{display:block; font-size:13px; font-weight:600; color:var(--ink); margin-bottom:8px;}
   label .opt{color:var(--ink-faint); font-weight:400; text-transform:none;}
+  label .req{color:var(--sapphire-glint); font-weight:500; text-transform:none;}
+  input.field-error{border-color:#e0607a !important;}
+  .pickrow.field-error{outline:1px solid #e0607a; outline-offset:4px; border-radius:2px;}
+  .field-error-note{color:#e88ba0; font-size:13px; margin-top:14px;}
   input[type=text], input[type=number]{
     width:100%; font-family:inherit; font-size:15px; color:var(--ink);
     background:var(--bg); border:1px solid var(--border); border-radius:2px;
@@ -259,18 +263,22 @@
       <p class="sub">So we know who to prepare the match for.</p>
       <div class="grid2">
         <div class="field">
-          <label>Your name / venue</label>
+          <label>Business name <span class="req">(required)</span></label>
           <input type="text" id="f-name" placeholder="e.g. The Envoy Club">
         </div>
         <div class="field">
-          <label>Market <span class="opt">(optional)</span></label>
-          <div class="pickrow" id="f-market" data-picker="single">
-            <button class="pick" type="button" data-value="Hong Kong">Hong Kong</button>
-            <button class="pick" type="button" data-value="Mainland China">Mainland China</button>
-            <button class="pick" type="button" data-value="Japan">Japan</button>
-            <button class="pick" type="button" data-value="Singapore">Singapore</button>
-            <button class="pick" type="button" data-value="Other">Other</button>
-          </div>
+          <label>Business location <span class="req">(required)</span></label>
+          <input type="text" id="f-location" placeholder="e.g. Hong Kong">
+        </div>
+      </div>
+      <div class="field" style="margin-top:16px;">
+        <label>Market <span class="req">(required)</span></label>
+        <div class="pickrow" id="f-market" data-picker="single">
+          <button class="pick" type="button" data-value="Hong Kong">Hong Kong</button>
+          <button class="pick" type="button" data-value="Mainland China">Mainland China</button>
+          <button class="pick" type="button" data-value="Japan">Japan</button>
+          <button class="pick" type="button" data-value="Singapore">Singapore</button>
+          <button class="pick" type="button" data-value="Other">Other</button>
         </div>
       </div>
     </div>
@@ -292,7 +300,7 @@
 
       <div class="field">
         <label>Body <span class="opt">(optional)</span></label>
-        <div class="pickrow" id="f-body" data-picker="single">
+        <div class="pickrow" id="f-body" data-picker="multi">
           <button class="pick" type="button" data-value="Light">Light</button>
           <button class="pick" type="button" data-value="Medium">Medium</button>
           <button class="pick" type="button" data-value="Full">Full</button>
@@ -639,8 +647,8 @@
 
     // Body — moderate
     maxPoints += 3;
-    if(!brief.body){ points += 3*0.7; }
-    else if(brief.body === wine.body){ points += 3; }
+    if(brief.bodies.length === 0){ points += 3*0.7; }
+    else if(brief.bodies.includes(wine.body)){ points += 3; }
     else { points += 3*0.4; }
 
     // Flavour overlap
@@ -695,9 +703,10 @@
     if(priceMin != null && priceMax != null && priceMin > priceMax){ const t=priceMin; priceMin=priceMax; priceMax=t; }
     return {
       name: $("f-name").value.trim() || "Your request",
+      location: $("f-location").value.trim(),
       market: singleValue("f-market"),
       styles: multiValues("f-style"),
-      body: singleValue("f-body"),
+      bodies: multiValues("f-body"),
       regions: multiValues("f-region"),
       flavour: tokenize($("f-flavour").value),
       priceMin: priceMin, priceMax: priceMax,
@@ -733,6 +742,26 @@
   ];
 
   $("btn-submit-brief").addEventListener("click", function(){
+    const missing = [];
+    if(!$("f-name").value.trim()) missing.push($("f-name"));
+    if(!$("f-location").value.trim()) missing.push($("f-location"));
+    if(!singleValue("f-market")) missing.push($("f-market"));
+    if(missing.length){
+      missing.forEach(function(el){ el.classList.add("field-error"); });
+      missing[0].scrollIntoView({behavior:"smooth", block:"center"});
+      if(!$("f-required-note")){
+        const note = document.createElement("div");
+        note.id = "f-required-note";
+        note.className = "field-error-note";
+        note.textContent = "Please fill in business name, location and market before continuing.";
+        missing[0].closest(".card").appendChild(note);
+      }
+      return;
+    }
+    const note = $("f-required-note");
+    if(note) note.remove();
+    [$("f-name"), $("f-location"), $("f-market")].forEach(function(el){ el.classList.remove("field-error"); });
+
     state.brief = readBrief();
     showPanel(2);
     $("scan-view").style.display = "";
@@ -846,7 +875,8 @@
   $("btn-request").addEventListener("click", function(){
     const chosen = state.results.filter(function(r){ return state.selected.has(r.wine.id); });
     const subject = encodeURIComponent("Pallet request — " + (state.brief ? state.brief.name : ""));
-    const bodyLines = ["Requested wines:"].concat(chosen.map(function(r){ return "- "+r.wine.name+" ("+r.wine.moq+" bottles)"; }));
+    const buyerLine = state.brief ? (state.brief.name + (state.brief.location ? ", " + state.brief.location : "") + (state.brief.market ? " (" + state.brief.market + " market)" : "")) : "";
+    const bodyLines = [buyerLine, "", "Requested wines:"].concat(chosen.map(function(r){ return "- "+r.wine.name+" ("+r.wine.moq+" bottles)"; }));
     const body = encodeURIComponent(bodyLines.join("\n"));
     window.location.href = "mailto:hello@sapphirepanda.com?subject="+subject+"&body="+body;
   });
