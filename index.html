@@ -230,8 +230,27 @@
   .compare-col h3{font-size:17px; margin-bottom:14px; font-weight:400;}
   .compare-col p{color:var(--ink-dim); font-size:13.5px; margin:0; line-height:1.7;}
 
-  .steps{display:grid; grid-template-columns:repeat(4, 1fr); gap:1px; background:var(--border-soft); border:1px solid var(--border-soft);}
-  .step{background:var(--bg); padding:28px 22px; position:relative;}
+  .steps{display:grid; grid-template-columns:repeat(4, 1fr); gap:18px;}
+  .step{
+    background:linear-gradient(160deg, var(--surface), var(--surface-2));
+    border:1px solid var(--border-soft);
+    border-radius:var(--radius);
+    padding:28px 22px;
+    position:relative;
+    overflow:hidden;
+    transition:border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  }
+  .step::before{
+    content:"";
+    position:absolute; inset:0 0 auto 0; height:2px;
+    background:linear-gradient(90deg, var(--sapphire), var(--sapphire-glint), var(--cyan));
+    opacity:0.65;
+  }
+  .step:hover{
+    border-color:var(--sapphire);
+    box-shadow:0 20px 40px -24px rgba(58,110,222,0.55);
+    transform:translateY(-3px);
+  }
   .step-num{
     font-family:'Fraunces',serif; font-style:italic; font-size:24px;
     margin-bottom:20px; display:block;
