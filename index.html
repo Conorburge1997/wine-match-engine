@@ -230,7 +230,7 @@
   .compare-col h3{font-size:17px; margin-bottom:14px; font-weight:400;}
   .compare-col p{color:var(--ink-dim); font-size:13.5px; margin:0; line-height:1.7;}
 
-  .steps{display:grid; grid-template-columns:repeat(3, 1fr); gap:1px; background:var(--border-soft); border:1px solid var(--border-soft);}
+  .steps{display:grid; grid-template-columns:repeat(4, 1fr); gap:1px; background:var(--border-soft); border:1px solid var(--border-soft);}
   .step{background:var(--bg); padding:36px 30px; position:relative;}
   .step-num{
     font-family:'Fraunces',serif; font-style:italic; font-size:24px;
@@ -331,6 +331,9 @@
   .footer-brand{display:flex; align-items:center; gap:8px; font-family:'Fraunces',serif; font-weight:400; color:var(--ink-dim); font-size:13px;}
   footer .fine{color:var(--ink-faint); font-size:11.5px; letter-spacing:0.02em;}
 
+  @media (max-width: 1024px) and (min-width: 861px){
+    .steps{grid-template-columns:repeat(2, 1fr);}
+  }
   @media (max-width: 860px){
     .steps{grid-template-columns:1fr;}
     .compare{grid-template-columns:1fr;}
@@ -471,7 +474,7 @@
       <div class="section-head">
         <div class="section-eyebrow">How It Works</div>
         <h2>From a buyer's brief to a matched, verified shipment.</h2>
-        <p>Machine learning does the searching. We do the verifying and the consolidating.</p>
+        <p>A network of specialised agents handles the matching, the verification and the logistics — coordinated automatically, end to end.</p>
       </div>
       <div class="steps">
         <div class="step">
@@ -481,13 +484,18 @@
         </div>
         <div class="step">
           <span class="step-num">02</span>
-          <h3>The engine scores every profile</h3>
-          <p>We rank independent Australian wines against your brief and surface the best-fit hidden gems.</p>
+          <h3>Our agents rank it against the network</h3>
+          <p>Multiple matching agents cross-reference your brief against the flavour, pricing and supply data our vineyard partners provide across thousands of wines — scoring and ranking every viable profile in parallel.</p>
         </div>
         <div class="step">
           <span class="step-num">03</span>
-          <h3>We verify, then build the pallet</h3>
-          <p>Every match is confirmed against the real vineyard, then consolidated into a single shipment.</p>
+          <h3>You get a ranked shortlist</h3>
+          <p>A scored, ranked output of the wines that best fit your brief — with the hidden gems surfaced, not buried under commercial-scale labels.</p>
+        </div>
+        <div class="step">
+          <span class="step-num">04</span>
+          <h3>Agents place and route the order</h3>
+          <p>Once you confirm, separate agents coordinate the order across the supply chain — vineyard confirmation, SKU generation, pallet-compatible packing, port scheduling and country-specific bills of lading — a level of coordination that isn't practical to replicate manually.</p>
         </div>
       </div>
     </div>
