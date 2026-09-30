@@ -249,6 +249,30 @@
   .why-item h3{font-size:15px; margin-bottom:6px; font-weight:500; font-family:'Inter',sans-serif;}
   .why-item p{color:var(--ink-dim); font-size:13.5px; margin:0; line-height:1.7;}
 
+  /* News */
+  .news-grid{display:grid; grid-template-columns:repeat(2, 1fr); gap:1px; background:var(--border-soft); border:1px solid var(--border-soft);}
+  .news-card{
+    background:var(--bg); padding:26px 28px 26px 24px; display:flex; flex-direction:column; gap:10px;
+    text-decoration:none; transition:background .15s, border-color .15s; position:relative;
+    border-left:2px solid transparent;
+  }
+  .news-card:hover{background:var(--surface); border-left-color:var(--sapphire-bright);}
+  .news-date{
+    font-size:11px; text-transform:uppercase; letter-spacing:0.07em; font-weight:600;
+    display:flex; align-items:center; gap:8px;
+    background:linear-gradient(100deg, var(--sapphire-bright), var(--cyan));
+    -webkit-background-clip:text; background-clip:text; color:transparent; width:fit-content;
+  }
+  .news-date .drop{flex-shrink:0;}
+  .news-card h3{font-size:15px; font-weight:500; font-family:'Fraunces',serif; color:var(--ink); line-height:1.4; margin:0;}
+  .news-card p{color:var(--ink-dim); font-size:13px; margin:0; line-height:1.6;}
+  .news-source{font-size:12px; color:var(--sapphire-glint); margin-top:auto; padding-top:6px;}
+  .news-empty, .news-loading{color:var(--ink-dim); font-size:14px; padding:40px 0; text-align:center;}
+  .news-footer{margin-top:20px; font-size:12.5px; color:var(--ink-faint); display:flex; align-items:center; gap:8px;}
+  .news-footer a{color:var(--sapphire-glint); text-decoration:none;}
+  .news-footer a:hover{text-decoration:underline;}
+  @media (max-width: 720px){ .news-grid{grid-template-columns:1fr;} }
+
   /* Hidden gems strip */
   .gem-strip{
     display:grid; grid-template-columns:repeat(4, 1fr); gap:1px;
@@ -310,6 +334,7 @@
         <a href="#engine" class="navlink">The Engine</a>
         <a href="#difference" class="navlink">The Difference</a>
         <a href="#how" class="navlink">How It Works</a>
+        <a href="#news" class="navlink">News</a>
       </div>
       <a href="/match" class="btn btn-solid">Find Your Match</a>
     </div>
@@ -395,7 +420,7 @@
       <div class="section-head">
         <div class="section-eyebrow">The Difference</div>
         <h2>Big exporters push the labels they already have. Our engine <em>finds</em> the ones you don't know exist.</h2>
-        <p>Groups like Treasury Wine Estates only export their own wineries. We built an engine to surface the independent producers that never make it onto a distributor's list.</p>
+        <p>Large exporters push the labels they already own. We built an engine to surface the independent producers that never make it onto a distributor's list.</p>
       </div>
 
       <div class="compare">
@@ -436,6 +461,22 @@
           <h3>We verify, then build the pallet</h3>
           <p>Every match is confirmed against the real vineyard, then consolidated into a single shipment.</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="news">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="section-eyebrow">Industry News</div>
+        <h2>What's happening across Australian wine right now.</h2>
+        <p>Recent headlines from the Australian wine industry — harvests, shows, supply and anything else moving the market.</p>
+      </div>
+      <div class="news-grid" id="news-grid">
+        <div class="news-loading">Loading recent headlines…</div>
+      </div>
+      <div class="news-footer" id="news-footer" style="display:none;">
+        Source: <a href="https://winetitles.com.au/daily-wine-news/" target="_blank" rel="noopener">Winetitles — Daily Wine News</a>
       </div>
     </div>
   </section>
@@ -544,6 +585,53 @@
     window.addEventListener('scroll', function(){
       if(window.scrollY < 120) setActive(homeLink);
     }, { passive: true });
+  })();
+
+  // Industry News: fetched server-side via /api/news (the RSS source has no
+  // CORS headers, so this can't be fetched directly from the browser).
+  (function(){
+    var grid = document.getElementById('news-grid');
+    var footer = document.getElementById('news-footer');
+    if(!grid) return;
+
+    function formatDate(pubDate){
+      if(!pubDate) return '';
+      var d = new Date(pubDate);
+      if(isNaN(d.getTime())) return '';
+      return d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    // Tiny faceted wine-drop glyph, echoing the hero gem mark, in the same
+    // sapphire/cyan palette — so headlines read as "this site", not a
+    // generic feed widget.
+    var DROP_SVG = '<svg class="drop" width="10" height="10" viewBox="0 0 10 10" fill="none">' +
+      '<path d="M5 0.5L8.5 5.2C9.3 6.4 8.9 8 7.6 8.6C6.2 9.3 4.5 9 3.8 7.7C3.4 7 3.5 6.1 4 5.4L5 4L5 0.5Z" fill="url(#dropGrad)"/>' +
+      '</svg>';
+
+    fetch('/api/news')
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if(!data || !data.items || !data.items.length){
+          grid.innerHTML = '<div class="news-empty">Recent headlines aren\'t available right now — check back shortly, or read the latest directly from <a href="https://winetitles.com.au/daily-wine-news/" target="_blank" rel="noopener" style="color:var(--sapphire-glint);">Winetitles</a>.</div>';
+          return;
+        }
+        grid.innerHTML =
+          '<svg width="0" height="0" style="position:absolute;"><defs><linearGradient id="dropGrad" x1="0" y1="0" x2="1" y2="1">' +
+          '<stop offset="0%" stop-color="#6f93e8"/><stop offset="100%" stop-color="#5fd4e0"/>' +
+          '</linearGradient></defs></svg>' +
+          data.items.map(function(item){
+            var date = formatDate(item.pubDate);
+            return '<a class="news-card" href="' + item.link + '" target="_blank" rel="noopener">' +
+              (date ? '<span class="news-date">' + DROP_SVG + date + '</span>' : '') +
+              '<h3>' + item.title + '</h3>' +
+              (item.description ? '<p>' + item.description + '</p>' : '') +
+              '</a>';
+          }).join('');
+        if(footer) footer.style.display = '';
+      })
+      .catch(function(){
+        grid.innerHTML = '<div class="news-empty">Recent headlines aren\'t available right now — check back shortly, or read the latest directly from <a href="https://winetitles.com.au/daily-wine-news/" target="_blank" rel="noopener" style="color:var(--sapphire-glint);">Winetitles</a>.</div>';
+      });
   })();
 </script>
 
