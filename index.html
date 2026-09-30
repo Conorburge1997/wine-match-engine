@@ -250,29 +250,51 @@
   .why-item h3{font-size:15px; margin-bottom:6px; font-weight:500; font-family:'Inter',sans-serif;}
   .why-item p{color:var(--ink-dim); font-size:13.5px; margin:0; line-height:1.7;}
 
-  /* News */
-  .news-grid{display:grid; grid-template-columns:repeat(2, 1fr); gap:1px; background:var(--border-soft); border:1px solid var(--border-soft);}
-  .news-card{
-    background:var(--bg); padding:26px 28px 26px 24px; display:flex; flex-direction:column; gap:10px;
-    text-decoration:none; transition:background .15s, border-color .15s; position:relative;
-    border-left:2px solid transparent;
+  /* News — single-story carousel */
+  .news-carousel{
+    position:relative; border:1px solid var(--border-soft); background:var(--bg);
+    min-height:220px; overflow:hidden;
   }
-  .news-card:hover{background:var(--surface); border-left-color:var(--sapphire-bright);}
+  .news-slide{
+    display:none; flex-direction:column; gap:14px;
+    padding:40px 48px; text-decoration:none; position:relative; overflow:hidden;
+  }
+  .news-slide.active{display:flex;}
+  .news-slide.sweep::after{
+    content:''; position:absolute; top:0; left:0; width:60%; height:100%;
+    background:linear-gradient(115deg, transparent 30%, rgba(166,196,255,0.16) 45%, rgba(255,255,255,0.30) 50%, rgba(166,196,255,0.16) 55%, transparent 70%);
+    transform:translateX(-120%); pointer-events:none;
+    animation:sweepOnce 0.9s ease-out;
+  }
+  @keyframes sweepOnce{ 0%{transform:translateX(-120%);} 100%{transform:translateX(220%);} }
   .news-date{
-    font-size:11px; text-transform:uppercase; letter-spacing:0.07em; font-weight:600;
+    font-size:11.5px; text-transform:uppercase; letter-spacing:0.07em; font-weight:600;
     display:flex; align-items:center; gap:8px;
     background:linear-gradient(100deg, var(--sapphire-bright), var(--cyan));
     -webkit-background-clip:text; background-clip:text; color:transparent; width:fit-content;
   }
   .news-date .drop{flex-shrink:0;}
-  .news-card h3{font-size:15px; font-weight:500; font-family:'Fraunces',serif; color:var(--ink); line-height:1.4; margin:0;}
-  .news-card p{color:var(--ink-dim); font-size:13px; margin:0; line-height:1.6;}
-  .news-source{font-size:12px; color:var(--sapphire-glint); margin-top:auto; padding-top:6px;}
-  .news-empty, .news-loading{color:var(--ink-dim); font-size:14px; padding:40px 0; text-align:center;}
-  .news-footer{margin-top:20px; font-size:12.5px; color:var(--ink-faint); display:flex; align-items:center; gap:8px;}
+  .news-slide h3{font-size:22px; font-weight:400; font-family:'Fraunces',serif; color:var(--ink); line-height:1.35; margin:0; max-width:640px;}
+  .news-slide p{color:var(--ink-dim); font-size:14.5px; margin:0; line-height:1.7; max-width:600px;}
+  .news-slide .news-readmore{font-size:12.5px; color:var(--sapphire-glint); margin-top:2px;}
+  .news-empty, .news-loading{color:var(--ink-dim); font-size:14px; padding:60px 0; text-align:center;}
+
+  .news-controls{display:flex; align-items:center; justify-content:space-between; margin-top:18px;}
+  .news-dots{display:flex; gap:8px;}
+  .news-dot{width:7px; height:7px; border-radius:50%; background:var(--border); border:none; padding:0; cursor:pointer; transition:background .2s, transform .2s;}
+  .news-dot.active{background:var(--sapphire-bright); transform:scale(1.3);}
+  .news-arrows{display:flex; gap:8px;}
+  .news-arrow{
+    width:30px; height:30px; border-radius:2px; border:1px solid var(--border); background:var(--bg);
+    color:var(--ink-dim); cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:border-color .15s, color .15s;
+  }
+  .news-arrow:hover{border-color:var(--sapphire-bright); color:var(--sapphire-glint);}
+
+  .news-footer{margin-top:16px; font-size:12.5px; color:var(--ink-faint); display:flex; align-items:center; gap:8px;}
   .news-footer a{color:var(--sapphire-glint); text-decoration:none;}
   .news-footer a:hover{text-decoration:underline;}
-  @media (max-width: 720px){ .news-grid{grid-template-columns:1fr;} }
+  @media (max-width: 640px){ .news-slide{padding:32px 28px;} .news-slide h3{font-size:19px;} }
 
   /* Hidden gems strip */
   .gem-strip{
@@ -473,8 +495,19 @@
         <h2>What's happening across Australian wine right now.</h2>
         <p>Recent headlines from the Australian wine industry — harvests, shows, supply and anything else moving the market.</p>
       </div>
-      <div class="news-grid" id="news-grid">
+      <div class="news-carousel" id="news-carousel">
         <div class="news-loading">Loading recent headlines…</div>
+      </div>
+      <div class="news-controls" id="news-controls" style="display:none;">
+        <div class="news-dots" id="news-dots"></div>
+        <div class="news-arrows">
+          <button class="news-arrow" id="news-prev" aria-label="Previous story" type="button">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2.5L4 7l5 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="news-arrow" id="news-next" aria-label="Next story" type="button">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2.5L10 7l-5 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
       </div>
       <div class="news-footer" id="news-footer" style="display:none;">
         Source: <a href="https://winetitles.com.au/daily-wine-news/" target="_blank" rel="noopener">Winetitles — Daily Wine News</a>
@@ -590,10 +623,22 @@
 
   // Industry News: fetched server-side via /api/news (the RSS source has no
   // CORS headers, so this can't be fetched directly from the browser).
+  // Renders as a single-story carousel: one headline at a time, auto-advancing
+  // every 5s with a sapphire sheen sweep on each transition, pausing on hover,
+  // with dots + arrows for manual control.
   (function(){
-    var grid = document.getElementById('news-grid');
+    var carousel = document.getElementById('news-carousel');
+    var controls = document.getElementById('news-controls');
+    var dotsWrap = document.getElementById('news-dots');
     var footer = document.getElementById('news-footer');
-    if(!grid) return;
+    var prevBtn = document.getElementById('news-prev');
+    var nextBtn = document.getElementById('news-next');
+    if(!carousel) return;
+
+    var items = [];
+    var current = 0;
+    var timer = null;
+    var AUTOPLAY_MS = 5000;
 
     function formatDate(pubDate){
       if(!pubDate) return '';
@@ -608,31 +653,68 @@
     var DROP_SVG = '<svg class="drop" width="10" height="10" viewBox="0 0 10 10" fill="none">' +
       '<path d="M5 0.5L8.5 5.2C9.3 6.4 8.9 8 7.6 8.6C6.2 9.3 4.5 9 3.8 7.7C3.4 7 3.5 6.1 4 5.4L5 4L5 0.5Z" fill="url(#dropGrad)"/>' +
       '</svg>';
+    var DEFS_SVG = '<svg width="0" height="0" style="position:absolute;"><defs><linearGradient id="dropGrad" x1="0" y1="0" x2="1" y2="1">' +
+      '<stop offset="0%" stop-color="#6f93e8"/><stop offset="100%" stop-color="#5fd4e0"/>' +
+      '</linearGradient></defs></svg>';
+
+    function showEmpty(){
+      carousel.innerHTML = '<div class="news-empty">Recent headlines aren\'t available right now — check back shortly, or read the latest directly from <a href="https://winetitles.com.au/daily-wine-news/" target="_blank" rel="noopener" style="color:var(--sapphire-glint);">Winetitles</a>.</div>';
+      controls.style.display = 'none';
+    }
+
+    function render(){
+      carousel.innerHTML = DEFS_SVG + items.map(function(item, i){
+        var date = formatDate(item.pubDate);
+        return '<a class="news-slide' + (i === current ? ' active sweep' : '') + '" data-i="' + i + '" href="' + item.link + '" target="_blank" rel="noopener">' +
+          (date ? '<span class="news-date">' + DROP_SVG + date + '</span>' : '') +
+          '<h3>' + item.title + '</h3>' +
+          (item.description ? '<p>' + item.description + '</p>' : '') +
+          '<span class="news-readmore">Read the full story →</span>' +
+          '</a>';
+      }).join('');
+      dotsWrap.innerHTML = items.map(function(_, i){
+        return '<button class="news-dot' + (i === current ? ' active' : '') + '" data-i="' + i + '" aria-label="Story ' + (i+1) + '" type="button"></button>';
+      }).join('');
+    }
+
+    function goTo(i){
+      current = (i + items.length) % items.length;
+      render();
+    }
+    function next(){ goTo(current + 1); }
+    function prev(){ goTo(current - 1); }
+
+    function startAutoplay(){
+      stopAutoplay();
+      timer = setInterval(next, AUTOPLAY_MS);
+    }
+    function stopAutoplay(){
+      if(timer){ clearInterval(timer); timer = null; }
+    }
+
+    carousel.addEventListener('mouseenter', stopAutoplay);
+    carousel.addEventListener('mouseleave', startAutoplay);
+    dotsWrap.addEventListener('click', function(e){
+      var btn = e.target.closest('.news-dot');
+      if(!btn) return;
+      goTo(+btn.dataset.i);
+      startAutoplay();
+    });
+    prevBtn.addEventListener('click', function(){ prev(); startAutoplay(); });
+    nextBtn.addEventListener('click', function(){ next(); startAutoplay(); });
 
     fetch('/api/news')
       .then(function(r){ return r.json(); })
       .then(function(data){
-        if(!data || !data.items || !data.items.length){
-          grid.innerHTML = '<div class="news-empty">Recent headlines aren\'t available right now — check back shortly, or read the latest directly from <a href="https://winetitles.com.au/daily-wine-news/" target="_blank" rel="noopener" style="color:var(--sapphire-glint);">Winetitles</a>.</div>';
-          return;
-        }
-        grid.innerHTML =
-          '<svg width="0" height="0" style="position:absolute;"><defs><linearGradient id="dropGrad" x1="0" y1="0" x2="1" y2="1">' +
-          '<stop offset="0%" stop-color="#6f93e8"/><stop offset="100%" stop-color="#5fd4e0"/>' +
-          '</linearGradient></defs></svg>' +
-          data.items.map(function(item){
-            var date = formatDate(item.pubDate);
-            return '<a class="news-card" href="' + item.link + '" target="_blank" rel="noopener">' +
-              (date ? '<span class="news-date">' + DROP_SVG + date + '</span>' : '') +
-              '<h3>' + item.title + '</h3>' +
-              (item.description ? '<p>' + item.description + '</p>' : '') +
-              '</a>';
-          }).join('');
+        if(!data || !data.items || !data.items.length){ showEmpty(); return; }
+        items = data.items;
+        current = 0;
+        render();
+        controls.style.display = '';
         if(footer) footer.style.display = '';
+        if(items.length > 1) startAutoplay();
       })
-      .catch(function(){
-        grid.innerHTML = '<div class="news-empty">Recent headlines aren\'t available right now — check back shortly, or read the latest directly from <a href="https://winetitles.com.au/daily-wine-news/" target="_blank" rel="noopener" style="color:var(--sapphire-glint);">Winetitles</a>.</div>';
-      });
+      .catch(showEmpty);
   })();
 </script>
 
