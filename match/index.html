@@ -112,6 +112,16 @@
   }
   input::placeholder{color:var(--ink-faint);}
   input:focus{outline:none; border-color:var(--sapphire-bright); box-shadow:0 0 0 3px rgba(58,110,222,0.18);}
+  select{
+    width:100%; font-family:inherit; font-size:15px; color:var(--ink);
+    background:var(--bg); border:1px solid var(--border); border-radius:2px;
+    padding:11px 12px; appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%237c85a6' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 14px center;
+  }
+  select:focus{outline:none; border-color:var(--sapphire-bright); box-shadow:0 0 0 3px rgba(58,110,222,0.18);}
+  select.field-error{border-color:#e0607a !important;}
+  .field-note{font-size:12.5px; color:var(--ink-dim); margin-top:8px; line-height:1.5;}
   .field{margin-bottom:18px;}
   .field:last-child{margin-bottom:0;}
   .hint{font-size:12px; color:var(--ink-faint); margin-top:6px;}
@@ -273,6 +283,12 @@
           <button class="pick" type="button" data-value="Japan">Japan</button>
           <button class="pick" type="button" data-value="Singapore">Singapore</button>
           <button class="pick" type="button" data-value="Other">Other</button>
+        </div>
+        <div id="f-other-country-wrap" style="display:none; margin-top:12px;">
+          <select id="f-other-country">
+            <option value="">Select your country…</option>
+          </select>
+          <div class="field-note">Export availability varies by country and is subject to permits — we'll confirm feasibility for your location before finalizing any order.</div>
         </div>
       </div>
     </div>
@@ -480,6 +496,23 @@
     "Other": "AUD",
   };
   const CURRENCY_SYMBOL = { AUD:"A$", HKD:"HK$", CNY:"¥", JPY:"¥", SGD:"S$" };
+
+  // Countries offered under "Other" — export permits/feasibility are confirmed
+  // per order, not guaranteed by this list; see the note shown alongside it.
+  const OTHER_COUNTRIES = [
+    "United Kingdom","United States","Canada","New Zealand","South Korea","Taiwan",
+    "Malaysia","Thailand","Vietnam","Indonesia","Philippines","India",
+    "United Arab Emirates","Germany","France","Netherlands","Ireland","Sweden",
+    "Denmark","Switzerland","Other (not listed)"
+  ];
+  (function populateOtherCountries(){
+    const sel = $("f-other-country");
+    OTHER_COUNTRIES.forEach(function(c){
+      const opt = document.createElement("option");
+      opt.value = c; opt.textContent = c;
+      sel.appendChild(opt);
+    });
+  })();
   // Fallback rates (units of currency per 1 AUD) — used only if the live fetch fails.
   const FALLBACK_RATES = { AUD:1, HKD:5.5, CNY:4.71, JPY:110.35, SGD:0.897 };
 
@@ -562,7 +595,17 @@
         const pressed = btn.getAttribute("aria-pressed") === "true";
         btn.setAttribute("aria-pressed", pressed ? "false" : "true");
       }
-      if(group.id === "f-market") updatePriceCurrencyUI();
+      if(group.id === "f-market"){
+        updatePriceCurrencyUI();
+        const otherWrap = $("f-other-country-wrap");
+        if(btn.dataset.value === "Other"){
+          otherWrap.style.display = "";
+        } else {
+          otherWrap.style.display = "none";
+          $("f-other-country").value = "";
+          $("f-other-country").classList.remove("field-error");
+        }
+      }
     });
   });
 
@@ -570,6 +613,12 @@
   function briefCurrency(){
     const market = singleValue("f-market");
     return MARKET_CURRENCY[market] || "AUD";
+  }
+  // Human-readable location: the picked market, or the specific country when "Other".
+  function briefLocationLabel(brief){
+    if(!brief) return "";
+    if(brief.market === "Other" && brief.otherCountry) return brief.otherCountry;
+    return brief.market || "";
   }
   function updatePriceCurrencyUI(){
     const cur = briefCurrency();
@@ -698,6 +747,7 @@
     return {
       name: $("f-name").value.trim() || "Your request",
       market: singleValue("f-market"),
+      otherCountry: singleValue("f-market") === "Other" ? $("f-other-country").value : null,
       styles: multiValues("f-style"),
       bodies: multiValues("f-body"),
       regions: multiValues("f-region"),
@@ -737,7 +787,9 @@
   $("btn-submit-brief").addEventListener("click", function(){
     const missing = [];
     if(!$("f-name").value.trim()) missing.push($("f-name"));
-    if(!singleValue("f-market")) missing.push($("f-market"));
+    const marketPicked = singleValue("f-market");
+    if(!marketPicked) missing.push($("f-market"));
+    if(marketPicked === "Other" && !$("f-other-country").value) missing.push($("f-other-country"));
     if(missing.length){
       missing.forEach(function(el){ el.classList.add("field-error"); });
       missing[0].scrollIntoView({behavior:"smooth", block:"center"});
@@ -745,14 +797,14 @@
         const note = document.createElement("div");
         note.id = "f-required-note";
         note.className = "field-error-note";
-        note.textContent = "Please fill in your business name and market before continuing.";
+        note.textContent = "Please fill in your business name and location before continuing.";
         missing[0].closest(".card").appendChild(note);
       }
       return;
     }
     const note = $("f-required-note");
     if(note) note.remove();
-    [$("f-name"), $("f-market")].forEach(function(el){ el.classList.remove("field-error"); });
+    [$("f-name"), $("f-market"), $("f-other-country")].forEach(function(el){ el.classList.remove("field-error"); });
 
     state.brief = readBrief();
     showPanel(2);
@@ -867,7 +919,8 @@
   $("btn-request").addEventListener("click", function(){
     const chosen = state.results.filter(function(r){ return state.selected.has(r.wine.id); });
     const subject = encodeURIComponent("Pallet request — " + (state.brief ? state.brief.name : ""));
-    const buyerLine = state.brief ? (state.brief.name + (state.brief.market ? " (" + state.brief.market + " market)" : "")) : "";
+    const locationLabel = briefLocationLabel(state.brief);
+    const buyerLine = state.brief ? (state.brief.name + (locationLabel ? " (" + locationLabel + ")" : "")) : "";
     const bodyLines = [buyerLine, "", "Requested wines:"].concat(chosen.map(function(r){ return "- "+r.wine.name+" ("+r.wine.moq+" bottles)"; }));
     const body = encodeURIComponent(bodyLines.join("\n"));
     window.location.href = "mailto:hello@sapphirepanda.com?subject="+subject+"&body="+body;
