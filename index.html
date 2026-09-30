@@ -101,6 +101,7 @@
     backdrop-filter:blur(14px);
     border-bottom:1px solid var(--border-soft);
   }
+  section[id], .wrap[id]{ scroll-margin-top:88px; }
   .nav{display:flex; align-items:center; justify-content:space-between; padding:18px 0;}
   .brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink);}
   .brand-word{font-family:'Fraunces',serif; font-weight:400; font-size:16px; letter-spacing:0.02em;}
@@ -392,8 +393,9 @@
       </div>
     </div>
 
-    <div class="wrap">
-      <div class="engine-panel sheen" id="engine">
+    <div class="wrap" id="engine">
+      <div class="section-eyebrow" style="margin-bottom:18px;">The Engine</div>
+      <div class="engine-panel sheen">
         <div class="engine-top">
           <span class="engine-dot mono">MATCH ENGINE — LIVE SCORING</span>
           <span class="mono">v1.0</span>
