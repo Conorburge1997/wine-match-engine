@@ -339,6 +339,7 @@
         <div class="field">
           <label>Order volume <span class="opt">(bottles, optional)</span></label>
           <input type="number" id="f-volume" placeholder="e.g. 96">
+          <div class="price-aud-hint" id="f-volume-case-hint"></div>
         </div>
       </div>
       <div class="field">
@@ -599,6 +600,18 @@
   $("f-pricemin").addEventListener("input", updatePriceAudHint);
   $("f-pricemax").addEventListener("input", updatePriceAudHint);
   updatePriceCurrencyUI();
+
+  // ---------- order volume: show bottles as cases (12 bottles per case) ----------
+  const BOTTLES_PER_CASE = 12;
+  function updateVolumeCaseHint(){
+    const hintEl = $("f-volume-case-hint");
+    const bottles = $("f-volume").value ? +$("f-volume").value : null;
+    if(bottles == null || bottles <= 0){ hintEl.textContent = ""; return; }
+    const cases = bottles / BOTTLES_PER_CASE;
+    const casesLabel = (Number.isInteger(cases) ? cases : cases.toFixed(1)) + (cases === 1 ? " case" : " cases");
+    hintEl.textContent = "≈ " + casesLabel + " (" + BOTTLES_PER_CASE + " bottles/case)";
+  }
+  $("f-volume").addEventListener("input", updateVolumeCaseHint);
   function singleValue(id){
     const el = document.querySelector("#"+id+" .pick[aria-pressed='true']");
     return el ? el.dataset.value : null;
