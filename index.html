@@ -230,12 +230,8 @@
   .compare-col h3{font-size:17px; margin-bottom:14px; font-weight:400;}
   .compare-col p{color:var(--ink-dim); font-size:13.5px; margin:0; line-height:1.7;}
 
-  .steps{display:grid; grid-template-columns:repeat(3, 1fr); gap:1px; background:var(--border-soft); border:1px solid var(--border-soft);}
-  .step{background:var(--bg); padding:36px 30px; position:relative;}
-  .step.step-final{grid-column:1 / -1; display:flex; align-items:flex-start; gap:28px;}
-  .step.step-final .step-num{margin-bottom:0;}
-  .step.step-final .step-body{flex:1;}
-  .step.step-final h3{margin-bottom:8px;}
+  .steps{display:grid; grid-template-columns:repeat(5, 1fr); gap:1px; background:var(--border-soft); border:1px solid var(--border-soft);}
+  .step{background:var(--bg); padding:28px 22px; position:relative;}
   .step-num{
     font-family:'Fraunces',serif; font-style:italic; font-size:24px;
     margin-bottom:20px; display:block;
@@ -335,12 +331,10 @@
   .footer-brand{display:flex; align-items:center; gap:8px; font-family:'Fraunces',serif; font-weight:400; color:var(--ink-dim); font-size:13px;}
   footer .fine{color:var(--ink-faint); font-size:11.5px; letter-spacing:0.02em;}
 
-  @media (max-width: 1024px) and (min-width: 861px){
-    .steps{grid-template-columns:repeat(2, 1fr);}
+  @media (max-width: 1024px){
+    .steps{grid-template-columns:1fr;}
   }
   @media (max-width: 860px){
-    .steps{grid-template-columns:1fr;}
-    .step.step-final{flex-direction:column; gap:16px;}
     .compare{grid-template-columns:1fr;}
     .engine-body{grid-template-columns:1fr;}
     .stat-row{flex-direction:column;}
@@ -490,26 +484,22 @@
         <div class="step">
           <span class="step-num">02</span>
           <h3>Our agents rank it against the network</h3>
-          <p>Multiple matching agents cross-reference your brief against the flavour, pricing and supply data our vineyard partners provide — evaluating millions of possible combinations across thousands of wines to score and rank every viable profile in parallel.</p>
+          <p>Matching agents score your brief against flavour, pricing and supply data — millions of combinations across thousands of wines, ranked in parallel.</p>
         </div>
         <div class="step">
           <span class="step-num">03</span>
           <h3>You get a ranked shortlist</h3>
-          <p>A scored, ranked output of the wines that best fit your brief — with the hidden gems surfaced, not buried under commercial-scale labels.</p>
+          <p>The wines that best fit your brief, hidden gems surfaced — not buried under commercial-scale labels.</p>
         </div>
-        <div class="step step-final">
+        <div class="step">
           <span class="step-num">04</span>
-          <div class="step-body">
-            <h3>Agents place the order</h3>
-            <p>Once you confirm, separate agents coordinate directly with each vineyard — confirming stock, generating SKUs, and clearing the paperwork and regulatory checks specific to your destination country, from export permits to compliance documentation.</p>
-          </div>
+          <h3>Agents place the order</h3>
+          <p>Separate agents confirm stock, generate SKUs and clear destination-country paperwork, permits and compliance checks.</p>
         </div>
-        <div class="step step-final">
+        <div class="step">
           <span class="step-num">05</span>
-          <div class="step-body">
-            <h3>Your pallet is built and exported</h3>
-            <p>A unique, pallet-compatible build is assembled from every wine in your order, packed and scheduled through to port — a level of coordination that isn't practical to replicate manually.</p>
-          </div>
+          <h3>Your pallet is built and exported</h3>
+          <p>A unique, pallet-compatible build assembled from your order, packed and scheduled through to port.</p>
         </div>
       </div>
     </div>
