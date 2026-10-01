@@ -323,29 +323,20 @@
       </div>
 
       <div class="field">
-        <label>Region preference <span class="opt">(optional)</span></label>
-        <div class="pickrow" id="f-region" data-picker="multi">
-          <button class="pick" type="button" data-value="Yarra Valley">Yarra Valley</button>
-          <button class="pick" type="button" data-value="Barossa Valley">Barossa Valley</button>
-          <button class="pick" type="button" data-value="McLaren Vale">McLaren Vale</button>
-          <button class="pick" type="button" data-value="Margaret River">Margaret River</button>
-          <button class="pick" type="button" data-value="Adelaide Hills">Adelaide Hills</button>
+        <label>State <span class="opt">(optional)</span></label>
+        <div class="pickrow" id="f-state" data-picker="multi">
+          <button class="pick" type="button" data-value="New South Wales">New South Wales</button>
+          <button class="pick" type="button" data-value="Victoria">Victoria</button>
+          <button class="pick" type="button" data-value="South Australia">South Australia</button>
+          <button class="pick" type="button" data-value="Western Australia">Western Australia</button>
           <button class="pick" type="button" data-value="Tasmania">Tasmania</button>
-          <button class="pick" type="button" data-value="Hunter Valley">Hunter Valley</button>
-          <button class="pick" type="button" data-value="Clare Valley">Clare Valley</button>
-          <button class="pick" type="button" data-value="Coonawarra">Coonawarra</button>
-          <button class="pick" type="button" data-value="Mornington Peninsula">Mornington Peninsula</button>
-          <button class="pick" type="button" data-value="Eden Valley">Eden Valley</button>
-          <button class="pick" type="button" data-value="Grampians">Grampians</button>
-          <button class="pick" type="button" data-value="Great Southern">Great Southern</button>
-          <button class="pick" type="button" data-value="Orange">Orange</button>
-          <button class="pick" type="button" data-value="Canberra District">Canberra District</button>
-          <button class="pick" type="button" data-value="Rutherglen">Rutherglen</button>
-          <button class="pick" type="button" data-value="Riverland">Riverland</button>
-          <button class="pick" type="button" data-value="Swan Valley">Swan Valley</button>
-          <button class="pick" type="button" data-value="King Valley">King Valley</button>
-          <button class="pick" type="button" data-value="Geelong">Geelong</button>
+          <button class="pick" type="button" data-value="Queensland">Queensland</button>
         </div>
+      </div>
+
+      <div class="field" id="f-region-wrap" style="display:none;">
+        <label>Region preference <span class="opt">(optional)</span></label>
+        <div class="pickrow" id="f-region" data-picker="multi"></div>
       </div>
 
       <div class="field">
@@ -530,6 +521,62 @@
     wrap.style.display = "";
   }
 
+  // Wine Australia's registered Geographical Indication (GI) wine regions,
+  // grouped by state — 70 regions in total, matching the "70 regions"
+  // figure used on the homepage. A few deeply-nested subregions (e.g. High
+  // Eden within Eden Valley, Pokolbin within Hunter Valley) are folded
+  // into their parent region rather than listed separately. Source: Wine
+  // Australia's Register of Protected GIs and Other Terms.
+  const REGIONS_BY_STATE = {
+    "New South Wales": [
+      "Murray Darling", "Perricoota", "Riverina", "Swan Hill", "Cowra", "Mudgee",
+      "Orange", "Hunter Valley", "Broke Fordwich", "Hastings River", "New England Australia",
+      "Shoalhaven Coast", "Southern Highlands", "Canberra District", "Gundagai",
+      "Hilltops", "Tumbarumba",
+    ],
+    "Victoria": [
+      "Bendigo", "Goulburn Valley", "Nagambie Lakes", "Heathcote", "Strathbogie Ranges",
+      "Upper Goulburn", "Alpine Valleys", "Beechworth", "Glenrowan", "King Valley",
+      "Rutherglen", "Geelong", "Macedon Ranges", "Mornington Peninsula", "Sunbury",
+      "Yarra Valley", "Grampians", "Great Western", "Henty", "Pyrenees",
+    ],
+    "South Australia": [
+      "Barossa Valley", "Eden Valley", "Southern Flinders Ranges", "Currency Creek",
+      "Kangaroo Island", "Langhorne Creek", "McLaren Vale", "Southern Fleurieu",
+      "Coonawarra", "Mount Benson", "Padthaway", "Robe", "Wrattonbully",
+      "Riverland", "Adelaide Hills", "Adelaide Plains", "Clare Valley",
+    ],
+    "Western Australia": [
+      "Peel", "Perth Hills", "Swan Valley", "Blackwood Valley", "Geographe",
+      "Albany", "Denmark", "Frankland River", "Mount Barker", "Porongurup",
+      "Manjimup", "Margaret River", "Pemberton",
+    ],
+    "Tasmania": ["Tasmania"],
+    "Queensland": ["Granite Belt", "South Burnett"],
+  };
+  function updateRegionOptions(){
+    const states = multiValues("f-state");
+    const regions = [];
+    states.forEach(function(s){
+      (REGIONS_BY_STATE[s] || []).forEach(function(r){ if(regions.indexOf(r)===-1) regions.push(r); });
+    });
+    const wrap = $("f-region-wrap");
+    const row = $("f-region");
+    if(regions.length === 0){
+      wrap.style.display = "none";
+      row.innerHTML = "";
+      return;
+    }
+    const prevSelected = new Set(
+      Array.from(row.querySelectorAll(".pick[aria-pressed='true']")).map(function(b){ return b.dataset.value; })
+    );
+    row.innerHTML = regions.map(function(r){
+      const pressed = prevSelected.has(r) ? "true" : "false";
+      return '<button class="pick" type="button" data-value="'+r+'" aria-pressed="'+pressed+'">'+r+'</button>';
+    }).join("");
+    wrap.style.display = "";
+  }
+
   /* ============================================================
      CURRENCY
      Wholesale prices are stored in AUD. We convert to the buyer's
@@ -658,12 +705,17 @@
       if(group.id === "f-style"){
         updateVarietyOptions();
       }
+      if(group.id === "f-state"){
+        updateRegionOptions();
+      }
     });
   });
 
-  // Varietal options depend on style, so make sure the row reflects
-  // whatever's pre-selected (none, on first load) once listeners are bound.
+  // Varietal/region options depend on style/state, so make sure both rows
+  // reflect whatever's pre-selected (none, on first load) once listeners
+  // are bound.
   updateVarietyOptions();
+  updateRegionOptions();
 
   // ---------- brief-form price band: buyer's own currency, with an AUD hint ----------
   function briefCurrency(){
