@@ -472,25 +472,22 @@
   "use strict";
 
   /* ============================================================
-     SAMPLE WINE LIBRARY
-     Stand-in for the real vineyard inventory, which lives in our
-     own systems — never shown to the customer. Structure mirrors
-     what the matching engine actually scores against.
+     MATCH API
+     The real vineyard/wine inventory lives server-side only (see
+     /api/match.js) and is never shipped to the browser. This page
+     only ever sends a brief and gets back small counts or a ranked,
+     already-filtered-of-sensitive-fields shortlist.
      ============================================================ */
-  const WINES = [
-    {id:"w1", name:"Hollow Creek Shiraz 2021", vineyard:"3rd-gen family vineyard", region:"McLaren Vale", style:"Red", variety:"Shiraz", body:"Full", flavour:"blackberry, pepper, cedar", price:24, moq:24, neverExported:true},
-    {id:"w2", name:"Denny's Ridge Chardonnay 2022", vineyard:"Family-owned since 1978", region:"Adelaide Hills", style:"White", variety:"Chardonnay", body:"Medium", flavour:"stone fruit, citrus, flint", price:19, moq:36, neverExported:true},
-    {id:"w3", name:"Ashgrove Pinot Noir 2021", vineyard:"Small-batch, boutique", region:"Yarra Valley", style:"Red", variety:"Pinot Noir", body:"Light", flavour:"cherry, forest floor, spice", price:28, moq:12, neverExported:false},
-    {id:"w4", name:"Coppervale Cabernet Sauvignon 2020", vineyard:"Independent, 4th-gen", region:"Margaret River", style:"Red", variety:"Cabernet Sauvignon", body:"Full", flavour:"blackcurrant, cedar, tobacco", price:32, moq:24, neverExported:true},
-    {id:"w5", name:"Fenwick Riesling 2023", vineyard:"Family-run, single vineyard", region:"Barossa Valley", style:"White", variety:"Riesling", body:"Light", flavour:"lime, green apple, mineral", price:16, moq:48, neverExported:false},
-    {id:"w6", name:"Sorrel Hill Grenache 2021", vineyard:"Independent, dry-grown", region:"McLaren Vale", style:"Red", variety:"Grenache", body:"Medium", flavour:"raspberry, white pepper, herbs", price:22, moq:24, neverExported:true},
-    {id:"w7", name:"Nightjar Rosé 2023", vineyard:"Family-owned, low intervention", region:"Yarra Valley", style:"Rosé", variety:null, body:"Light", flavour:"strawberry, rose petal, citrus", price:18, moq:24, neverExported:true},
-    {id:"w8", name:"Kestrel Point Sparkling NV", vineyard:"Independent producer", region:"Tasmania", style:"Sparkling", variety:null, body:"Light", flavour:"green apple, brioche, citrus", price:29, moq:12, neverExported:false},
-    {id:"w9", name:"Wollemi Cabernet Merlot 2020", vineyard:"Family vineyard, 2nd-gen", region:"Hunter Valley", style:"Red", variety:"Cabernet Sauvignon", body:"Full", flavour:"plum, dark chocolate, oak", price:21, moq:36, neverExported:true},
-    {id:"w10", name:"Stonefield Sauvignon Blanc 2023", vineyard:"Small independent estate", region:"Adelaide Hills", style:"White", variety:"Sauvignon Blanc", body:"Light", flavour:"passionfruit, gooseberry, herbs", price:17, moq:48, neverExported:false},
-    {id:"w11", name:"Brindle Barossa Shiraz 2019", vineyard:"Family-owned, old vines", region:"Barossa Valley", style:"Red", variety:"Shiraz", body:"Full", flavour:"black cherry, licorice, vanilla oak", price:38, moq:12, neverExported:true},
-    {id:"w12", name:"Halcyon Fiano 2023", vineyard:"Independent, low-yield", region:"McLaren Vale", style:"White", variety:"Fiano", body:"Medium", flavour:"pear, honeysuckle, almond", price:20, moq:24, neverExported:true},
-  ];
+  function callMatchApi(payload){
+    return fetch("/api/match", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(payload),
+    }).then(function(res){
+      if(!res.ok) throw new Error("Match API returned " + res.status);
+      return res.json();
+    });
+  }
 
   // ---------- state ----------
   const state = { brief: null, results: [], selected: new Set() };
@@ -526,77 +523,84 @@
     wrap.style.display = "";
   }
 
-  // Wine Australia's registered Geographical Indication (GI) wine regions,
-  // grouped by state — 70 regions in total, matching the "70 regions"
-  // figure used on the homepage. A few deeply-nested subregions (e.g. High
-  // Eden within Eden Valley, Pokolbin within Hunter Valley) are folded
-  // into their parent region rather than listed separately. Source: Wine
-  // Australia's Register of Protected GIs and Other Terms.
-  const REGIONS_BY_STATE = {
-    "New South Wales": [
-      "Murray Darling", "Perricoota", "Riverina", "Swan Hill", "Cowra", "Mudgee",
-      "Orange", "Hunter Valley", "Broke Fordwich", "Hastings River", "New England Australia",
-      "Shoalhaven Coast", "Southern Highlands", "Canberra District", "Gundagai",
-      "Hilltops", "Tumbarumba",
-    ],
-    "Victoria": [
-      "Bendigo", "Goulburn Valley", "Nagambie Lakes", "Heathcote", "Strathbogie Ranges",
-      "Upper Goulburn", "Alpine Valleys", "Beechworth", "Glenrowan", "King Valley",
-      "Rutherglen", "Geelong", "Macedon Ranges", "Mornington Peninsula", "Sunbury",
-      "Yarra Valley", "Grampians", "Great Western", "Henty", "Pyrenees",
-    ],
-    "South Australia": [
-      "Barossa Valley", "Eden Valley", "Southern Flinders Ranges", "Currency Creek",
-      "Kangaroo Island", "Langhorne Creek", "McLaren Vale", "Southern Fleurieu",
-      "Coonawarra", "Mount Benson", "Padthaway", "Robe", "Wrattonbully",
-      "Riverland", "Adelaide Hills", "Adelaide Plains", "Clare Valley",
-    ],
-    "Western Australia": [
-      "Peel", "Perth Hills", "Swan Valley", "Blackwood Valley", "Geographe",
-      "Albany", "Denmark", "Frankland River", "Mount Barker", "Porongurup",
-      "Manjimup", "Margaret River", "Pemberton",
-    ],
-    "Tasmania": ["Tasmania"],
-    "Queensland": ["Granite Belt", "South Burnett"],
-  };
+  // Region/state options now come from the private backend (/api/match,
+  // action "regionCounts"), so the counts shown reflect the real dataset
+  // and genuinely shrink as the buyer picks a style and then a varietal —
+  // e.g. Red -> Shiraz shows fewer regions than Red alone, because that's
+  // the real set of regions with Shiraz in stock, not a static geography
+  // list. We still render instantly from the last-known counts and then
+  // refresh from the API, so the UI never feels like it's waiting on
+  // network before showing anything.
+  let regionCountsCache = null; // last successful /api/match "regionCounts" response
 
-  // Build the State buttons from REGIONS_BY_STATE itself, so the region
-  // count shown under each state can never drift out of sync with the
-  // actual list a buyer sees after clicking in.
-  function renderStateOptions(){
+  function renderStateOptionsFromCounts(data, selectedStates){
     const row = $("f-state");
-    row.innerHTML = Object.keys(REGIONS_BY_STATE).map(function(stateName){
-      const count = REGIONS_BY_STATE[stateName].length;
-      const label = count === 1 ? "1 region" : count+" regions";
-      return '<button class="pick pick-state" type="button" data-value="'+stateName+'" aria-pressed="false">'
-        + '<span class="pick-state-name">'+stateName+'</span>'
+    const states = (data && data.states) || [];
+    // Keep a stable, sensible order rather than whatever order the API
+    // happens to return (object key iteration over a filtered Set).
+    const order = ["New South Wales","Victoria","South Australia","Western Australia","Tasmania","Queensland"];
+    const byName = {};
+    states.forEach(function(s){ byName[s.state] = s; });
+    row.innerHTML = order.filter(function(name){ return byName[name]; }).map(function(name){
+      const s = byName[name];
+      const pressed = selectedStates.has(name) ? "true" : "false";
+      const label = s.regionCount === 1 ? "1 region" : s.regionCount+" regions";
+      return '<button class="pick pick-state" type="button" data-value="'+name+'" aria-pressed="'+pressed+'">'
+        + '<span class="pick-state-name">'+name+'</span>'
         + '<span class="pick-state-count">'+label+'</span>'
         + '</button>';
     }).join("");
   }
-  renderStateOptions();
 
-  function updateRegionOptions(){
-    const states = multiValues("f-state");
-    const regions = [];
-    states.forEach(function(s){
-      (REGIONS_BY_STATE[s] || []).forEach(function(r){ if(regions.indexOf(r)===-1) regions.push(r); });
-    });
+  function renderRegionOptionsFromCounts(data, selectedStates, prevSelected){
     const wrap = $("f-region-wrap");
     const row = $("f-region");
+    const states = ((data && data.states) || []).filter(function(s){ return selectedStates.has(s.state); });
+    const regions = [];
+    states.forEach(function(s){
+      s.regions.forEach(function(r){ if(regions.indexOf(r.region)===-1) regions.push(r.region); });
+    });
     if(regions.length === 0){
       wrap.style.display = "none";
       row.innerHTML = "";
       return;
     }
-    const prevSelected = new Set(
-      Array.from(row.querySelectorAll(".pick[aria-pressed='true']")).map(function(b){ return b.dataset.value; })
-    );
+    regions.sort();
     row.innerHTML = regions.map(function(r){
       const pressed = prevSelected.has(r) ? "true" : "false";
       return '<button class="pick" type="button" data-value="'+r+'" aria-pressed="'+pressed+'">'+r+'</button>';
     }).join("");
     wrap.style.display = "";
+  }
+
+  // Refetches region/state counts from the backend, filtered by whatever
+  // style(s)/varietal(s) are currently selected, and re-renders both the
+  // state buttons (with live counts) and the region row (narrowed to the
+  // selected states). Called on load and whenever style, varietal or
+  // state selection changes.
+  function updateRegionOptions(){
+    const selectedStates = new Set(multiValues("f-state"));
+    const prevSelectedRegions = new Set(
+      Array.from($("f-region").querySelectorAll(".pick[aria-pressed='true']")).map(function(b){ return b.dataset.value; })
+    );
+    const payload = {
+      action: "regionCounts",
+      styles: multiValues("f-style"),
+      varieties: multiValues("f-variety"),
+    };
+    callMatchApi(payload).then(function(data){
+      regionCountsCache = data;
+      renderStateOptionsFromCounts(data, selectedStates);
+      renderRegionOptionsFromCounts(data, selectedStates, prevSelectedRegions);
+    }).catch(function(err){
+      console.error("regionCounts lookup failed", err);
+      // Fall back to whatever we last successfully loaded, if anything,
+      // so a transient network blip doesn't blank out the picker.
+      if(regionCountsCache){
+        renderStateOptionsFromCounts(regionCountsCache, selectedStates);
+        renderRegionOptionsFromCounts(regionCountsCache, selectedStates, prevSelectedRegions);
+      }
+    });
   }
 
   /* ============================================================
@@ -726,6 +730,10 @@
       }
       if(group.id === "f-style"){
         updateVarietyOptions();
+        updateRegionOptions();
+      }
+      if(group.id === "f-variety"){
+        updateRegionOptions();
       }
       if(group.id === "f-state"){
         updateRegionOptions();
@@ -733,9 +741,9 @@
     });
   });
 
-  // Varietal/region options depend on style/state, so make sure both rows
-  // reflect whatever's pre-selected (none, on first load) once listeners
-  // are bound.
+  // Varietal/region options depend on style/varietal/state, so make sure
+  // both rows reflect whatever's pre-selected (none, on first load) once
+  // listeners are bound.
   updateVarietyOptions();
   updateRegionOptions();
 
@@ -801,76 +809,10 @@
     return Array.prototype.slice.call(document.querySelectorAll("#"+id+" .pick[aria-pressed='true']")).map(function(b){ return b.dataset.value; });
   }
 
-  // ---------- scoring (simplified, fixed-weight version of the internal engine) ----------
-  function scoreWine(brief, wine){
-    let points = 0, maxPoints = 0;
-    const notes = [];
-
-    // Style — critical
-    maxPoints += 5;
-    if(brief.styles.length === 0){ points += 5*0.7; }
-    else if(brief.styles.includes(wine.style)){ points += 5; }
-    else { points += 5*0.1; }
-
-    // Varietal — moderate, only scored when the buyer actually picked one
-    if(brief.varieties && brief.varieties.length > 0){
-      maxPoints += 3;
-      if(wine.variety && brief.varieties.includes(wine.variety)){ points += 3; notes.push(wine.variety+" match"); }
-      else { points += 3*0.15; }
-    }
-
-    // Region — moderate
-    maxPoints += 2;
-    if(brief.regions.length === 0){ points += 2*0.7; }
-    else if(brief.regions.includes(wine.region)){ points += 2; notes.push("Region match"); }
-    else { points += 2*0.3; }
-
-    // Body — moderate
-    maxPoints += 3;
-    if(brief.bodies.length === 0){ points += 3*0.7; }
-    else if(brief.bodies.includes(wine.body)){ points += 3; }
-    else { points += 3*0.4; }
-
-    // Flavour overlap
-    maxPoints += 3;
-    if(brief.flavour.length === 0){ points += 3*0.7; }
-    else {
-      const wf = tokenize(wine.flavour);
-      const overlap = brief.flavour.filter(function(f){ return wf.some(function(x){ return x.indexOf(f)>-1 || f.indexOf(x)>-1; }); }).length;
-      points += 3 * clamp01(overlap / brief.flavour.length);
-      if(overlap > 0) notes.push(overlap+" flavour note"+(overlap>1?"s":"")+" matched");
-    }
-
-    // Price fit — critical
-    maxPoints += 4;
-    let hardFail = false;
-    if(brief.priceMin==null && brief.priceMax==null){ points += 4*0.7; }
-    else {
-      const lo = brief.priceMin ?? 0, hi = brief.priceMax ?? Infinity;
-      if(wine.price >= lo && wine.price <= hi){ points += 4; notes.push("Within price band"); }
-      else {
-        const dist = wine.price < lo ? lo-wine.price : wine.price-hi;
-        const ref = hi===Infinity ? (lo||1) : hi;
-        points += 4 * clamp01(1 - dist/(ref*0.6||1));
-      }
-    }
-
-    // Volume / MOQ — critical, hard fail if below
-    maxPoints += 5;
-    if(brief.volume==null){ points += 5*0.7; }
-    else if(brief.volume >= wine.moq){ points += 5; }
-    else { hardFail = true; }
-
-    // Exclusivity
-    maxPoints += 3;
-    if(brief.novelty !== "market"){ points += 3*0.7; }
-    else if(wine.neverExported){ points += 3; notes.push("Never exported — genuine exclusive"); }
-    else { points += 3*0.2; }
-
-    let score = Math.round((points/maxPoints)*100);
-    if(hardFail) score = Math.min(score, 38);
-    return {wine:wine, score:score, notes:notes, hardFail:hardFail};
-  }
+  // Scoring itself now happens entirely server-side (see /api/match.js —
+  // the authoritative version of what used to live here). This page never
+  // sees the raw dataset or runs the scoring logic; it only submits a
+  // brief and receives back an already-ranked, already-trimmed shortlist.
 
   function readBrief(){
     const briefMarket = singleValue("f-market");
@@ -948,6 +890,10 @@
     showPanel(2);
     $("scan-view").style.display = "";
     $("results-view").style.display = "none";
+    // Kick off the real search against the private backend in parallel
+    // with the scan animation, so the results are ready (or we at least
+    // know they failed) by the time the animation finishes.
+    state.searchPromise = callMatchApi({action: "search", brief: state.brief});
     runScan();
   });
 
@@ -963,19 +909,44 @@
       if(i >= total){
         clearInterval(interval);
         setTimeout(function(){
-          $("scan-view").style.display = "none";
-          $("results-view").style.display = "";
-          renderResults();
+          state.searchPromise
+            .then(function(data){
+              $("scan-view").style.display = "none";
+              $("results-view").style.display = "";
+              renderResults(false, data.results || []);
+            })
+            .catch(function(err){
+              console.error("Match search failed", err);
+              line.textContent = "Something went wrong reaching the match engine — please try again.";
+            });
         }, 350);
       }
     }, 320);
   }
 
   // ---------- Step 2: results ----------
-  function renderResults(preserveSelection){
+  // `results` are the already-scored, already-ranked, already-trimmed
+  // shortlist returned by /api/match (action "search") — never the raw
+  // dataset. Each result's shape matches what the UI below expects
+  // (wine fields inlined alongside score/notes/hardFail).
+  function renderResults(preserveSelection, apiResults){
     const previouslySelected = preserveSelection ? new Set(state.selected) : null;
-    const scored = WINES.map(function(w){ return scoreWine(state.brief, w); })
-      .sort(function(a,b){ return b.score - a.score; });
+    // Normalize the API's flat result shape back into the {wine, score,
+    // notes, hardFail} shape the rendering code below expects, so the
+    // markup/selection/checkout code didn't need to change.
+    const scored = apiResults
+      ? apiResults.map(function(r){
+          return {
+            wine: {
+              id: r.id, name: r.name, vineyard: r.vineyard, region: r.region,
+              state: r.state, style: r.style, variety: r.variety, body: r.body,
+              price: r.price, moq: r.moq, neverExported: r.neverExported,
+            },
+            score: r.score, notes: r.notes, hardFail: r.hardFail,
+          };
+        })
+      : (state.results || []).slice();
+    scored.sort(function(a,b){ return b.score - a.score; });
     state.results = scored;
     state.selected = previouslySelected || new Set();
 
