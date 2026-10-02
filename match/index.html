@@ -136,6 +136,17 @@
   .pick[aria-pressed="true"]{background:var(--sapphire); border-color:var(--sapphire-bright); color:#fff; font-weight:600;}
   .pick:focus-visible{outline:2px solid var(--cyan); outline-offset:2px;}
 
+  .pickrow-state{gap:10px;}
+  .pick-state{
+    display:flex; flex-direction:column; align-items:flex-start; gap:3px;
+    padding:12px 18px; text-align:left; min-width:148px;
+  }
+  .pick-state-name{font-size:13.5px;}
+  .pick-state-count{
+    font-size:11px; letter-spacing:0.03em; color:var(--ink-faint); font-weight:400;
+  }
+  .pick-state[aria-pressed="true"] .pick-state-count{color:rgba(255,255,255,0.75);}
+
   .btnrow{display:flex; gap:12px; flex-wrap:wrap; margin-top:12px; align-items:center;}
 
   /* ---- Loading / scanning state ---- */
@@ -324,14 +335,8 @@
 
       <div class="field">
         <label>State <span class="opt">(optional)</span></label>
-        <div class="pickrow" id="f-state" data-picker="multi">
-          <button class="pick" type="button" data-value="New South Wales">New South Wales</button>
-          <button class="pick" type="button" data-value="Victoria">Victoria</button>
-          <button class="pick" type="button" data-value="South Australia">South Australia</button>
-          <button class="pick" type="button" data-value="Western Australia">Western Australia</button>
-          <button class="pick" type="button" data-value="Tasmania">Tasmania</button>
-          <button class="pick" type="button" data-value="Queensland">Queensland</button>
-        </div>
+        <p class="sub" style="margin-top:-4px; margin-bottom:12px;">Each state shows how many wine regions it covers — tap one to see them.</p>
+        <div class="pickrow pickrow-state" id="f-state" data-picker="multi"></div>
       </div>
 
       <div class="field" id="f-region-wrap" style="display:none;">
@@ -554,6 +559,23 @@
     "Tasmania": ["Tasmania"],
     "Queensland": ["Granite Belt", "South Burnett"],
   };
+
+  // Build the State buttons from REGIONS_BY_STATE itself, so the region
+  // count shown under each state can never drift out of sync with the
+  // actual list a buyer sees after clicking in.
+  function renderStateOptions(){
+    const row = $("f-state");
+    row.innerHTML = Object.keys(REGIONS_BY_STATE).map(function(stateName){
+      const count = REGIONS_BY_STATE[stateName].length;
+      const label = count === 1 ? "1 region" : count+" regions";
+      return '<button class="pick pick-state" type="button" data-value="'+stateName+'" aria-pressed="false">'
+        + '<span class="pick-state-name">'+stateName+'</span>'
+        + '<span class="pick-state-count">'+label+'</span>'
+        + '</button>';
+    }).join("");
+  }
+  renderStateOptions();
+
   function updateRegionOptions(){
     const states = multiValues("f-state");
     const regions = [];
