@@ -246,6 +246,20 @@
   #pallet-filled{display:flex; flex-direction:column; min-height:0; flex:1 1 auto; padding:20px 22px 18px;}
   #pallet-filled h3{font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-dim); margin-bottom:14px; flex-shrink:0;}
 
+  /* Progress toward the 60-bottle order minimum. This is a FLOOR, not a
+     ceiling — once met, the bar shows full and a check, and the label
+     switches to a plain running count with no bar at all, so it never
+     reads as "you've hit the max". */
+  .pallet-minimum{margin-bottom:16px; flex-shrink:0;}
+  .pallet-minimum-row{display:flex; justify-content:space-between; align-items:baseline; font-size:11.5px; margin-bottom:7px;}
+  .pallet-minimum-row #pallet-minimum-label{color:var(--ink); font-weight:500;}
+  .pallet-minimum-row #pallet-minimum-status{color:var(--ink-faint);}
+  .pallet-minimum-track{height:5px; border-radius:3px; background:var(--bg); border:1px solid var(--border-soft); overflow:hidden;}
+  .pallet-minimum-fill{height:100%; width:0%; background:linear-gradient(90deg, var(--sapphire), var(--cyan)); transition:width .25s ease;}
+  .pallet-minimum.met .pallet-minimum-fill{background:var(--good, #5fd4a0);}
+  .pallet-minimum.met .pallet-minimum-row #pallet-minimum-status{color:var(--good, #5fd4a0);}
+  .pallet-minimum-note{font-size:10.5px; color:var(--ink-faint); line-height:1.5; margin:7px 0 0;}
+
   .pallet-items{overflow-y:auto; flex:1 1 auto; min-height:0; display:flex; flex-direction:column; gap:12px; margin:-2px -4px 0; padding:2px 4px 2px 0;}
   .pallet-item{
     display:grid; grid-template-columns:40px 1fr auto; gap:10px; align-items:start;
@@ -525,6 +539,16 @@
 
             <div id="pallet-filled" style="display:none;">
               <h3>Your Pallet</h3>
+
+              <div class="pallet-minimum" id="pallet-minimum">
+                <div class="pallet-minimum-row">
+                  <span id="pallet-minimum-label">0 of 60 bottles</span>
+                  <span id="pallet-minimum-status">minimum order</span>
+                </div>
+                <div class="pallet-minimum-track"><div class="pallet-minimum-fill" id="pallet-minimum-fill"></div></div>
+                <p class="pallet-minimum-note">Your order is consolidated with other buyers onto one shared shipping pallet — 60 bottles is just your minimum, not a pallet size.</p>
+              </div>
+
               <div class="pallet-items" id="pallet-items"></div>
               <div class="pallet-moq-warning" id="pallet-moq-warning" style="display:none;">Fix the quantities below MOQ before continuing.</div>
               <div class="pallet-footer">
@@ -1176,6 +1200,12 @@
     return card;
   }
 
+  // Minimum total bottles for a single buyer's order. This isn't a pallet
+  // capacity limit — it's the floor below which handling an order isn't
+  // worth it for us. Orders are consolidated with other buyers onto one
+  // shared shipping pallet, so hitting 60 doesn't mean the pallet is full.
+  const PALLET_MIN_BOTTLES = 60;
+
   function pickedLines(){
     return Array.from(state.quantities.entries())
       .map(function(entry){
@@ -1229,10 +1259,28 @@
     $("pallet-count").textContent = lines.length;
     $("pallet-bottles").textContent = bottles;
     $("pallet-total").innerHTML = formatPrice(subtotalAud);
-    // Block checkout while any line is below that wine's MOQ — matches the
-    // per-card validation, so a buyer can't proceed with an order the
-    // vineyard couldn't actually fulfil.
-    $("btn-to-checkout").disabled = anyBelowMoq;
+
+    // Minimum-order progress. Reads as a floor, not a cap: the bar fills
+    // to 100% right at the minimum and stops (never over-fills), and once
+    // met we drop the bar for a plain bottle count — there's no sense in
+    // which more bottles "overflows" anything.
+    const minEl = $("pallet-minimum");
+    const metMin = bottles >= PALLET_MIN_BOTTLES;
+    minEl.classList.toggle("met", metMin);
+    $("pallet-minimum-fill").style.width = Math.min(100, (bottles / PALLET_MIN_BOTTLES) * 100) + "%";
+    if(metMin){
+      $("pallet-minimum-label").textContent = bottles + " bottles";
+      $("pallet-minimum-status").textContent = "✓ minimum met";
+    } else {
+      $("pallet-minimum-label").textContent = bottles + " of " + PALLET_MIN_BOTTLES + " bottles";
+      $("pallet-minimum-status").textContent = (PALLET_MIN_BOTTLES - bottles) + " to go";
+    }
+
+    // Block checkout while any line is below that wine's MOQ, or the total
+    // order hasn't reached the minimum yet — matches the per-card
+    // validation, so a buyer can't proceed with an order the vineyard
+    // couldn't actually fulfil or that's too small for us to process.
+    $("btn-to-checkout").disabled = anyBelowMoq || !metMin;
     $("pallet-moq-warning").style.display = anyBelowMoq ? "" : "none";
   }
 
