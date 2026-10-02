@@ -213,16 +213,40 @@
   }
   .card-qty .moq-hint{font-size:10.5px; color:var(--ink-faint);}
 
-  /* ---- Sticky pallet summary bar ---- */
+  /* ---- Sticky pallet summary: row-by-row items + totals footer ---- */
   .pallet-bar{
     position:sticky; bottom:0; margin-top:8px; margin-bottom:24px;
     background:linear-gradient(160deg, var(--surface), var(--surface-2));
     border:1px solid var(--border-soft); border-radius:var(--radius);
-    padding:16px 22px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
-    box-shadow:0 8px 24px rgba(0,0,0,0.25);
+    padding:18px 22px 16px; box-shadow:0 8px 24px rgba(0,0,0,0.3);
+    max-height:min(46vh, 420px); display:flex; flex-direction:column;
   }
-  .pallet-bar .pallet-info{display:flex; gap:20px; flex-wrap:wrap; font-size:13px; color:var(--ink-dim);}
-  .pallet-bar .pallet-info b{color:var(--ink); font-family:'Fraunces',serif; font-weight:400; font-size:15px;}
+  .pallet-bar h3{font-size:13.5px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; color:var(--ink-dim); margin-bottom:10px; flex-shrink:0;}
+  .pallet-items{overflow-y:auto; flex:1 1 auto; min-height:0;}
+  .pallet-item{
+    display:flex; align-items:center; justify-content:space-between; gap:14px;
+    padding:9px 0; border-bottom:1px solid var(--border-soft);
+  }
+  .pallet-item:last-child{border-bottom:none;}
+  .pallet-item .pi-name{font-size:13px; font-weight:500;}
+  .pallet-item .pi-meta{font-size:11.5px; color:var(--ink-faint); margin-top:1px;}
+  .pallet-item .pi-qty{font-size:12.5px; color:var(--ink-dim); white-space:nowrap;}
+  .pallet-item .pi-price{font-family:'Fraunces',serif; font-size:14px; white-space:nowrap; min-width:70px; text-align:right;}
+  .pallet-item .pi-remove{
+    background:none; border:none; color:var(--ink-faint); cursor:pointer; font-size:16px;
+    line-height:1; padding:2px 4px; flex-shrink:0;
+  }
+  .pallet-item .pi-remove:hover{color:var(--bad, #e58a8a);}
+  .pallet-footer{
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    padding-top:12px; margin-top:4px; border-top:1px solid var(--border); flex-shrink:0;
+  }
+  .pallet-footer .pallet-info{display:flex; gap:20px; flex-wrap:wrap; font-size:13px; color:var(--ink-dim);}
+  .pallet-footer .pallet-info b{color:var(--ink); font-family:'Fraunces',serif; font-weight:400; font-size:15px;}
+  .pallet-footer .pallet-total-wrap b{
+    background:linear-gradient(100deg, var(--sapphire-bright), var(--cyan));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
 
   /* ---- Checkout ---- */
   .checkout-grid{display:grid; grid-template-columns:1.6fr 1fr; gap:24px; align-items:start;}
@@ -446,12 +470,16 @@
       </div>
       <div id="results-groups"></div>
       <div class="pallet-bar" id="pallet-bar" style="display:none;">
-        <div class="pallet-info">
-          <span><b id="pallet-count">0</b> wines</span>
-          <span><b id="pallet-bottles">0</b> bottles</span>
-          <span><b id="pallet-total">—</b> est. total</span>
+        <h3>Your Pallet So Far</h3>
+        <div class="pallet-items" id="pallet-items"></div>
+        <div class="pallet-footer">
+          <div class="pallet-info">
+            <span><b id="pallet-count">0</b> wines</span>
+            <span><b id="pallet-bottles">0</b> bottles</span>
+            <span class="pallet-total-wrap">est. total <b id="pallet-total">—</b></span>
+          </div>
+          <button class="btn btn-solid" id="btn-to-checkout" style="padding:12px 28px;" disabled>Continue to Checkout →</button>
         </div>
-        <button class="btn btn-solid" id="btn-to-checkout" style="padding:12px 28px;" disabled>Continue to Checkout →</button>
       </div>
     </div>
   </section>
@@ -1077,11 +1105,35 @@
       return;
     }
     bar.style.display = "";
+
+    const itemsBox = $("pallet-items");
+    itemsBox.innerHTML = "";
+    lines.forEach(function(l){
+      const lineTotalAud = l.result.price * l.qty;
+      const row = document.createElement("div");
+      row.className = "pallet-item";
+      row.innerHTML =
+        '<div><div class="pi-name">'+l.result.name+'</div><div class="pi-meta">'+l.result.region+' · '+l.result.style+(l.result.variety?' · '+l.result.variety:'')+'</div></div>' +
+        '<div class="pi-qty">'+l.qty+' × '+formatPrice(l.result.price)+'</div>' +
+        '<div class="pi-price">'+formatPrice(lineTotalAud)+'</div>' +
+        '<button class="pi-remove" type="button" data-id="'+l.result.id+'" aria-label="Remove">×</button>';
+      itemsBox.appendChild(row);
+    });
+    itemsBox.querySelectorAll(".pi-remove").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        const id = btn.dataset.id;
+        state.quantities.delete(id);
+        const input = document.getElementById("qty-"+id);
+        if(input) input.value = "";
+        updatePalletBar();
+      });
+    });
+
     const bottles = lines.reduce(function(n,l){ return n + l.qty; }, 0);
     const subtotalAud = lines.reduce(function(n,l){ return n + l.result.price * l.qty; }, 0);
     $("pallet-count").textContent = lines.length;
     $("pallet-bottles").textContent = bottles;
-    $("pallet-total").textContent = formatPrice(subtotalAud);
+    $("pallet-total").innerHTML = formatPrice(subtotalAud);
     $("btn-to-checkout").disabled = false;
   }
 
