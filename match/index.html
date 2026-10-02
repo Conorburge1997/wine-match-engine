@@ -164,39 +164,55 @@
   .scan-progress{width:280px; max-width:80%; height:2px; background:var(--border-soft); margin:24px auto 0; overflow:hidden;}
   .scan-progress-bar{height:100%; width:0%; background:linear-gradient(90deg, var(--sapphire), var(--cyan)); transition:width .3s ease;}
 
-  /* ---- Match results ---- */
-  .results-summary{display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; margin-bottom:24px;}
+  /* ---- Match results (grouped rows, top 5 per style/varietal) ---- */
+  .results-summary{display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; margin-bottom:28px;}
   .results-summary .count{color:var(--ink-dim); font-size:13.5px;}
-  .results-list{display:flex; flex-direction:column; gap:1px; background:var(--border-soft); border:1px solid var(--border-soft); margin-bottom:32px;}
-  .result{
-    background:var(--bg); padding:24px 28px; display:grid;
-    grid-template-columns:auto 1fr auto auto; gap:24px; align-items:center;
+  .result-group{margin-bottom:36px;}
+  .result-group-head{display:flex; align-items:baseline; gap:10px; margin-bottom:14px;}
+  .result-group-head h3{font-family:'Fraunces',serif; font-style:italic; font-size:19px; color:var(--sapphire-glint);}
+  .result-group-head .group-count{font-size:12px; color:var(--ink-faint);}
+  .result-row{
+    display:flex; gap:14px; overflow-x:auto; padding-bottom:6px;
+    scroll-snap-type:x proximity;
   }
-  @media (max-width:760px){ .result{grid-template-columns:1fr; text-align:left;} }
-  .result-check{
-    width:22px; height:22px; border-radius:50%; border:1.5px solid var(--border);
-    display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;
-    background:var(--surface); transition:all .15s;
+  .result-card{
+    background:var(--bg); border:1px solid var(--border-soft); border-radius:var(--radius);
+    padding:18px 20px; min-width:230px; max-width:230px; flex-shrink:0; scroll-snap-align:start;
+    display:flex; flex-direction:column; gap:10px;
   }
-  .result-check.checked{background:var(--sapphire); border-color:var(--sapphire-bright);}
-  .result-check svg{opacity:0; transition:opacity .1s;}
-  .result-check.checked svg{opacity:1;}
-  .result-main h3{font-size:16.5px; font-weight:500; margin-bottom:6px;}
-  .result-meta{display:flex; flex-wrap:wrap; gap:6px 14px; font-size:12.5px; color:var(--ink-dim);}
-  .result-meta span b{color:var(--ink);}
-  .result-tag{
-    display:inline-block; font-size:10.5px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase;
-    padding:3px 8px; border-radius:2px; margin-top:8px;
-  }
-  .result-tag.gem{background:rgba(95,212,224,0.14); color:var(--cyan);}
-  .result-price{text-align:right; font-family:'Fraunces',serif; font-size:17px;}
-  .result-price .per{display:block; font-size:11px; color:var(--ink-dim); font-family:'Inter',sans-serif; font-weight:500; text-transform:uppercase; letter-spacing:0.04em; margin-top:2px;}
-  .result-score{text-align:center; min-width:70px;}
-  .result-score .num{font-family:'Fraunces',serif; font-size:22px; line-height:1;
+  .result-card h4{font-size:14.5px; font-weight:500; line-height:1.3;}
+  .result-card .card-meta{display:flex; flex-direction:column; gap:3px; font-size:12px; color:var(--ink-dim);}
+  .result-card .card-score{display:flex; align-items:baseline; gap:6px;}
+  .result-card .card-score .num{font-family:'Fraunces',serif; font-size:20px; line-height:1;
     background:linear-gradient(100deg, var(--sapphire-bright), var(--cyan));
     -webkit-background-clip:text; background-clip:text; color:transparent;
   }
-  .result-score .lbl{font-size:10px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:0.06em; margin-top:4px;}
+  .result-card .card-score .lbl{font-size:10px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:0.05em;}
+  .result-card .card-price{font-family:'Fraunces',serif; font-size:15px;}
+  .result-card .card-price .per{display:block; font-size:10.5px; color:var(--ink-dim); font-family:'Inter',sans-serif; font-weight:500; text-transform:uppercase; letter-spacing:0.04em; margin-top:2px;}
+  .result-tag{
+    display:inline-block; font-size:10px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase;
+    padding:3px 7px; border-radius:2px; align-self:flex-start;
+  }
+  .result-tag.gem{background:rgba(95,212,224,0.14); color:var(--cyan);}
+  .card-qty{display:flex; align-items:center; gap:8px; margin-top:auto; padding-top:8px; border-top:1px solid var(--border-soft);}
+  .card-qty label{font-size:11px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:0.04em;}
+  .card-qty input{
+    width:64px; background:var(--surface); border:1px solid var(--border); border-radius:4px;
+    color:var(--ink); padding:6px 8px; font-size:13px; font-family:'Inter',sans-serif;
+  }
+  .card-qty .moq-hint{font-size:10.5px; color:var(--ink-faint);}
+
+  /* ---- Sticky pallet summary bar ---- */
+  .pallet-bar{
+    position:sticky; bottom:0; margin-top:8px; margin-bottom:24px;
+    background:linear-gradient(160deg, var(--surface), var(--surface-2));
+    border:1px solid var(--border-soft); border-radius:var(--radius);
+    padding:16px 22px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    box-shadow:0 8px 24px rgba(0,0,0,0.25);
+  }
+  .pallet-bar .pallet-info{display:flex; gap:20px; flex-wrap:wrap; font-size:13px; color:var(--ink-dim);}
+  .pallet-bar .pallet-info b{color:var(--ink); font-family:'Fraunces',serif; font-weight:400; font-size:15px;}
 
   /* ---- Checkout ---- */
   .checkout-grid{display:grid; grid-template-columns:1.6fr 1fr; gap:24px; align-items:start;}
@@ -411,15 +427,20 @@
       <div class="step-intro">
         <div class="step-eyebrow">Step 2 of 3</div>
         <h1>Your matches.</h1>
-        <p>Ranked by fit to your brief. Select the wines you'd like to include, then continue to review your pallet.</p>
+        <p>Top 5 highest-ranked wines per style and varietal. Set a quantity on anything you'd like, then continue to review your pallet.</p>
       </div>
       <div class="results-summary">
         <div class="count" id="results-count"></div>
         <button class="btn btn-ghost" id="btn-edit-brief" style="padding:8px 16px; font-size:11px;">← Edit Brief</button>
       </div>
-      <div class="results-list" id="results-list"></div>
-      <div class="btnrow">
-        <button class="btn btn-solid" id="btn-to-checkout" style="padding:14px 32px;" disabled>Continue to Checkout →</button>
+      <div id="results-groups"></div>
+      <div class="pallet-bar" id="pallet-bar" style="display:none;">
+        <div class="pallet-info">
+          <span><b id="pallet-count">0</b> wines</span>
+          <span><b id="pallet-bottles">0</b> bottles</span>
+          <span><b id="pallet-total">—</b> est. total</span>
+        </div>
+        <button class="btn btn-solid" id="btn-to-checkout" style="padding:12px 28px;" disabled>Continue to Checkout →</button>
       </div>
     </div>
   </section>
@@ -490,7 +511,10 @@
   }
 
   // ---------- state ----------
-  const state = { brief: null, results: [], selected: new Set() };
+  // state.quantities: Map of wine id -> quantity in bottles the buyer has
+  // entered (replaces the old checkbox-select model; a wine with qty 0 or
+  // unset is simply not included in the pallet).
+  const state = { brief: null, groups: [], resultsById: new Map(), quantities: new Map() };
 
   // Varietal sub-options shown once a buyer picks a wine style. Rosé,
   // Sparkling and Dessert/fortified aren't sold by single varietal the same
@@ -647,8 +671,8 @@
     const active = document.querySelector("[data-panel].active");
     if(!active) return;
     const name = active.dataset.panelName;
-    if(name === "matches" && state.results.length) renderResults(true);
-    else if(name === "checkout" && state.selected.size) renderCheckout();
+    if(name === "matches" && state.groups.length) renderResults(state.groups);
+    else if(name === "checkout" && state.quantities.size) renderCheckout();
     if(typeof updatePriceAudHint === "function") updatePriceAudHint();
   }
 
@@ -913,7 +937,7 @@
             .then(function(data){
               $("scan-view").style.display = "none";
               $("results-view").style.display = "";
-              renderResults(false, data.results || []);
+              renderResults(data.groups || []);
             })
             .catch(function(err){
               console.error("Match search failed", err);
@@ -925,65 +949,91 @@
   }
 
   // ---------- Step 2: results ----------
-  // `results` are the already-scored, already-ranked, already-trimmed
+  // `groups` is the already-scored, already-ranked, top-5-per-group
   // shortlist returned by /api/match (action "search") — never the raw
-  // dataset. Each result's shape matches what the UI below expects
-  // (wine fields inlined alongside score/notes/hardFail).
-  function renderResults(preserveSelection, apiResults){
-    const previouslySelected = preserveSelection ? new Set(state.selected) : null;
-    // Normalize the API's flat result shape back into the {wine, score,
-    // notes, hardFail} shape the rendering code below expects, so the
-    // markup/selection/checkout code didn't need to change.
-    const scored = apiResults
-      ? apiResults.map(function(r){
-          return {
-            wine: {
-              id: r.id, name: r.name, vineyard: r.vineyard, region: r.region,
-              state: r.state, style: r.style, variety: r.variety, body: r.body,
-              price: r.price, moq: r.moq, neverExported: r.neverExported,
-            },
-            score: r.score, notes: r.notes, hardFail: r.hardFail,
-          };
-        })
-      : (state.results || []).slice();
-    scored.sort(function(a,b){ return b.score - a.score; });
-    state.results = scored;
-    state.selected = previouslySelected || new Set();
-
-    const list = $("results-list");
-    list.innerHTML = "";
-    $("results-count").textContent = scored.length + " wines scored against your brief";
-
-    scored.forEach(function(r){
-      const row = document.createElement("div");
-      row.className = "result";
-      const label = r.score>=80 ? "Strong match" : r.score>=55 ? "Possible match" : "Weak match";
-      row.innerHTML =
-        '<div class="result-check" data-id="'+r.wine.id+'"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#060810" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
-        '<div class="result-main">' +
-          '<h3>'+r.wine.name+'</h3>' +
-          '<div class="result-meta">' +
-            '<span>'+r.wine.region+'</span>' +
-            '<span>'+r.wine.style+', '+r.wine.body+'-bodied</span>' +
-            '<span>'+r.wine.vineyard+'</span>' +
-          '</div>' +
-          (r.wine.neverExported ? '<span class="result-tag gem">Never exported</span>' : '') +
-        '</div>' +
-        '<div class="result-score"><div class="num">'+r.score+'%</div><div class="lbl">'+label+'</div></div>' +
-        '<div class="result-price">'+formatPrice(r.wine.price)+'<span class="per">per bottle</span></div>';
-      list.appendChild(row);
+  // dataset, and never more than 5 wines per style/varietal group, so the
+  // buyer sees a curated shortlist rather than the whole catalogue.
+  function renderResults(groups){
+    state.groups = groups;
+    state.resultsById = new Map();
+    groups.forEach(function(g){ g.results.forEach(function(r){ state.resultsById.set(r.id, r); }); });
+    // Drop any quantities for wines that are no longer in the current
+    // result set (e.g. the buyer edited their brief and re-ran the search).
+    Array.from(state.quantities.keys()).forEach(function(id){
+      if(!state.resultsById.has(id)) state.quantities.delete(id);
     });
 
-    list.querySelectorAll(".result-check").forEach(function(chk){
-      if(state.selected.has(chk.dataset.id)) chk.classList.add("checked");
-      chk.addEventListener("click", function(){
-        const id = chk.dataset.id;
-        if(state.selected.has(id)){ state.selected.delete(id); chk.classList.remove("checked"); }
-        else { state.selected.add(id); chk.classList.add("checked"); }
-        $("btn-to-checkout").disabled = state.selected.size === 0;
+    const totalShown = groups.reduce(function(n,g){ return n + g.results.length; }, 0);
+    $("results-count").textContent = totalShown + " wine" + (totalShown===1?"":"s") + " shown, top 5 per style/varietal";
+
+    const container = $("results-groups");
+    container.innerHTML = "";
+    groups.forEach(function(g){
+      const section = document.createElement("div");
+      section.className = "result-group";
+      section.innerHTML =
+        '<div class="result-group-head"><h3>'+g.label+'</h3><span class="group-count">top '+g.results.length+'</span></div>' +
+        '<div class="result-row"></div>';
+      const row = section.querySelector(".result-row");
+      g.results.forEach(function(r){
+        row.appendChild(buildResultCard(r));
       });
+      container.appendChild(section);
     });
-    $("btn-to-checkout").disabled = state.selected.size === 0;
+
+    updatePalletBar();
+  }
+
+  function buildResultCard(r){
+    const card = document.createElement("div");
+    card.className = "result-card";
+    const label = r.score>=80 ? "Strong match" : r.score>=55 ? "Possible match" : "Weak match";
+    const existingQty = state.quantities.get(r.id) || "";
+    card.innerHTML =
+      '<h4>'+r.name+'</h4>' +
+      '<div class="card-meta"><span>'+r.region+'</span><span>'+r.style+(r.variety?' · '+r.variety:'')+', '+r.body+'-bodied</span><span>'+r.vineyard+'</span></div>' +
+      (r.neverExported ? '<span class="result-tag gem">Never exported</span>' : '') +
+      '<div class="card-score"><span class="num">'+r.score+'%</span><span class="lbl">'+label+'</span></div>' +
+      '<div class="card-price">'+formatPrice(r.price)+'<span class="per">per bottle</span></div>' +
+      '<div class="card-qty">' +
+        '<label for="qty-'+r.id+'">Qty</label>' +
+        '<input type="number" min="0" step="1" id="qty-'+r.id+'" data-id="'+r.id+'" value="'+existingQty+'" placeholder="0">' +
+        '<span class="moq-hint">MOQ '+r.moq+'</span>' +
+      '</div>';
+    const input = card.querySelector("input");
+    input.addEventListener("input", function(){
+      const n = parseInt(input.value, 10);
+      if(!n || n <= 0){ state.quantities.delete(r.id); }
+      else { state.quantities.set(r.id, n); }
+      updatePalletBar();
+    });
+    return card;
+  }
+
+  function pickedLines(){
+    return Array.from(state.quantities.entries())
+      .map(function(entry){
+        const r = state.resultsById.get(entry[0]);
+        return r ? {result: r, qty: entry[1]} : null;
+      })
+      .filter(Boolean);
+  }
+
+  function updatePalletBar(){
+    const lines = pickedLines();
+    const bar = $("pallet-bar");
+    if(lines.length === 0){
+      bar.style.display = "none";
+      $("btn-to-checkout").disabled = true;
+      return;
+    }
+    bar.style.display = "";
+    const bottles = lines.reduce(function(n,l){ return n + l.qty; }, 0);
+    const subtotalAud = lines.reduce(function(n,l){ return n + l.result.price * l.qty; }, 0);
+    $("pallet-count").textContent = lines.length;
+    $("pallet-bottles").textContent = bottles;
+    $("pallet-total").textContent = formatPrice(subtotalAud);
+    $("btn-to-checkout").disabled = false;
   }
 
   $("btn-edit-brief").addEventListener("click", function(){ showPanel(1); });
@@ -995,26 +1045,28 @@
 
   // ---------- Step 3: checkout ----------
   function renderCheckout(){
-    const chosen = state.results.filter(function(r){ return state.selected.has(r.wine.id); });
+    const lines = pickedLines();
     const cur = activeCurrency();
     const itemsBox = $("checkout-items");
     const currencyNote = cur !== "AUD"
       ? '<p class="sub currency-note">Prices shown in '+cur+' for '+state.brief.market+', converted from AUD'+(currency.live ? ' at today’s rate' : '')+'.</p>'
       : '';
-    itemsBox.innerHTML = '<h2>Your Pallet</h2><p class="sub">'+chosen.length+' wine'+(chosen.length===1?'':'s')+' selected, MOQ per wine applies.</p>' + currencyNote;
+    const bottleCount = lines.reduce(function(n,l){ return n+l.qty; }, 0);
+    itemsBox.innerHTML = '<h2>Your Pallet</h2><p class="sub">'+lines.length+' wine'+(lines.length===1?'':'s')+', '+bottleCount+' bottles total.</p>' + currencyNote;
     let subtotalAud = 0;
-    chosen.forEach(function(r){
-      const lineTotalAud = r.wine.price * r.wine.moq;
+    lines.forEach(function(l){
+      const lineTotalAud = l.result.price * l.qty;
       subtotalAud += lineTotalAud;
+      const belowMoq = l.qty < l.result.moq;
       const item = document.createElement("div");
       item.className = "line-item";
       item.innerHTML =
-        '<div><div class="li-name">'+r.wine.name+'</div><div class="li-meta">'+r.wine.region+' · '+r.wine.moq+' bottles (MOQ) · '+formatPrice(r.wine.price)+'/bottle</div></div>' +
+        '<div><div class="li-name">'+l.result.name+'</div><div class="li-meta">'+l.result.region+' · '+l.qty+' bottles'+(belowMoq ? ' <span style="color:var(--cyan);">(below MOQ of '+l.result.moq+')</span>' : '')+' · '+formatPrice(l.result.price)+'/bottle</div></div>' +
         '<div class="li-price">'+formatPrice(lineTotalAud)+'</div>';
       itemsBox.appendChild(item);
     });
 
-    const freightAud = chosen.length ? 480 + chosen.length*60 : 0;
+    const freightAud = lines.length ? 480 + lines.length*60 : 0;
     const totalAud = subtotalAud + freightAud;
     const summary = $("checkout-summary");
     summary.innerHTML =
@@ -1026,11 +1078,11 @@
   $("btn-back-results").addEventListener("click", function(){ showPanel(2); });
 
   $("btn-request").addEventListener("click", function(){
-    const chosen = state.results.filter(function(r){ return state.selected.has(r.wine.id); });
+    const lines = pickedLines();
     const subject = encodeURIComponent("Pallet request — " + (state.brief ? state.brief.name : ""));
     const locationLabel = briefLocationLabel(state.brief);
     const buyerLine = state.brief ? (state.brief.name + (locationLabel ? " (" + locationLabel + ")" : "")) : "";
-    const bodyLines = [buyerLine, "", "Requested wines:"].concat(chosen.map(function(r){ return "- "+r.wine.name+" ("+r.wine.moq+" bottles)"; }));
+    const bodyLines = [buyerLine, "", "Requested wines:"].concat(lines.map(function(l){ return "- "+l.result.name+" ("+l.qty+" bottles)"; }));
     const body = encodeURIComponent(bodyLines.join("\n"));
     window.location.href = "mailto:hello@sapphirepanda.com?subject="+subject+"&body="+body;
   });

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Match Engine — Internal Debug</title>
+<meta name="robots" content="noindex, nofollow">
+<!--
+  INTERNAL / OPERATOR-ONLY. Not linked from any public page. Calls
+  /api/match with action "debug", which returns the full scored+ranked
+  list for every wine in the dataset (not trimmed to top-5-per-group like
+  the public match tool), so Conor can see what's scoring well or badly
+  across the whole catalogue while tuning a brief or the scoring weights.
+  The dataset itself is still never embedded in this page — it's fetched
+  per-request from the private backend, same as the public tool.
+-->
+<style>
+  :root{
+    --bg:#060810; --surface:#0e1324; --surface-2:#121a30;
+    --border:#212c4a; --border-soft:#161d34;
+    --ink:#f4f5fa; --ink-dim:#b3bad2; --ink-faint:#7c85a6;
+    --sapphire:#3a6ede; --sapphire-bright:#6f93e8; --cyan:#5fd4e0;
+    --good:#5fd4a0; --warn:#e0b273; --bad:#e58a8a;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:'Inter',system-ui,sans-serif; font-size:14px; padding:24px;}
+  h1{font-size:18px; margin:0 0 4px;}
+  .sub{color:var(--ink-faint); font-size:12.5px; margin:0 0 20px;}
+  .banner{background:var(--surface-2); border:1px solid var(--border); border-radius:4px; padding:10px 14px; font-size:12.5px; color:var(--warn); margin-bottom:20px;}
+  .controls{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; align-items:end;}
+  .field{display:flex; flex-direction:column; gap:4px;}
+  .field label{font-size:11px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.04em;}
+  input, select{
+    background:var(--surface); border:1px solid var(--border); border-radius:3px;
+    color:var(--ink); padding:7px 9px; font-size:13px; font-family:inherit; min-width:140px;
+  }
+  button{
+    background:var(--sapphire); border:none; border-radius:3px; color:#fff;
+    padding:8px 16px; font-size:13px; cursor:pointer; font-family:inherit;
+  }
+  button:hover{background:var(--sapphire-bright);}
+  table{width:100%; border-collapse:collapse; font-size:12.5px;}
+  th, td{padding:7px 10px; border-bottom:1px solid var(--border-soft); text-align:left; white-space:nowrap;}
+  th{color:var(--ink-faint); font-size:11px; text-transform:uppercase; letter-spacing:0.03em; cursor:pointer; user-select:none;}
+  th:hover{color:var(--ink);}
+  tr.hardfail{opacity:0.45;}
+  .score{font-weight:600;}
+  .score.good{color:var(--good);}
+  .score.warn{color:var(--warn);}
+  .score.bad{color:var(--bad);}
+  .notes{color:var(--ink-dim); max-width:260px; overflow:hidden; text-overflow:ellipsis;}
+  .count{color:var(--ink-faint); font-size:12px; margin-bottom:10px;}
+  .table-wrap{overflow-x:auto; border:1px solid var(--border-soft); border-radius:4px;}
+</style>
+</head>
+<body>
+
+<h1>Match Engine — Internal Debug</h1>
+<p class="sub">Full scored list across the whole dataset. Not linked anywhere public — operator use only.</p>
+<div class="banner">This page is unlisted but not access-controlled. Don't link to it from anywhere public.</div>
+
+<div class="controls">
+  <div class="field">
+    <label for="d-style">Style</label>
+    <select id="d-style">
+      <option value="">Any</option>
+      <option>Red</option><option>White</option><option>Rosé</option>
+      <option>Sparkling</option><option>Dessert</option>
+    </select>
+  </div>
+  <div class="field">
+    <label for="d-variety">Varietal</label>
+    <input type="text" id="d-variety" placeholder="e.g. Shiraz">
+  </div>
+  <div class="field">
+    <label for="d-region">Region</label>
+    <input type="text" id="d-region" placeholder="e.g. Barossa Valley">
+  </div>
+  <div class="field">
+    <label for="d-pricemin">Price min (AUD)</label>
+    <input type="number" id="d-pricemin" placeholder="0">
+  </div>
+  <div class="field">
+    <label for="d-pricemax">Price max (AUD)</label>
+    <input type="number" id="d-pricemax" placeholder="999">
+  </div>
+  <div class="field">
+    <label for="d-volume">Volume (bottles)</label>
+    <input type="number" id="d-volume" placeholder="12">
+  </div>
+  <button id="btn-run">Run scoring</button>
+</div>
+
+<div class="count" id="d-count">Not run yet.</div>
+<div class="table-wrap">
+  <table id="d-table">
+    <thead>
+      <tr>
+        <th data-key="score">Score</th>
+        <th data-key="name">Wine</th>
+        <th data-key="style">Style</th>
+        <th data-key="variety">Varietal</th>
+        <th data-key="region">Region</th>
+        <th data-key="state">State</th>
+        <th data-key="body">Body</th>
+        <th data-key="price">Price</th>
+        <th data-key="moq">MOQ</th>
+        <th data-key="stock">Stock</th>
+        <th data-key="hardFail">Hard fail</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody id="d-tbody"></tbody>
+  </table>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  let rows = [];
+  let sortKey = "score", sortDir = -1;
+
+  function $(id){ return document.getElementById(id); }
+
+  function readBrief(){
+    const styles = $("d-style").value ? [$("d-style").value] : [];
+    const varieties = $("d-variety").value.trim() ? [$("d-variety").value.trim()] : [];
+    const regions = $("d-region").value.trim() ? [$("d-region").value.trim()] : [];
+    const priceMin = $("d-pricemin").value ? +$("d-pricemin").value : null;
+    const priceMax = $("d-pricemax").value ? +$("d-pricemax").value : null;
+    const volume = $("d-volume").value ? +$("d-volume").value : null;
+    return { styles, varieties, regions, bodies: [], flavour: [], priceMin, priceMax, volume, novelty: "none" };
+  }
+
+  function run(){
+    $("d-count").textContent = "Running…";
+    fetch("/api/match", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ action: "debug", brief: readBrief() }),
+    }).then(function(res){ return res.json(); })
+      .then(function(data){
+        rows = data.results || [];
+        $("d-count").textContent = rows.length + " wines scored (full dataset, including hard-fails).";
+        render();
+      }).catch(function(err){
+        $("d-count").textContent = "Error: " + err.message;
+      });
+  }
+
+  function render(){
+    const sorted = rows.slice().sort(function(a,b){
+      const av = a[sortKey], bv = b[sortKey];
+      if(typeof av === "string") return sortDir * av.localeCompare(bv || "");
+      return sortDir * ((av||0) - (bv||0));
+    });
+    const tbody = $("d-tbody");
+    tbody.innerHTML = sorted.map(function(r){
+      const scoreClass = r.score>=70 ? "good" : r.score>=45 ? "warn" : "bad";
+      return '<tr class="'+(r.hardFail?'hardfail':'')+'">' +
+        '<td class="score '+scoreClass+'">'+r.score+'</td>' +
+        '<td>'+r.name+'</td>' +
+        '<td>'+r.style+'</td>' +
+        '<td>'+(r.variety||'—')+'</td>' +
+        '<td>'+r.region+'</td>' +
+        '<td>'+r.state+'</td>' +
+        '<td>'+r.body+'</td>' +
+        '<td>$'+r.price+'</td>' +
+        '<td>'+r.moq+'</td>' +
+        '<td>'+(r.stock!=null?r.stock:'—')+'</td>' +
+        '<td>'+(r.hardFail?'Yes':'')+'</td>' +
+        '<td class="notes">'+(r.notes||[]).join(', ')+'</td>' +
+      '</tr>';
+    }).join("");
+  }
+
+  document.querySelectorAll("th[data-key]").forEach(function(th){
+    th.addEventListener("click", function(){
+      const key = th.dataset.key;
+      if(sortKey === key) sortDir *= -1; else { sortKey = key; sortDir = -1; }
+      render();
+    });
+  });
+
+  $("btn-run").addEventListener("click", run);
+  run(); // load full unfiltered scoring on open
+})();
+</script>
+
+</body>
+</html>

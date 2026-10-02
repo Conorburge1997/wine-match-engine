@@ -15,9 +15,21 @@
 //   "regionCounts" — given selected states, returns how many regions (and
 //                    optionally, how many wines) are available per state/
 //                    region, filtered by any style/variety already picked.
-//   "search"       — given a full brief, scores and ranks the dataset,
-//                    returns the top matches (same shape the old
-//                    client-side scoreWine() produced).
+//   "search"       — given a full brief, scores and ranks the dataset and
+//                    returns only the top 5 per matched style/varietal
+//                    group (never the full list) — e.g. if the buyer
+//                    picked Red+White with Shiraz+Chardonnay varietals,
+//                    the response groups results as "Shiraz" (top 5),
+//                    "Chardonnay" (top 5). If no varietal is picked for a
+//                    style, that style itself is the group. This keeps the
+//                    buyer-facing surface small and curated rather than
+//                    dumping the whole dataset into the browser.
+//   "debug"        — INTERNAL/OPERATOR ONLY. Not called from the public
+//                    match tool. Returns the full scored+ranked list for
+//                    every wine in the dataset, with per-wine notes, so
+//                    Conor can see what's scoring well/badly across the
+//                    whole catalogue while tuning the brief or the scoring
+//                    weights. Never linked from buyer-facing pages.
 
 const WINES = require("./data/wines.json");
 
@@ -162,6 +174,82 @@ function computeRegionCounts(body) {
   return { states, totalWinesMatching: filtered.length };
 }
 
+// ---------- grouping for the buyer-facing "search" action ----------
+// Groups by varietal when the brief named one for a style (e.g. "Shiraz"),
+// otherwise groups by the style itself (e.g. "Rosé", which has no single-
+// varietal breakdown). Each group gets its own top-5, so a buyer asking
+// for several styles/varietals sees a curated spread rather than one style
+// crowding out the rest.
+function groupKeyForWine(wine, brief) {
+  const varieties = brief.varieties || [];
+  if (varieties.length > 0 && wine.variety && varieties.includes(wine.variety)) {
+    return wine.variety;
+  }
+  return wine.style;
+}
+
+const TOP_N_PER_GROUP = 5;
+
+function buildGroupedResults(brief) {
+  const scored = WINES.map((w) => scoreWine(brief, w)).filter((r) => !r.hardFail);
+  const styles = brief.styles || [];
+
+  // No style selected: one flat top-5, no grouping to speak of.
+  if (styles.length === 0) {
+    scored.sort((a, b) => b.score - a.score);
+    return [{ label: "Top matches", results: trimResults(scored.slice(0, TOP_N_PER_GROUP)) }];
+  }
+
+  const groups = {}; // key -> { label, results: [] }
+  scored.forEach((r) => {
+    if (!styles.includes(r.wine.style)) return;
+    const key = groupKeyForWine(r.wine, brief);
+    if (!groups[key]) groups[key] = { label: key, results: [] };
+    groups[key].results.push(r);
+  });
+
+  // Stable order: styles in the order the buyer picked them, varietal
+  // groups for each style (alphabetical) before falling back to the bare
+  // style group (wines of that style with no varietal match/pick).
+  const ordered = [];
+  styles.forEach((style) => {
+    const varietalKeys = Object.keys(groups)
+      .filter((k) => k !== style && groups[k].results[0] && groups[k].results[0].wine.style === style)
+      .sort();
+    varietalKeys.forEach((k) => ordered.push(k));
+    if (groups[style]) ordered.push(style);
+  });
+
+  return ordered
+    .filter((k) => groups[k] && groups[k].results.length)
+    .map((k) => {
+      const g = groups[k];
+      g.results.sort((a, b) => b.score - a.score);
+      return { label: g.label, results: trimResults(g.results.slice(0, TOP_N_PER_GROUP)) };
+    });
+}
+
+function trimResults(scoredList) {
+  // Never send the raw dataset — only the scored, ranked results, and only
+  // the fields the buyer-facing UI actually needs.
+  return scoredList.map((r) => ({
+    id: r.wine.id,
+    name: r.wine.name,
+    vineyard: r.wine.vineyardScale,
+    region: r.wine.region,
+    state: r.wine.state,
+    style: r.wine.style,
+    variety: r.wine.variety,
+    body: r.wine.body,
+    price: r.wine.price,
+    moq: r.wine.moq,
+    neverExported: r.wine.neverExported,
+    score: r.score,
+    notes: r.notes,
+    hardFail: r.hardFail,
+  }));
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader("Content-Type", "application/json");
 
@@ -190,10 +278,20 @@ module.exports = async function handler(req, res) {
 
     if (body.action === "search") {
       const brief = body.brief || {};
+      const groups = buildGroupedResults(brief);
+      const count = groups.reduce((n, g) => n + g.results.length, 0);
+      res.status(200).json({ groups, count });
+      return;
+    }
+
+    // Operator-only: full scored list across the whole dataset, including
+    // hard-failed wines, so Conor can see what's scoring well/badly rather
+    // than only the trimmed buyer-facing shortlist. Not called by the
+    // public match tool.
+    if (body.action === "debug") {
+      const brief = body.brief || {};
       const scored = WINES.map((w) => scoreWine(brief, w));
       scored.sort((a, b) => b.score - a.score);
-      // Never send the raw dataset — only the scored, ranked results, and
-      // only the fields the buyer-facing UI actually needs.
       const results = scored.map((r) => ({
         id: r.wine.id,
         name: r.wine.name,
@@ -205,6 +303,7 @@ module.exports = async function handler(req, res) {
         body: r.wine.body,
         price: r.wine.price,
         moq: r.wine.moq,
+        stock: r.wine.stock,
         neverExported: r.wine.neverExported,
         score: r.score,
         notes: r.notes,
