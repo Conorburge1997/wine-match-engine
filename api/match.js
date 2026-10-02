@@ -175,24 +175,26 @@ function computeRegionCounts(body) {
 }
 
 // ---------- grouping for the buyer-facing "search" action ----------
-// Groups by varietal when the brief named one for a style (e.g. "Shiraz"),
-// otherwise groups by the style itself (e.g. "Rosé", which has no single-
-// varietal breakdown). Each group gets its own top-5, so a buyer asking
-// for several styles/varietals sees a curated spread rather than one style
-// crowding out the rest.
-function groupKeyForWine(wine, brief) {
-  const varieties = brief.varieties || [];
-  if (varieties.length > 0 && wine.variety && varieties.includes(wine.variety)) {
-    return wine.variety;
-  }
-  return wine.style;
-}
-
+// A style (e.g. "Red") is only ever shown as its own group when the buyer
+// picked that style but named no varietal belonging to it — "Red" is a
+// parent category, not a wine type in its own right, so once the buyer
+// gets specific (Shiraz, Grenache, Pinot Noir...) we group and show only
+// those varietals, and the parent style group disappears entirely. Which
+// varietals "belong" to a style is read from the dataset itself (which
+// varieties actually appear on wines of that style), not a hardcoded map,
+// so it can't drift from the real data.
 const TOP_N_PER_GROUP = 5;
+
+function varietiesForStyle(style) {
+  const set = new Set();
+  WINES.forEach((w) => { if (w.style === style && w.variety) set.add(w.variety); });
+  return set;
+}
 
 function buildGroupedResults(brief) {
   const scored = WINES.map((w) => scoreWine(brief, w)).filter((r) => !r.hardFail);
   const styles = brief.styles || [];
+  const pickedVarieties = brief.varieties || [];
 
   // No style selected: one flat top-5, no grouping to speak of.
   if (styles.length === 0) {
@@ -200,24 +202,46 @@ function buildGroupedResults(brief) {
     return [{ label: "Top matches", results: trimResults(scored.slice(0, TOP_N_PER_GROUP)) }];
   }
 
-  const groups = {}; // key -> { label, results: [] }
-  scored.forEach((r) => {
-    if (!styles.includes(r.wine.style)) return;
-    const key = groupKeyForWine(r.wine, brief);
-    if (!groups[key]) groups[key] = { label: key, results: [] };
-    groups[key].results.push(r);
+  // For each selected style, work out whether the buyer named any varietal
+  // that actually belongs to it. If so, that style is "specific" — only
+  // its matching varietal groups are shown, never the bare style group.
+  const specificStyles = new Set();
+  styles.forEach((style) => {
+    const available = varietiesForStyle(style);
+    if (pickedVarieties.some((v) => available.has(v))) specificStyles.add(style);
   });
 
-  // Stable order: styles in the order the buyer picked them, varietal
-  // groups for each style (alphabetical) before falling back to the bare
-  // style group (wines of that style with no varietal match/pick).
+  const groups = {}; // key -> { label, results: [] }
+  scored.forEach((r) => {
+    const style = r.wine.style;
+    if (!styles.includes(style)) return;
+    if (specificStyles.has(style)) {
+      // Specific style: only wines matching one of the picked varietals
+      // for this style make it into a group — no bare "Red" bucket.
+      if (!r.wine.variety || !pickedVarieties.includes(r.wine.variety)) return;
+      const key = r.wine.variety;
+      if (!groups[key]) groups[key] = { label: key, results: [] };
+      groups[key].results.push(r);
+    } else {
+      // Buyer picked this style with no (matching) varietal — show the
+      // style itself as one group.
+      if (!groups[style]) groups[style] = { label: style, results: [] };
+      groups[style].results.push(r);
+    }
+  });
+
+  // Stable order: styles in the order the buyer picked them, then their
+  // varietal groups alphabetically (or the bare style group, never both).
   const ordered = [];
   styles.forEach((style) => {
-    const varietalKeys = Object.keys(groups)
-      .filter((k) => k !== style && groups[k].results[0] && groups[k].results[0].wine.style === style)
-      .sort();
-    varietalKeys.forEach((k) => ordered.push(k));
-    if (groups[style]) ordered.push(style);
+    if (specificStyles.has(style)) {
+      Object.keys(groups)
+        .filter((k) => groups[k].results[0] && groups[k].results[0].wine.style === style)
+        .sort()
+        .forEach((k) => ordered.push(k));
+    } else if (groups[style]) {
+      ordered.push(style);
+    }
   });
 
   return ordered

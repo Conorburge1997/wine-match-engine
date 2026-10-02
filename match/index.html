@@ -164,6 +164,16 @@
   .scan-progress{width:280px; max-width:80%; height:2px; background:var(--border-soft); margin:24px auto 0; overflow:hidden;}
   .scan-progress-bar{height:100%; width:0%; background:linear-gradient(90deg, var(--sapphire), var(--cyan)); transition:width .3s ease;}
 
+  /* ---- Brief recap strip (reminds the buyer what they asked for) ---- */
+  .brief-recap{
+    display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px;
+  }
+  .brief-recap .chip{
+    background:var(--surface); border:1px solid var(--border-soft); border-radius:20px;
+    padding:6px 13px; font-size:12px; color:var(--ink-dim);
+  }
+  .brief-recap .chip b{color:var(--ink); font-weight:500;}
+
   /* ---- Match results (grouped rows, top 5 per style/varietal) ---- */
   .results-summary{display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; margin-bottom:28px;}
   .results-summary .count{color:var(--ink-dim); font-size:13.5px;}
@@ -429,6 +439,7 @@
         <h1>Your matches.</h1>
         <p>Top 5 highest-ranked wines per style and varietal. Set a quantity on anything you'd like, then continue to review your pallet.</p>
       </div>
+      <div class="brief-recap" id="brief-recap"></div>
       <div class="results-summary">
         <div class="count" id="results-count"></div>
         <button class="btn btn-ghost" id="btn-edit-brief" style="padding:8px 16px; font-size:11px;">← Edit Brief</button>
@@ -953,7 +964,45 @@
   // shortlist returned by /api/match (action "search") — never the raw
   // dataset, and never more than 5 wines per style/varietal group, so the
   // buyer sees a curated shortlist rather than the whole catalogue.
+  // Short, scannable recap of what the buyer actually asked for, shown
+  // above the results so they don't have to remember or scroll back to
+  // the brief step to check their own price range, volume, etc.
+  function renderBriefRecap(){
+    const b = state.brief;
+    const recap = $("brief-recap");
+    if(!b){ recap.innerHTML = ""; return; }
+    const chips = [];
+    const locationLabel = briefLocationLabel(b);
+    if(locationLabel) chips.push("Shipping to <b>"+locationLabel+"</b>");
+    // Show varietals when picked (they're more specific than the style).
+    // A style with at least one of its own varietals picked ("Red" with
+    // Shiraz selected) is "specific" and doesn't also get its own bare
+    // chip — avoids a redundant "Red" sitting next to "Shiraz, Grenache".
+    // A style with no varietal picked for it (e.g. "White" alongside
+    // Red+Shiraz) still shows as its own chip.
+    if(b.varieties && b.varieties.length) chips.push("<b>"+b.varieties.join(", ")+"</b>");
+    const specificStyles = new Set();
+    (b.styles||[]).forEach(function(style){
+      const available = (VARIETY_BY_STYLE[style] || []);
+      if((b.varieties||[]).some(function(v){ return available.indexOf(v) > -1; })) specificStyles.add(style);
+    });
+    const bareStyles = (b.styles||[]).filter(function(s){ return !specificStyles.has(s); });
+    if(bareStyles.length) chips.push("<b>"+bareStyles.join(", ")+"</b>");
+    if(b.bodies && b.bodies.length) chips.push(b.bodies.join("/")+"-bodied");
+    if(b.regions && b.regions.length) chips.push("Region: <b>"+b.regions.join(", ")+"</b>");
+    if(b.priceMin != null || b.priceMax != null){
+      const lo = b.priceMin != null ? formatPrice(b.priceMin) : null;
+      const hi = b.priceMax != null ? formatPrice(b.priceMax) : null;
+      chips.push("Price: <b>"+(lo && hi ? lo+' – '+hi : lo ? 'from '+lo : 'up to '+hi)+"</b> /bottle");
+    }
+    if(b.volume) chips.push("Volume: <b>"+b.volume+"</b> bottles");
+    if(b.novelty === "market") chips.push("Never sold in my market");
+    if(b.flavour && b.flavour.length) chips.push("Flavour: <b>"+b.flavour.join(", ")+"</b>");
+    recap.innerHTML = chips.map(function(c){ return '<span class="chip">'+c+'</span>'; }).join("");
+  }
+
   function renderResults(groups){
+    renderBriefRecap();
     state.groups = groups;
     state.resultsById = new Map();
     groups.forEach(function(g){ g.results.forEach(function(r){ state.resultsById.set(r.id, r); }); });
