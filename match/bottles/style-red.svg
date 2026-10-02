@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 360" width="160" height="360">
+  <defs>
+    <linearGradient id="glassGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2b1018" stop-opacity="0.85"/>
+      <stop offset="45%" stop-color="#2b1018"/>
+      <stop offset="100%" stop-color="#2b1018" stop-opacity="0.7"/>
+    </linearGradient>
+  </defs>
+  <!-- neck -->
+  <rect x="70" y="20" width="20" height="60" rx="3" fill="url(#glassGrad)"/>
+  <!-- cap -->
+  <rect x="68" y="8" width="24" height="18" rx="3" fill="#c9a86a"/>
+  <!-- shoulder -->
+  <path d="M70 80 C70 80 55 100 50 130 L110 130 C105 100 90 80 90 80 Z" fill="url(#glassGrad)"/>
+  <!-- body -->
+  <rect x="42" y="130" width="76" height="190" rx="10" fill="url(#glassGrad)"/>
+  <!-- base -->
+  <ellipse cx="80" cy="322" rx="38" ry="8" fill="#2b1018" opacity="0.6"/>
+  <!-- label -->
+  <rect x="50" y="190" width="60" height="78" rx="3" fill="#7a2535" stroke="#c9a86a" stroke-width="1.5"/>
+  <line x1="58" y1="208" x2="102" y2="208" stroke="#c9a86a" stroke-width="1.2"/>
+  <line x1="58" y1="216" x2="94" y2="216" stroke="#c9a86a" stroke-width="1" opacity="0.6"/>
+  <line x1="58" y1="250" x2="102" y2="250" stroke="#c9a86a" stroke-width="1.2"/>
+  <!-- sheen -->
+  <rect x="48" y="135" width="10" height="175" rx="5" fill="#ffffff" opacity="0.08"/>
+</svg>

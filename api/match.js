@@ -16,11 +16,11 @@
 //                    optionally, how many wines) are available per state/
 //                    region, filtered by any style/variety already picked.
 //   "search"       — given a full brief, scores and ranks the dataset and
-//                    returns only the top 5 per matched style/varietal
+//                    returns only the top 3 per matched style/varietal
 //                    group (never the full list) — e.g. if the buyer
 //                    picked Red+White with Shiraz+Chardonnay varietals,
-//                    the response groups results as "Shiraz" (top 5),
-//                    "Chardonnay" (top 5). If no varietal is picked for a
+//                    the response groups results as "Shiraz" (top 3),
+//                    "Chardonnay" (top 3). If no varietal is picked for a
 //                    style, that style itself is the group. This keeps the
 //                    buyer-facing surface small and curated rather than
 //                    dumping the whole dataset into the browser.
@@ -183,7 +183,7 @@ function computeRegionCounts(body) {
 // varietals "belong" to a style is read from the dataset itself (which
 // varieties actually appear on wines of that style), not a hardcoded map,
 // so it can't drift from the real data.
-const TOP_N_PER_GROUP = 5;
+const TOP_N_PER_GROUP = 3;
 
 function varietiesForStyle(style) {
   const set = new Set();
@@ -196,7 +196,7 @@ function buildGroupedResults(brief) {
   const styles = brief.styles || [];
   const pickedVarieties = brief.varieties || [];
 
-  // No style selected: one flat top-5, no grouping to speak of.
+  // No style selected: one flat top-3, no grouping to speak of.
   if (styles.length === 0) {
     scored.sort((a, b) => b.score - a.score);
     return [{ label: "Top matches", results: trimResults(scored.slice(0, TOP_N_PER_GROUP)) }];
