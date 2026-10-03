@@ -322,23 +322,56 @@
     50%{stroke-opacity:0.8;}
   }
 
-  /* Stage 1 — selection: a single wine signal locks in from a field of candidates */
-  .exp-s1-candidate{opacity:0.25; animation:expCandidateDim 3s ease-in-out infinite;}
-  .exp-s1-candidate.locked{opacity:1; animation:expCandidateLock 4s infinite;}
-  @keyframes expCandidateDim{ 0%,100%{opacity:0.2;} 50%{opacity:0.35;} }
-  @keyframes expCandidateLock{
-    0%{opacity:0.25; transform:scale(1);}
-    20%{opacity:1; transform:scale(1.15);}
-    30%{opacity:1; transform:scale(1);}
+  /* Stage 1 — selection: a cursor clicks through a checklist of options, each checking on */
+  .exp-s1-row{opacity:0.45;}
+  .exp-s1-check{opacity:0; transform:scale(0.4); transform-box:fill-box; transform-origin:center;}
+  .exp-s1-check.c1{animation:expCheckIn 4s infinite; animation-delay:0.5s;}
+  .exp-s1-check.c2{animation:expCheckIn 4s infinite; animation-delay:1.3s;}
+  .exp-s1-check.c3{animation:expCheckIn 4s infinite; animation-delay:2.1s;}
+  .exp-s1-check.c4{animation:expCheckIn 4s infinite; animation-delay:2.9s;}
+  @keyframes expCheckIn{
+    0%{opacity:0; transform:scale(0.4);}
+    4%{opacity:1; transform:scale(1.3);}
+    8%{opacity:1; transform:scale(1);}
     100%{opacity:1; transform:scale(1);}
   }
-  .exp-s1-lockring{opacity:0; transform:scale(1.8); transform-box:fill-box; transform-origin:center;}
-  .exp-s1-lockring.in{animation:expLockRing 4s infinite;}
-  @keyframes expLockRing{
-    0%, 15%{opacity:0; transform:scale(1.8);}
-    28%{opacity:1; transform:scale(1);}
-    90%{opacity:1; transform:scale(1);}
-    100%{opacity:0; transform:scale(1);}
+  .exp-s1-rowfill{opacity:0; transform-box:fill-box;}
+  .exp-s1-rowfill.c1{animation:expRowFillIn 4s infinite; animation-delay:0.5s;}
+  .exp-s1-rowfill.c2{animation:expRowFillIn 4s infinite; animation-delay:1.3s;}
+  .exp-s1-rowfill.c3{animation:expRowFillIn 4s infinite; animation-delay:2.1s;}
+  .exp-s1-rowfill.c4{animation:expRowFillIn 4s infinite; animation-delay:2.9s;}
+  @keyframes expRowFillIn{
+    0%{opacity:0;}
+    4%{opacity:1;}
+    100%{opacity:1;}
+  }
+  .exp-s1-cursor{
+    offset-rotate:0deg; opacity:0;
+    offset-path:path('M26,30 L26,50 L26,50 L26,86 L26,86 L26,122 L26,122 L26,158 L26,158');
+    animation:expCursorMove 4s infinite;
+  }
+  @keyframes expCursorMove{
+    0%{opacity:0; offset-distance:0%;}
+    4%{opacity:1; offset-distance:11%;}
+    22%{offset-distance:11%;}
+    33%{offset-distance:33%;}
+    44%{offset-distance:33%;}
+    55%{offset-distance:55%;}
+    66%{offset-distance:55%;}
+    77%{offset-distance:77%;}
+    88%{offset-distance:77%;}
+    95%{opacity:1; offset-distance:100%;}
+    100%{opacity:0; offset-distance:100%;}
+  }
+  .exp-s1-click{opacity:0; transform:scale(0.5); transform-box:fill-box; transform-origin:center;}
+  .exp-s1-click.k1{animation:expClickPulse 4s infinite; animation-delay:0.5s;}
+  .exp-s1-click.k2{animation:expClickPulse 4s infinite; animation-delay:1.3s;}
+  .exp-s1-click.k3{animation:expClickPulse 4s infinite; animation-delay:2.1s;}
+  .exp-s1-click.k4{animation:expClickPulse 4s infinite; animation-delay:2.9s;}
+  @keyframes expClickPulse{
+    0%{opacity:0.9; transform:scale(0.5);}
+    18%{opacity:0; transform:scale(2.2);}
+    100%{opacity:0; transform:scale(2.2);}
   }
   .exp-s1-bar{transform-origin:left; transform:scaleX(0);}
   .exp-s1-bar.in{animation:expBarFill 4s infinite;}
@@ -438,13 +471,15 @@
 
   @media (prefers-reduced-motion: reduce){
     .exp-stage, .exp-scanline, .exp-node, .exp-ring, .exp-wire, .exp-chip, .exp-readout,
-    .exp-bracket-flash, .exp-s1-candidate, .exp-s1-lockring, .exp-s1-bar, .exp-s2-sweep,
+    .exp-bracket-flash, .exp-s1-rowfill, .exp-s1-check, .exp-s1-cursor, .exp-s1-click,
+    .exp-s1-bar, .exp-s2-sweep,
     .exp-s2-node, .exp-s2-winner, .exp-s2-counter, .exp-pulse, .exp-hub-ring, .exp-s4-bar,
     .exp-s4-lock, .exp-s5-line, .exp-s5-depart, .exp-s5-wake, .exp-branch, .exp-endpoint
     {animation:none !important;}
     .exp-stage{opacity:1;}
-    .exp-chip, .exp-readout, .exp-s1-candidate, .exp-s1-lockring, .exp-s1-bar,
+    .exp-chip, .exp-readout, .exp-s1-rowfill, .exp-s1-check, .exp-s1-bar,
     .exp-s2-winner, .exp-s4-bar, .exp-s5-line, .exp-endpoint{opacity:1; transform:none;}
+    .exp-s1-cursor, .exp-s1-click{opacity:0;}
     .exp-s4-lock, .exp-branch{stroke-dashoffset:0;}
   }
 
@@ -782,50 +817,57 @@
 
             <!-- ============ STAGE 1 — Selection ============ -->
             <g class="exp-stage exp-stage-1" font-family="JetBrains Mono, monospace">
-              <!-- field of candidate wine signals, one locks -->
-              <g transform="translate(0,56)">
-                <circle class="exp-s1-candidate" cx="160" cy="110" r="5" fill="#6f93e8"/>
-                <circle class="exp-s1-candidate" cx="210" cy="150" r="5" fill="#6f93e8"/>
-                <circle class="exp-s1-candidate" cx="280" cy="95" r="5" fill="#6f93e8"/>
-                <circle class="exp-s1-candidate" cx="330" cy="160" r="5" fill="#6f93e8"/>
-                <circle class="exp-s1-candidate" cx="240" cy="200" r="5" fill="#6f93e8"/>
-                <circle class="exp-s1-candidate" cx="180" cy="180" r="5" fill="#6f93e8"/>
-                <circle class="exp-s1-candidate" cx="300" cy="210" r="5" fill="#6f93e8"/>
-                <g class="exp-s1-candidate locked">
-                  <circle class="exp-s1-lockring in" cx="250" cy="150" r="22" fill="none" stroke="#5fd4e0" stroke-width="1.5"/>
-                  <circle cx="250" cy="150" r="7" fill="#5fd4e0"/>
+              <!-- a buyer checklist: cursor clicks down the list, each option checks on -->
+              <g transform="translate(60,70)">
+                <rect x="0" y="0" width="360" height="200" fill="none" stroke="currentColor" stroke-opacity="0.25"/>
+                <line x1="0" y1="26" x2="360" y2="26" stroke="currentColor" stroke-opacity="0.2"/>
+                <text x="16" y="18" font-size="9.5" fill="currentColor" opacity="0.5">BUILD YOUR ORDER</text>
+
+                <!-- option rows -->
+                <g class="exp-s1-row">
+                  <rect x="16" y="40" width="20" height="20" fill="none" stroke="currentColor" stroke-opacity="0.35"/>
+                  <rect class="exp-s1-rowfill c1" x="16" y="40" width="20" height="20" fill="#3a6ede" opacity="0.25"/>
+                  <path class="exp-s1-check c1" d="M20,50 L26,56 L34,44" stroke="#5fd4e0" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                  <text x="48" y="54" font-size="12" fill="currentColor" opacity="0.5">Style</text>
+                  <text x="130" y="54" font-size="12" fill="#f4f5fa" opacity="0.95">Red — Shiraz</text>
                 </g>
-              </g>
 
-              <!-- readout panel, right: the locked brief as data rows -->
-              <g transform="translate(470,100)">
-                <rect x="0" y="0" width="250" height="168" fill="none" stroke="currentColor" stroke-opacity="0.25"/>
-                <line x1="0" y1="26" x2="250" y2="26" stroke="currentColor" stroke-opacity="0.2"/>
-                <text x="14" y="18" font-size="9.5" fill="currentColor" opacity="0.5">LOCKED SIGNAL</text>
+                <g class="exp-s1-row">
+                  <rect x="16" y="76" width="20" height="20" fill="none" stroke="currentColor" stroke-opacity="0.35"/>
+                  <rect class="exp-s1-rowfill c2" x="16" y="76" width="20" height="20" fill="#5fd4e0" opacity="0.25"/>
+                  <path class="exp-s1-check c2" d="M20,86 L26,92 L34,80" stroke="#5fd4e0" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                  <text x="48" y="90" font-size="12" fill="currentColor" opacity="0.5">Region</text>
+                  <text x="130" y="90" font-size="12" fill="#f4f5fa" opacity="0.95">Barossa Valley</text>
+                </g>
 
-                <text x="14" y="46" font-size="9.5" fill="currentColor" opacity="0.5">STYLE</text>
-                <rect x="100" y="34" width="136" height="14" fill="none" stroke="currentColor" stroke-opacity="0.2"/>
-                <rect class="exp-s1-bar in" x="102" y="36" width="132" height="10" fill="#3a6ede" opacity="0.6"/>
-                <text x="106" y="45" font-size="9.5" fill="#f4f5fa" opacity="0.9">RED — SHIRAZ</text>
+                <g class="exp-s1-row">
+                  <rect x="16" y="112" width="20" height="20" fill="none" stroke="currentColor" stroke-opacity="0.35"/>
+                  <rect class="exp-s1-rowfill c3" x="16" y="112" width="20" height="20" fill="#b8935a" opacity="0.25"/>
+                  <path class="exp-s1-check c3" d="M20,122 L26,128 L34,116" stroke="#5fd4e0" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                  <text x="48" y="126" font-size="12" fill="currentColor" opacity="0.5">Price</text>
+                  <text x="130" y="126" font-size="12" fill="#f4f5fa" opacity="0.95">$30–55 / btl</text>
+                </g>
 
-                <text x="14" y="70" font-size="9.5" fill="currentColor" opacity="0.5">REGION</text>
-                <rect x="100" y="58" width="136" height="14" fill="none" stroke="currentColor" stroke-opacity="0.2"/>
-                <rect class="exp-s1-bar in" x="102" y="60" width="132" height="10" fill="#5fd4e0" opacity="0.6"/>
-                <text x="106" y="69" font-size="9.5" fill="#f4f5fa" opacity="0.9">BAROSSA VALLEY</text>
+                <g class="exp-s1-row">
+                  <rect x="16" y="148" width="20" height="20" fill="none" stroke="currentColor" stroke-opacity="0.35"/>
+                  <rect class="exp-s1-rowfill c4" x="16" y="148" width="20" height="20" fill="#3a6ede" opacity="0.25"/>
+                  <path class="exp-s1-check c4" d="M20,158 L26,164 L34,152" stroke="#5fd4e0" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                  <text x="48" y="162" font-size="12" fill="currentColor" opacity="0.5">Volume</text>
+                  <text x="130" y="162" font-size="12" fill="#f4f5fa" opacity="0.95">60 bottles</text>
+                </g>
 
-                <text x="14" y="94" font-size="9.5" fill="currentColor" opacity="0.5">PRICE</text>
-                <rect x="100" y="82" width="136" height="14" fill="none" stroke="currentColor" stroke-opacity="0.2"/>
-                <rect class="exp-s1-bar in" x="102" y="84" width="132" height="10" fill="#b8935a" opacity="0.6"/>
-                <text x="106" y="93" font-size="9.5" fill="#f4f5fa" opacity="0.9">$30–55 / BTL</text>
+                <line x1="0" y1="178" x2="360" y2="178" stroke="currentColor" stroke-opacity="0.2"/>
+                <circle cx="20" cy="190" r="3" fill="#5fd4e0" class="exp-node"/>
+                <text x="32" y="193" font-size="9.5" fill="#5fd4e0" opacity="0.85">ORDER BUILT — READY TO MATCH</text>
 
-                <text x="14" y="118" font-size="9.5" fill="currentColor" opacity="0.5">VOLUME</text>
-                <rect x="100" y="106" width="136" height="14" fill="none" stroke="currentColor" stroke-opacity="0.2"/>
-                <rect class="exp-s1-bar in" x="102" y="108" width="132" height="10" fill="#3a6ede" opacity="0.6"/>
-                <text x="106" y="117" font-size="9.5" fill="#f4f5fa" opacity="0.9">60 BOTTLES</text>
+                <!-- click pulses at each checkbox, timed with the checks -->
+                <circle class="exp-s1-click k1" cx="26" cy="50" r="12" fill="none" stroke="#5fd4e0" stroke-width="1.5"/>
+                <circle class="exp-s1-click k2" cx="26" cy="86" r="12" fill="none" stroke="#5fd4e0" stroke-width="1.5"/>
+                <circle class="exp-s1-click k3" cx="26" cy="122" r="12" fill="none" stroke="#5fd4e0" stroke-width="1.5"/>
+                <circle class="exp-s1-click k4" cx="26" cy="158" r="12" fill="none" stroke="#5fd4e0" stroke-width="1.5"/>
 
-                <line x1="0" y1="138" x2="250" y2="138" stroke="currentColor" stroke-opacity="0.2"/>
-                <circle cx="16" cy="153" r="3" fill="#5fd4e0" class="exp-node"/>
-                <text x="26" y="156" font-size="9.5" fill="#5fd4e0" opacity="0.85">SIGNAL LOCKED — READY TO MATCH</text>
+                <!-- arrow cursor travelling down the list, pausing at each row -->
+                <path class="exp-s1-cursor" d="M0,0 L0,15 L3.6,11.8 L6,17 L8.6,15.8 L6.2,10.6 L10.2,10.6 Z" fill="#f4f5fa" stroke="#040611" stroke-width="0.8"/>
               </g>
             </g>
 
