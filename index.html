@@ -241,368 +241,105 @@
   .compare-col h3{font-size:14.5px; margin-bottom:6px; font-weight:500;}
   .compare-col p{color:var(--ink-dim); font-size:12.5px; margin:0; line-height:1.55;}
 
-  /* Video Explanation — HUD / wireframe animated sequence, 7 stages */
-  .explainer-panel{
-    background:#040611;
+  /* Video Explanation — all 7 steps always visible, left to right, with a slow travelling highlight */
+  .explainer-track{
+    display:grid;
+    grid-template-columns:repeat(7, 1fr);
+    gap:14px;
+  }
+  .explainer-step{
+    background:linear-gradient(160deg, var(--surface), var(--surface-2));
     border:1px solid var(--border-soft);
     border-radius:var(--radius);
-    padding:0;
-    color:var(--ink-dim);
+    padding:20px 16px 18px;
     position:relative;
     overflow:hidden;
+    min-width:0;
   }
-  .explainer-svg{display:block; width:100%; height:auto; font-family:'JetBrains Mono',monospace;}
-
-  /* corner brackets + scanline sweep: constant HUD framing across every stage */
-  .exp-bracket{stroke:#5fd4e0; stroke-opacity:0.5; stroke-width:1.5; fill:none;}
-  .exp-scanline{animation:expScan 5s linear infinite;}
-  @keyframes expScan{
-    0%{transform:translateY(0); opacity:0;}
-    5%{opacity:0.5;}
-    95%{opacity:0.5;}
-    100%{transform:translateY(300px); opacity:0;}
+  .explainer-step::before{
+    content:"";
+    position:absolute; inset:0 0 auto 0; height:2px;
+    background:var(--border-soft);
+    transition:background 0.3s ease;
   }
-
-  /* 28s total loop, 7 stages of 4s each (14.2857% of cycle per stage). */
-  .exp-stage{opacity:0;}
-  .exp-stage-1{animation:expS1 28s infinite;}
-  .exp-stage-2{animation:expS2 28s infinite;}
-  .exp-stage-3{animation:expS3 28s infinite;}
-  .exp-stage-4{animation:expS4 28s infinite;}
-  .exp-stage-5{animation:expS5 28s infinite;}
-  .exp-stage-6{animation:expS6 28s infinite;}
-  .exp-stage-7{animation:expS7 28s infinite;}
-
-  @keyframes expS1{
-    0%{opacity:1;} 12.5%{opacity:1;} 14.29%{opacity:0;}
-    98.5%{opacity:0;} 100%{opacity:1;}
+  .explainer-num{
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.08em;
+    color:var(--ink-faint); display:block; margin-bottom:10px;
   }
-  @keyframes expS2{
-    0%, 12.5%{opacity:0;} 14.29%{opacity:1;} 26.8%{opacity:1;} 28.57%{opacity:0;}
-    100%{opacity:0;}
+  .explainer-icon{width:34px; height:34px; margin-bottom:12px; color:var(--ink-dim);}
+  .explainer-icon svg{width:100%; height:100%; display:block;}
+  .explainer-step h4{
+    font-family:'Inter', sans-serif; font-size:14.5px; font-weight:700; color:var(--ink);
+    margin:0 0 6px; line-height:1.3;
   }
-  @keyframes expS3{
-    0%, 26.8%{opacity:0;} 28.57%{opacity:1;} 41.1%{opacity:1;} 42.86%{opacity:0;}
-    100%{opacity:0;}
-  }
-  @keyframes expS4{
-    0%, 41.1%{opacity:0;} 42.86%{opacity:1;} 55.4%{opacity:1;} 57.14%{opacity:0;}
-    100%{opacity:0;}
-  }
-  @keyframes expS5{
-    0%, 55.4%{opacity:0;} 57.14%{opacity:1;} 69.6%{opacity:1;} 71.43%{opacity:0;}
-    100%{opacity:0;}
-  }
-  @keyframes expS6{
-    0%, 69.6%{opacity:0;} 71.43%{opacity:1;} 83.9%{opacity:1;} 85.71%{opacity:0;}
-    100%{opacity:0;}
-  }
-  @keyframes expS7{
-    0%, 83.9%{opacity:0;} 85.71%{opacity:1;} 98.5%{opacity:1;} 100%{opacity:0;}
+  .explainer-step p{
+    font-size:11.5px; line-height:1.5; color:var(--ink-faint); margin:0;
   }
 
-  /* shared vocabulary: every stage is built from these few primitives */
-  .exp-node{animation:expNodePulse 1.8s ease-in-out infinite;}
-  @keyframes expNodePulse{
-    0%, 100%{opacity:0.7;}
-    50%{opacity:1;}
+  /* the travelling highlight: each card lights up in turn, then settles back */
+  .explainer-step{ animation:expCardCycle 21s infinite; }
+  .explainer-step:nth-child(1){ animation-delay:0s; }
+  .explainer-step:nth-child(2){ animation-delay:3s; }
+  .explainer-step:nth-child(3){ animation-delay:6s; }
+  .explainer-step:nth-child(4){ animation-delay:9s; }
+  .explainer-step:nth-child(5){ animation-delay:12s; }
+  .explainer-step:nth-child(6){ animation-delay:15s; }
+  .explainer-step:nth-child(7){ animation-delay:18s; }
+  @keyframes expCardCycle{
+    0%, 100%{ border-color:var(--border-soft); box-shadow:none; }
+    4%, 10%{ border-color:#5fd4e0; box-shadow:0 0 0 1px rgba(95,212,224,0.25), 0 8px 24px -8px rgba(95,212,224,0.35); }
+    16%{ border-color:var(--border-soft); box-shadow:none; }
   }
-  .exp-ring{animation:expRingSpin 10s linear infinite; transform-box:fill-box; transform-origin:center;}
-  @keyframes expRingSpin{ to{transform:rotate(360deg);} }
-  .exp-wire{stroke-dasharray:5 4; animation:expWireFlow 1s linear infinite;}
-  @keyframes expWireFlow{ to{stroke-dashoffset:-9;} }
-  .exp-chip{opacity:0; transform:translateY(8px); transform-box:fill-box; transform-origin:center;}
-  .exp-chip.in{animation:expChipIn 4s infinite;}
-  @keyframes expChipIn{
-    0%{opacity:0; transform:translateY(8px);}
-    10%{opacity:1; transform:translateY(0);}
-    92%{opacity:1; transform:translateY(0);}
-    100%{opacity:0; transform:translateY(0);}
+  .explainer-step:nth-child(1)::before{ animation:expBarCycle 21s infinite; animation-delay:0s; }
+  .explainer-step:nth-child(2)::before{ animation:expBarCycle 21s infinite; animation-delay:3s; }
+  .explainer-step:nth-child(3)::before{ animation:expBarCycle 21s infinite; animation-delay:6s; }
+  .explainer-step:nth-child(4)::before{ animation:expBarCycle 21s infinite; animation-delay:9s; }
+  .explainer-step:nth-child(5)::before{ animation:expBarCycle 21s infinite; animation-delay:12s; }
+  .explainer-step:nth-child(6)::before{ animation:expBarCycle 21s infinite; animation-delay:15s; }
+  .explainer-step:nth-child(7)::before{ animation:expBarCycle 21s infinite; animation-delay:18s; }
+  @keyframes expBarCycle{
+    0%, 100%{ background:var(--border-soft); opacity:0.7; }
+    4%, 10%{ background:linear-gradient(90deg, var(--sapphire), var(--sapphire-glint), var(--cyan)); opacity:1; }
+    16%{ background:var(--border-soft); opacity:0.7; }
   }
-  .exp-readout{opacity:0;}
-  .exp-readout.in{animation:expChipIn 4s infinite;}
-  .exp-bracket-flash{animation:expBracketFlash 1.4s ease-in-out infinite;}
-  @keyframes expBracketFlash{
-    0%, 100%{stroke-opacity:0.35;}
-    50%{stroke-opacity:0.8;}
-  }
-
-  /* Stage 1 — selection: a cursor clicks through a checklist of options, each checking on */
-  .exp-s1-row{opacity:0.45;}
-  .exp-s1-check{opacity:0; transform:scale(0.4); transform-box:fill-box; transform-origin:center;}
-  .exp-s1-check.c1{animation:expCheckIn 4s infinite; animation-delay:0.5s;}
-  .exp-s1-check.c2{animation:expCheckIn 4s infinite; animation-delay:1.3s;}
-  .exp-s1-check.c3{animation:expCheckIn 4s infinite; animation-delay:2.1s;}
-  .exp-s1-check.c4{animation:expCheckIn 4s infinite; animation-delay:2.9s;}
-  @keyframes expCheckIn{
-    0%{opacity:0; transform:scale(0.4);}
-    4%{opacity:1; transform:scale(1.3);}
-    8%{opacity:1; transform:scale(1);}
-    100%{opacity:1; transform:scale(1);}
-  }
-  .exp-s1-rowfill{opacity:0; transform-box:fill-box;}
-  .exp-s1-rowfill.c1{animation:expRowFillIn 4s infinite; animation-delay:0.5s;}
-  .exp-s1-rowfill.c2{animation:expRowFillIn 4s infinite; animation-delay:1.3s;}
-  .exp-s1-rowfill.c3{animation:expRowFillIn 4s infinite; animation-delay:2.1s;}
-  .exp-s1-rowfill.c4{animation:expRowFillIn 4s infinite; animation-delay:2.9s;}
-  @keyframes expRowFillIn{
-    0%{opacity:0;}
-    4%{opacity:1;}
-    100%{opacity:1;}
-  }
-  .exp-s1-cursor{
-    offset-rotate:0deg; opacity:0;
-    offset-path:path('M26,30 L26,50 L26,50 L26,86 L26,86 L26,122 L26,122 L26,158 L26,158');
-    animation:expCursorMove 4s infinite;
-  }
-  @keyframes expCursorMove{
-    0%{opacity:0; offset-distance:0%;}
-    4%{opacity:1; offset-distance:11%;}
-    22%{offset-distance:11%;}
-    33%{offset-distance:33%;}
-    44%{offset-distance:33%;}
-    55%{offset-distance:55%;}
-    66%{offset-distance:55%;}
-    77%{offset-distance:77%;}
-    88%{offset-distance:77%;}
-    95%{opacity:1; offset-distance:100%;}
-    100%{opacity:0; offset-distance:100%;}
-  }
-  .exp-s1-click{opacity:0; transform:scale(0.5); transform-box:fill-box; transform-origin:center;}
-  .exp-s1-click.k1{animation:expClickPulse 4s infinite; animation-delay:0.5s;}
-  .exp-s1-click.k2{animation:expClickPulse 4s infinite; animation-delay:1.3s;}
-  .exp-s1-click.k3{animation:expClickPulse 4s infinite; animation-delay:2.1s;}
-  .exp-s1-click.k4{animation:expClickPulse 4s infinite; animation-delay:2.9s;}
-  @keyframes expClickPulse{
-    0%{opacity:0.9; transform:scale(0.5);}
-    18%{opacity:0; transform:scale(2.2);}
-    100%{opacity:0; transform:scale(2.2);}
-  }
-  .exp-s1-bar{transform-origin:left; transform:scaleX(0);}
-  .exp-s1-bar.in{animation:expBarFill 4s infinite;}
-  @keyframes expBarFill{
-    0%{transform:scaleX(0);} 25%{transform:scaleX(1);} 92%{transform:scaleX(1);} 100%{transform:scaleX(0);}
-  }
-
-  /* Stage 2 — AI matching: a grid of candidates gets scanned, most dismissed, one greenlit */
-  .exp-s2-scanbar{opacity:0; animation:expScanBar 4s infinite;}
-  @keyframes expScanBar{
-    0%, 4%{opacity:0; transform:translateY(0);}
-    6%{opacity:0.9;}
-    46%{opacity:0.9; transform:translateY(182px);}
-    50%{opacity:0;}
-    100%{opacity:0;}
-  }
-  .exp-s2-cell{opacity:0.85; transform-box:fill-box; transform-origin:center;}
-  .exp-s2-cell.reject{animation:expCellReject 4s infinite;}
-  @keyframes expCellReject{
-    0%, 8%{opacity:0.85; transform:scale(1);}
-    50%{opacity:0.85; transform:scale(1);}
-    58%{opacity:0.18; transform:scale(0.82);}
-    100%{opacity:0.18; transform:scale(0.82);}
-  }
-  .exp-s2-cell.winner-cell{animation:expCellWin 4s infinite;}
-  @keyframes expCellWin{
-    0%, 8%{opacity:0.85; transform:scale(1); fill:#6f93e8;}
-    46%{opacity:1; transform:scale(1); fill:#6f93e8;}
-    52%{opacity:1; transform:scale(1.3); fill:#5fd4e0;}
-    60%{transform:scale(1.05); fill:#5fd4e0;}
-    100%{opacity:1; transform:scale(1.05); fill:#5fd4e0;}
-  }
-  .exp-s2-strike{opacity:0; transform-box:fill-box; transform-origin:center;}
-  .exp-s2-strike.go{animation:expStrikeIn 4s infinite;}
-  @keyframes expStrikeIn{
-    0%, 55%{opacity:0;}
-    60%, 100%{opacity:0.9;}
-  }
-  .exp-s2-counttext{animation:expCounterTick 4s infinite steps(1);}
-  .exp-s2-ray{opacity:0; stroke-dasharray:140; stroke-dashoffset:140;}
-  .exp-s2-ray.go{animation:expRayDraw 4s infinite;}
-  @keyframes expRayDraw{
-    0%, 50%{opacity:0; stroke-dashoffset:140;}
-    58%{opacity:0.9; stroke-dashoffset:0;}
-    92%{opacity:0.9;}
-    100%{opacity:0;}
-  }
-  .exp-s2-winner{opacity:0; transform:scale(0.7); transform-box:fill-box; transform-origin:center;}
-  .exp-s2-winner.in{animation:expWinnerIn 4s infinite;}
-  @keyframes expWinnerIn{
-    0%, 55%{opacity:0; transform:scale(0.7);}
-    64%{opacity:1; transform:scale(1.1);}
-    70%{transform:scale(1);}
-    92%{opacity:1; transform:scale(1);}
-    100%{opacity:0; transform:scale(1);}
-  }
-  .exp-s2-counter{animation:expCounterTick 4s infinite steps(1);}
-
-  /* Stage 3 — order generation: signal pulses travel from vineyard nodes to hub */
-  .exp-pulse{opacity:0; offset-rotate:0deg;}
-  .exp-pulse.go{animation:expPulseGo 4s infinite;}
-  @keyframes expPulseGo{
-    0%{opacity:0; offset-distance:0%;}
-    6%{opacity:1;}
-    68%{opacity:1; offset-distance:100%;}
-    78%{opacity:0; offset-distance:100%;}
-    100%{opacity:0; offset-distance:100%;}
-  }
-  .exp-p-a{offset-path:path('M395,208 C330,182 280,148 193,144'); animation-delay:0.1s;}
-  .exp-p-b{offset-path:path('M395,220 C330,220 270,222 193,222'); animation-delay:0.5s;}
-  .exp-p-c{offset-path:path('M395,232 C330,258 280,292 193,296'); animation-delay:0.9s;}
-  .exp-hub-ring{animation:expHubPulse 1.3s ease-in-out infinite;}
-  @keyframes expHubPulse{
-    0%, 100%{opacity:0.4; stroke-width:1.5;}
-    50%{opacity:0.9; stroke-width:2.5;}
-  }
-  .exp-s4-tag{opacity:0;}
-  .exp-s4-tag.t1{animation:expTagIn 4s infinite; animation-delay:0.3s;}
-  .exp-s4-tag.t2{animation:expTagIn 4s infinite; animation-delay:0.7s;}
-  .exp-s4-tag.t3{animation:expTagIn 4s infinite; animation-delay:1.1s;}
-  @keyframes expTagIn{
-    0%, 15%{opacity:0;}
-    22%, 92%{opacity:0.9;}
-    100%{opacity:0;}
-  }
-
-  /* Stage 3 — order generated: a PO assembles, then a CONFIRMED stamp slams down and transmits out */
-  .exp-s3-stamp{
-    opacity:0; transform:scale(2.4) rotate(-14deg); transform-box:fill-box; transform-origin:center;
-    animation:expStampSlam 4s infinite;
-  }
-  @keyframes expStampSlam{
-    0%, 68%{opacity:0; transform:scale(2.4) rotate(-14deg);}
-    74%{opacity:1; transform:scale(0.85) rotate(-8deg);}
-    80%{transform:scale(1.05) rotate(-8deg);}
-    86%, 96%{opacity:1; transform:scale(1) rotate(-8deg);}
-    100%{opacity:0; transform:scale(1) rotate(-8deg);}
-  }
-  .exp-s3-send{opacity:0; stroke-dasharray:200; stroke-dashoffset:200; animation:expSendDraw 4s infinite;}
-  @keyframes expSendDraw{
-    0%, 80%{opacity:0; stroke-dashoffset:200;}
-    88%{opacity:0.9; stroke-dashoffset:0;}
-    96%{opacity:0.9;}
-    100%{opacity:0;}
-  }
-  .exp-s3-sendnode{opacity:0; animation:expSendNode 4s infinite;}
-  @keyframes expSendNode{
-    0%, 86%{opacity:0;}
-    92%, 98%{opacity:1;}
-    100%{opacity:0;}
-  }
-  .exp-s3-sendlabel{opacity:0; animation:expSendNode 4s infinite;}
-
-  /* Stage 5 — consolidation: glowing bars rise into a single stacked column readout */
-  .exp-s4-bar{transform:scaleY(0); transform-box:fill-box; transform-origin:bottom;}
-  .exp-s4-bar.in{animation:expBarRise 4s infinite;}
-  @keyframes expBarRise{
-    0%{transform:scaleY(0);}
-    22%{transform:scaleY(1);}
-    92%{transform:scaleY(1);}
-    100%{transform:scaleY(1);}
-  }
-  .exp-s4-lock{stroke-dasharray:420; stroke-dashoffset:420;}
-  .exp-s4-lock.in{animation:expLockDraw 4s infinite;}
-  @keyframes expLockDraw{
-    0%, 28%{stroke-dashoffset:420;}
-    55%{stroke-dashoffset:0;}
-    100%{stroke-dashoffset:0;}
-  }
-
-  /* Stage 6 — export: terminal readout lines type in, clearance confirms, freight glyph departs */
-  .exp-s5-line{opacity:0;}
-  .exp-s5-line.in{animation:expChipIn 4s infinite;}
-  .exp-s5-depart{animation:expDepart 4s infinite;}
-  @keyframes expDepart{
-    0%, 55%{transform:translateX(0);}
-    95%{transform:translateX(130px);}
-    100%{transform:translateX(130px);}
-  }
-  .exp-s5-wake{stroke-dasharray:6 5; animation:expWireFlow 0.8s linear infinite;}
-
-  /* Stage 6 — paperwork scatter collapses into one streamlined agent process */
-  .exp-s6-doc{opacity:0.75; transform-box:fill-box; transform-origin:center;}
-  .exp-s6-doc.d1{animation:expDocAbsorb 4s infinite; animation-delay:0.1s;}
-  .exp-s6-doc.d2{animation:expDocAbsorb 4s infinite; animation-delay:0.25s;}
-  .exp-s6-doc.d3{animation:expDocAbsorb 4s infinite; animation-delay:0.4s;}
-  .exp-s6-doc.d4{animation:expDocAbsorb 4s infinite; animation-delay:0.55s;}
-  @keyframes expDocAbsorb{
-    0%, 10%{opacity:0.8; transform:scale(1) translateX(0);}
-    40%{opacity:0.8; transform:scale(1) translateX(0);}
-    60%{opacity:0; transform:scale(0.3) translateX(90px);}
-    100%{opacity:0; transform:scale(0.3) translateX(90px);}
-  }
-  .exp-s6-absorb{opacity:0; stroke-dasharray:46; stroke-dashoffset:46; animation:expAbsorbDraw 4s infinite;}
-  @keyframes expAbsorbDraw{
-    0%, 42%{opacity:0; stroke-dashoffset:46;}
-    50%{opacity:0.8; stroke-dashoffset:0;}
-    62%{opacity:0.8;}
-    70%{opacity:0;}
-    100%{opacity:0;}
-  }
-
-  /* Stage 6 — distribution: single trunk line splits into branches lighting endpoint nodes */
-  .exp-branch{stroke-dasharray:180; stroke-dashoffset:180;}
-  .exp-branch.in{animation:expBranchDraw 4s infinite;}
-  .exp-branch-1{animation-delay:0.3s;}
-  .exp-branch-2{animation-delay:0.5s;}
-  .exp-branch-3{animation-delay:0.7s;}
-  @keyframes expBranchDraw{
-    0%, 10%{stroke-dashoffset:180;}
-    60%{stroke-dashoffset:0;}
-    100%{stroke-dashoffset:0;}
-  }
-  .exp-endpoint{opacity:0.25; transform:scale(0.7); transform-box:fill-box; transform-origin:center;}
-  .exp-endpoint.in{animation:expEndpointLight 4s infinite;}
-  .exp-endpoint-1{animation-delay:0.9s;}
-  .exp-endpoint-2{animation-delay:1.1s;}
-  .exp-endpoint-3{animation-delay:1.3s;}
-  @keyframes expEndpointLight{
-    0%, 22%{opacity:0.25; transform:scale(0.7);}
-    38%{opacity:1; transform:scale(1.15);}
-    48%{transform:scale(1);}
-    100%{opacity:1; transform:scale(1);}
+  .explainer-icon{ animation:expIconCycle 21s infinite; }
+  .explainer-step:nth-child(1) .explainer-icon{ animation-delay:0s; }
+  .explainer-step:nth-child(2) .explainer-icon{ animation-delay:3s; }
+  .explainer-step:nth-child(3) .explainer-icon{ animation-delay:6s; }
+  .explainer-step:nth-child(4) .explainer-icon{ animation-delay:9s; }
+  .explainer-step:nth-child(5) .explainer-icon{ animation-delay:12s; }
+  .explainer-step:nth-child(6) .explainer-icon{ animation-delay:15s; }
+  .explainer-step:nth-child(7) .explainer-icon{ animation-delay:18s; }
+  @keyframes expIconCycle{
+    0%, 100%{ color:var(--ink-dim); }
+    4%, 10%{ color:#5fd4e0; }
+    16%{ color:var(--ink-dim); }
   }
 
   @media (prefers-reduced-motion: reduce){
-    .exp-stage, .exp-scanline, .exp-node, .exp-ring, .exp-wire, .exp-chip, .exp-readout,
-    .exp-bracket-flash, .exp-s1-rowfill, .exp-s1-check, .exp-s1-cursor, .exp-s1-click,
-    .exp-s1-bar, .exp-s2-scanbar, .exp-s2-cell, .exp-s2-strike, .exp-s2-ray,
-    .exp-s2-winner, .exp-s2-counter, .exp-s3-stamp, .exp-s3-send, .exp-s3-sendnode,
-    .exp-s3-sendlabel, .exp-s4-tag, .exp-pulse, .exp-hub-ring, .exp-s4-bar,
-    .exp-s4-lock, .exp-s5-line, .exp-s5-depart, .exp-s5-wake, .exp-branch, .exp-endpoint,
-    .exp-s6-doc, .exp-s6-absorb
-    {animation:none !important;}
-    .exp-stage{opacity:1;}
-    .exp-chip, .exp-readout, .exp-s1-rowfill, .exp-s1-check, .exp-s1-bar,
-    .exp-s2-winner, .exp-s4-tag, .exp-s4-bar, .exp-s5-line, .exp-endpoint{opacity:1; transform:none;}
-    .exp-s6-doc{opacity:0.75; transform:none;}
-    .exp-s6-absorb{opacity:0.8; stroke-dashoffset:0;}
-    .exp-s1-cursor, .exp-s1-click, .exp-s2-scanbar{opacity:0;}
-    .exp-s2-cell.reject{opacity:0.18; transform:scale(0.82);}
-    .exp-s2-cell.winner-cell{opacity:1; fill:#5fd4e0; transform:scale(1.05);}
-    .exp-s2-strike.go{opacity:0.9;}
-    .exp-s2-ray.go{opacity:0.9; stroke-dashoffset:0;}
-    .exp-s3-stamp{opacity:1; transform:rotate(-8deg);}
-    .exp-s3-send{opacity:0.9; stroke-dashoffset:0;}
-    .exp-s3-sendnode, .exp-s3-sendlabel{opacity:1;}
-    .exp-s4-lock, .exp-branch{stroke-dashoffset:0;}
+    .explainer-step, .explainer-step::before, .explainer-icon{ animation:none !important; }
   }
 
-  .explainer-progress{display:flex; justify-content:center; gap:10px; padding:18px 0 20px;}
-  .explainer-dot{width:7px; height:7px; border-radius:50%; background:var(--border-soft); animation:expDot 28s infinite;}
-  .explainer-dot:nth-child(2){animation-delay:4s;}
-  .explainer-dot:nth-child(3){animation-delay:8s;}
-  .explainer-dot:nth-child(4){animation-delay:12s;}
-  .explainer-dot:nth-child(5){animation-delay:16s;}
-  .explainer-dot:nth-child(6){animation-delay:20s;}
-  .explainer-dot:nth-child(7){animation-delay:24s;}
-  @keyframes expDot{
-    0%{background:var(--cyan);}
-    13.5%{background:var(--cyan);}
-    14.29%{background:var(--border-soft);}
-    100%{background:var(--border-soft);}
+  @media (max-width: 900px){
+    .explainer-track{
+      display:flex;
+      overflow-x:auto;
+      scroll-snap-type:x mandatory;
+      gap:12px;
+      margin:0 -20px;
+      padding:4px 20px 10px;
+      -webkit-overflow-scrolling:touch;
+    }
+    .explainer-step{
+      flex:0 0 72%;
+      scroll-snap-align:start;
+    }
+  }
+  @media (max-width: 520px){
+    .explainer-step{ flex-basis:82%; }
   }
 
-  .explainer-caption{text-align:center; font-size:11.5px; font-family:'JetBrains Mono',monospace; letter-spacing:0.02em; color:var(--ink-faint); padding:0 0 22px; min-height:18px;}
+
 
   .steps{display:grid; grid-template-columns:repeat(4, 1fr); gap:18px;}
   .step{
@@ -871,459 +608,114 @@
     <div class="wrap">
       <div class="section-head">
         <div class="section-eyebrow">Video Explanation</div>
-        <h2>One pallet, six moves.</h2>
+        <h2>Every step, one view.</h2>
         <p>A live read of the matching engine, end to end — from a buyer's signal to the one shared pallet, to distribution on arrival.</p>
       </div>
 
-      <div class="explainer-panel">
-        <svg class="explainer-svg" viewBox="0 0 760 360" role="img" aria-label="Animated seven-stage HUD sequence: a buyer builds their order from a checklist; the Sapphire Panda AI scans a grid of candidate wines and greenlights the best match; a purchase order document assembles and gets stamped CONFIRMED; signal pulses travel from three vineyards to a central hub as the order is fulfilled; bars rise and lock into one consolidated pallet readout; export clearance lines confirm and a freight glyph departs; and a single trunk line branches out to light up three buyer endpoints on arrival." preserveAspectRatio="xMidYMid meet">
-          <defs>
-            <radialGradient id="exp-glow-cyan" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#5fd4e0" stop-opacity="0.45"/>
-              <stop offset="100%" stop-color="#5fd4e0" stop-opacity="0"/>
-            </radialGradient>
-            <pattern id="exp-grid" width="24" height="24" patternUnits="userSpaceOnUse">
-              <path d="M24 0 L0 0 0 24" fill="none" stroke="#5fd4e0" stroke-opacity="0.045"/>
-            </pattern>
-            <clipPath id="exp-frame-clip"><rect x="1" y="1" width="758" height="358"/></clipPath>
-            <!-- vineyard glyph: a sloped hillside with rows of vines, recognizable at a glance -->
-            <g id="exp-vineyard-glyph">
-              <path d="M-26,18 L-26,6 C-14,-2 14,-2 26,6 L26,18 Z" fill="none" stroke="currentColor" stroke-opacity="0.5" stroke-width="1.3"/>
-              <path d="M-21,13 L21,13" stroke="currentColor" stroke-opacity="0.45" stroke-width="1"/>
-              <path d="M-19,8 L19,8" stroke="currentColor" stroke-opacity="0.4" stroke-width="1"/>
-              <path d="M-15,3.5 L15,3.5" stroke="currentColor" stroke-opacity="0.35" stroke-width="1"/>
-              <line x1="-14" y1="1" x2="-16" y2="17" stroke="currentColor" stroke-opacity="0.55" stroke-width="1"/>
-              <line x1="-6" y1="-1" x2="-7" y2="17.5" stroke="currentColor" stroke-opacity="0.55" stroke-width="1"/>
-              <line x1="2" y1="-1.5" x2="2" y2="18" stroke="currentColor" stroke-opacity="0.55" stroke-width="1"/>
-              <line x1="10" y1="-1" x2="11" y2="17.5" stroke="currentColor" stroke-opacity="0.55" stroke-width="1"/>
-              <line x1="18" y1="1" x2="19.5" y2="17" stroke="currentColor" stroke-opacity="0.55" stroke-width="1"/>
-            </g>
-            <marker id="exp-arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-              <path d="M0,0 L10,5 L0,10 Z" fill="#5fd4e0"/>
-            </marker>
-          </defs>
+      <div class="explainer-track">
 
-          <g clip-path="url(#exp-frame-clip)">
-            <rect x="0" y="0" width="760" height="360" fill="url(#exp-grid)"/>
-            <rect class="exp-scanline" x="0" y="-20" width="760" height="20" fill="url(#exp-glow-cyan)" opacity="0.12"/>
+        <div class="explainer-step">
+          <span class="explainer-num">01</span>
+          <div class="explainer-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="4" height="4" rx="0.5"/>
+              <path d="M9 5h12"/>
+              <rect x="3" y="10" width="4" height="4" rx="0.5"/>
+              <path d="M9 12h12"/>
+              <rect x="3" y="17" width="4" height="4" rx="0.5"/>
+              <path d="M9 19h12"/>
+              <path d="M4 3.5l1 1.5 2-2.5" stroke-width="1.4"/>
+            </svg>
+          </div>
+          <h4>You list your requirements.</h4>
+          <p>Style, region, price and volume — tell us exactly what you want.</p>
+        </div>
 
-            <!-- persistent HUD corner brackets -->
-            <path class="exp-bracket" d="M14,34 L14,14 L34,14"/>
-            <path class="exp-bracket" d="M746,34 L746,14 L726,14"/>
-            <path class="exp-bracket" d="M14,326 L14,346 L34,346"/>
-            <path class="exp-bracket" d="M746,326 L746,346 L726,346"/>
+        <div class="explainer-step">
+          <span class="explainer-num">02</span>
+          <div class="explainer-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="1"/>
+              <path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>
+              <circle cx="15" cy="9" r="1.6" fill="currentColor" stroke="none"/>
+            </svg>
+          </div>
+          <h4>Sapphire Panda AI matches it.</h4>
+          <p>Thousands of combinations scored in seconds to find the best fit.</p>
+        </div>
 
-            <!-- AI engine indicator: a small pulsing glyph, present on every stage — the one constant across the loop -->
-            <g font-family="JetBrains Mono, monospace">
-              <circle class="exp-node" cx="24" cy="24" r="3.5" fill="#5fd4e0"/>
-              <circle cx="24" cy="24" r="8" fill="none" stroke="#5fd4e0" stroke-opacity="0.35" stroke-width="1"/>
-              <text x="36" y="27.5" font-size="10" letter-spacing="0.09em" fill="#5fd4e0" opacity="0.8">AI ENGINE — LIVE</text>
-            </g>
+        <div class="explainer-step">
+          <span class="explainer-num">03</span>
+          <div class="explainer-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2.5h9l3 3v16h-12z"/>
+              <path d="M15 2.5v3h3"/>
+              <path d="M8.5 11h7M8.5 14h7M8.5 17h4"/>
+              <path d="M8 8.8l1.6 1.6L12.8 7" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <h4>Order is generated.</h4>
+          <p>A live purchase order is built and sent automatically.</p>
+        </div>
 
-            <!-- big bold title row, shared across every stage -->
-            <g class="exp-stage exp-stage-1" font-family="Inter, sans-serif"><text x="40" y="78" font-size="26" font-weight="700" fill="#f4f5fa">You list your requirements.</text></g>
-            <g class="exp-stage exp-stage-2" font-family="Inter, sans-serif"><text x="40" y="78" font-size="26" font-weight="700" fill="#f4f5fa">Sapphire Panda AI matches it.</text></g>
-            <g class="exp-stage exp-stage-3" font-family="Inter, sans-serif"><text x="40" y="78" font-size="26" font-weight="700" fill="#f4f5fa">Order is generated.</text></g>
-            <g class="exp-stage exp-stage-4" font-family="Inter, sans-serif"><text x="40" y="78" font-size="26" font-weight="700" fill="#f4f5fa">Vineyards are requested.</text></g>
-            <g class="exp-stage exp-stage-5" font-family="Inter, sans-serif"><text x="40" y="78" font-size="26" font-weight="700" fill="#f4f5fa">Pallet is consolidated.</text></g>
-            <g class="exp-stage exp-stage-6" font-family="Inter, sans-serif"><text x="40" y="78" font-size="26" font-weight="700" fill="#f4f5fa">Agents clear customs.</text></g>
-            <g class="exp-stage exp-stage-7" font-family="Inter, sans-serif"><text x="40" y="78" font-size="26" font-weight="700" fill="#f4f5fa">You receive it.</text></g>
-            <g class="exp-stage exp-stage-1" font-family="JetBrains Mono, monospace"><text x="720" y="54" text-anchor="end" font-size="13" fill="#5fd4e0" opacity="0.7">STEP 01 / 07</text></g>
-            <g class="exp-stage exp-stage-2" font-family="JetBrains Mono, monospace"><text x="720" y="54" text-anchor="end" font-size="13" fill="#5fd4e0" opacity="0.7">STEP 02 / 07</text></g>
-            <g class="exp-stage exp-stage-3" font-family="JetBrains Mono, monospace"><text x="720" y="54" text-anchor="end" font-size="13" fill="#5fd4e0" opacity="0.7">STEP 03 / 07</text></g>
-            <g class="exp-stage exp-stage-4" font-family="JetBrains Mono, monospace"><text x="720" y="54" text-anchor="end" font-size="13" fill="#5fd4e0" opacity="0.7">STEP 04 / 07</text></g>
-            <g class="exp-stage exp-stage-5" font-family="JetBrains Mono, monospace"><text x="720" y="54" text-anchor="end" font-size="13" fill="#5fd4e0" opacity="0.7">STEP 05 / 07</text></g>
-            <g class="exp-stage exp-stage-6" font-family="JetBrains Mono, monospace"><text x="720" y="54" text-anchor="end" font-size="13" fill="#5fd4e0" opacity="0.7">STEP 06 / 07</text></g>
-            <g class="exp-stage exp-stage-7" font-family="JetBrains Mono, monospace"><text x="720" y="54" text-anchor="end" font-size="13" fill="#5fd4e0" opacity="0.7">STEP 07 / 07</text></g>
+        <div class="explainer-step">
+          <span class="explainer-num">04</span>
+          <div class="explainer-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3v3"/>
+              <circle cx="9" cy="9.5" r="2.3"/>
+              <circle cx="15" cy="9.5" r="2.3"/>
+              <circle cx="7" cy="14.5" r="2.3"/>
+              <circle cx="12" cy="14.5" r="2.3"/>
+              <circle cx="17" cy="14.5" r="2.3"/>
+              <circle cx="9.5" cy="19.3" r="2.3"/>
+              <circle cx="14.5" cy="19.3" r="2.3"/>
+            </svg>
+          </div>
+          <h4>Vineyards are requested.</h4>
+          <p>Independent vineyards across regions confirm and fulfil the order.</p>
+        </div>
 
-            <!-- short one-line explanation under the title, shared slot -->
-            <g class="exp-stage exp-stage-1" font-family="Inter, sans-serif"><text x="40" y="99" font-size="13" fill="currentColor" opacity="0.55">Style, region, price and volume — tell us exactly what you want.</text></g>
-            <g class="exp-stage exp-stage-2" font-family="Inter, sans-serif"><text x="40" y="99" font-size="13" fill="currentColor" opacity="0.55">Thousands of combinations scored in seconds to find the best fit.</text></g>
-            <g class="exp-stage exp-stage-3" font-family="Inter, sans-serif"><text x="40" y="99" font-size="13" fill="currentColor" opacity="0.55">A live purchase order is built and sent automatically.</text></g>
-            <g class="exp-stage exp-stage-4" font-family="Inter, sans-serif"><text x="40" y="99" font-size="13" fill="currentColor" opacity="0.55">Independent vineyards across regions confirm and fulfil the order.</text></g>
-            <g class="exp-stage exp-stage-5" font-family="Inter, sans-serif"><text x="40" y="99" font-size="13" fill="currentColor" opacity="0.55">Multiple wines, multiple vineyards — one complex, unique pallet.</text></g>
-            <g class="exp-stage exp-stage-6" font-family="Inter, sans-serif"><text x="40" y="99" font-size="13" fill="currentColor" opacity="0.55">Our agents handle all the paperwork, so you don't have to.</text></g>
-            <g class="exp-stage exp-stage-7" font-family="Inter, sans-serif"><text x="40" y="99" font-size="13" fill="currentColor" opacity="0.55">One pallet splits out to every buyer on arrival.</text></g>
+        <div class="explainer-step">
+          <span class="explainer-num">05</span>
+          <div class="explainer-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 21V11l2-2h10l2 2v10z"/>
+              <path d="M5 15h14M5 18h14"/>
+              <path d="M9 11V6M12 11V4M15 11V6"/>
+            </svg>
+          </div>
+          <h4>Pallet is consolidated.</h4>
+          <p>Multiple wines, multiple vineyards — one complex, unique pallet.</p>
+        </div>
 
-            <!-- divider rule separating header from the live scene -->
-            <line x1="40" y1="114" x2="720" y2="114" stroke="#5fd4e0" stroke-opacity="0.15"/>
+        <div class="explainer-step">
+          <span class="explainer-num">06</span>
+          <div class="explainer-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 7l8-4 8 4v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9z"/>
+              <path d="M9 12l2 2 4-4.5" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <h4>Agents clear customs.</h4>
+          <p>Our agents handle all the paperwork, so you don't have to.</p>
+        </div>
 
-            <!-- ============ STAGE 1 — Selection ============ -->
-            <g class="exp-stage exp-stage-1" font-family="JetBrains Mono, monospace">
-              <!-- a buyer checklist: cursor clicks down the list, each option checks on -->
-              <g transform="translate(60,122)">
-                <rect x="0" y="0" width="360" height="200" fill="none" stroke="currentColor" stroke-opacity="0.25"/>
-                <line x1="0" y1="26" x2="360" y2="26" stroke="currentColor" stroke-opacity="0.2"/>
-                <text x="16" y="18" font-size="9.5" fill="currentColor" opacity="0.5">BUILD YOUR ORDER</text>
+        <div class="explainer-step">
+          <span class="explainer-num">07</span>
+          <div class="explainer-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3v9"/>
+              <path d="M12 12l-6 7M12 12l6 7M12 12l0 8"/>
+              <circle cx="6" cy="20.5" r="1.4" fill="currentColor" stroke="none"/>
+              <circle cx="12" cy="21" r="1.4" fill="currentColor" stroke="none"/>
+              <circle cx="18" cy="20.5" r="1.4" fill="currentColor" stroke="none"/>
+            </svg>
+          </div>
+          <h4>You receive it.</h4>
+          <p>One pallet splits out to every buyer on arrival.</p>
+        </div>
 
-                <!-- option rows -->
-                <g class="exp-s1-row">
-                  <rect x="16" y="40" width="20" height="20" fill="none" stroke="currentColor" stroke-opacity="0.35"/>
-                  <rect class="exp-s1-rowfill c1" x="16" y="40" width="20" height="20" fill="#3a6ede" opacity="0.25"/>
-                  <path class="exp-s1-check c1" d="M20,50 L26,56 L34,44" stroke="#5fd4e0" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                  <text x="48" y="54" font-size="12" fill="currentColor" opacity="0.5">Style</text>
-                  <text x="130" y="54" font-size="12" fill="#f4f5fa" opacity="0.95">Red — Shiraz</text>
-                </g>
-
-                <g class="exp-s1-row">
-                  <rect x="16" y="76" width="20" height="20" fill="none" stroke="currentColor" stroke-opacity="0.35"/>
-                  <rect class="exp-s1-rowfill c2" x="16" y="76" width="20" height="20" fill="#5fd4e0" opacity="0.25"/>
-                  <path class="exp-s1-check c2" d="M20,86 L26,92 L34,80" stroke="#5fd4e0" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                  <text x="48" y="90" font-size="12" fill="currentColor" opacity="0.5">Region</text>
-                  <text x="130" y="90" font-size="12" fill="#f4f5fa" opacity="0.95">Barossa Valley</text>
-                </g>
-
-                <g class="exp-s1-row">
-                  <rect x="16" y="112" width="20" height="20" fill="none" stroke="currentColor" stroke-opacity="0.35"/>
-                  <rect class="exp-s1-rowfill c3" x="16" y="112" width="20" height="20" fill="#b8935a" opacity="0.25"/>
-                  <path class="exp-s1-check c3" d="M20,122 L26,128 L34,116" stroke="#5fd4e0" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                  <text x="48" y="126" font-size="12" fill="currentColor" opacity="0.5">Price</text>
-                  <text x="130" y="126" font-size="12" fill="#f4f5fa" opacity="0.95">$30–55 / btl</text>
-                </g>
-
-                <g class="exp-s1-row">
-                  <rect x="16" y="148" width="20" height="20" fill="none" stroke="currentColor" stroke-opacity="0.35"/>
-                  <rect class="exp-s1-rowfill c4" x="16" y="148" width="20" height="20" fill="#3a6ede" opacity="0.25"/>
-                  <path class="exp-s1-check c4" d="M20,158 L26,164 L34,152" stroke="#5fd4e0" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                  <text x="48" y="162" font-size="12" fill="currentColor" opacity="0.5">Volume</text>
-                  <text x="130" y="162" font-size="12" fill="#f4f5fa" opacity="0.95">60 bottles</text>
-                </g>
-
-                <line x1="0" y1="178" x2="360" y2="178" stroke="currentColor" stroke-opacity="0.2"/>
-                <circle cx="20" cy="190" r="3" fill="#5fd4e0" class="exp-node"/>
-                <text x="32" y="193" font-size="9.5" fill="#5fd4e0" opacity="0.85">ORDER BUILT — READY TO MATCH</text>
-
-                <!-- click pulses at each checkbox, timed with the checks -->
-                <circle class="exp-s1-click k1" cx="26" cy="50" r="12" fill="none" stroke="#5fd4e0" stroke-width="1.5"/>
-                <circle class="exp-s1-click k2" cx="26" cy="86" r="12" fill="none" stroke="#5fd4e0" stroke-width="1.5"/>
-                <circle class="exp-s1-click k3" cx="26" cy="122" r="12" fill="none" stroke="#5fd4e0" stroke-width="1.5"/>
-                <circle class="exp-s1-click k4" cx="26" cy="158" r="12" fill="none" stroke="#5fd4e0" stroke-width="1.5"/>
-
-                <!-- arrow cursor travelling down the list, pausing at each row -->
-                <path class="exp-s1-cursor" d="M0,0 L0,15 L3.6,11.8 L6,17 L8.6,15.8 L6.2,10.6 L10.2,10.6 Z" fill="#f4f5fa" stroke="#040611" stroke-width="0.8"/>
-              </g>
-            </g>
-
-            <!-- ============ STAGE 2 — AI matching ============ -->
-            <g class="exp-stage exp-stage-2" font-family="JetBrains Mono, monospace">
-              <!-- grid of candidate wines being scanned; most rejected, one greenlit -->
-              <g transform="translate(90,150)">
-                <rect class="exp-s2-scanbar" x="-14" y="-14" width="244" height="6" fill="#5fd4e0" opacity="0.5"/>
-                <rect class="exp-s2-cell reject" x="0" y="0" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.000s; transform-origin:12.0px 12.0px"/>
-                <line class="exp-s2-strike go" x1="4" y1="4" x2="20" y2="20" stroke="#1a2440" stroke-width="2" style="animation-delay:0.000s"/>
-                <rect class="exp-s2-cell reject" x="32" y="0" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.012s; transform-origin:44.0px 12.0px"/>
-                <line class="exp-s2-strike go" x1="36" y1="4" x2="52" y2="20" stroke="#1a2440" stroke-width="2" style="animation-delay:0.012s"/>
-                <rect class="exp-s2-cell reject" x="64" y="0" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.024s; transform-origin:76.0px 12.0px"/>
-                <line class="exp-s2-strike go" x1="68" y1="4" x2="84" y2="20" stroke="#1a2440" stroke-width="2" style="animation-delay:0.024s"/>
-                <rect class="exp-s2-cell reject" x="96" y="0" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.036s; transform-origin:108.0px 12.0px"/>
-                <line class="exp-s2-strike go" x1="100" y1="4" x2="116" y2="20" stroke="#1a2440" stroke-width="2" style="animation-delay:0.036s"/>
-                <rect class="exp-s2-cell reject" x="128" y="0" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.048s; transform-origin:140.0px 12.0px"/>
-                <line class="exp-s2-strike go" x1="132" y1="4" x2="148" y2="20" stroke="#1a2440" stroke-width="2" style="animation-delay:0.048s"/>
-                <rect class="exp-s2-cell reject" x="160" y="0" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.060s; transform-origin:172.0px 12.0px"/>
-                <line class="exp-s2-strike go" x1="164" y1="4" x2="180" y2="20" stroke="#1a2440" stroke-width="2" style="animation-delay:0.060s"/>
-                <rect class="exp-s2-cell reject" x="192" y="0" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.072s; transform-origin:204.0px 12.0px"/>
-                <line class="exp-s2-strike go" x1="196" y1="4" x2="212" y2="20" stroke="#1a2440" stroke-width="2" style="animation-delay:0.072s"/>
-                <rect class="exp-s2-cell reject" x="0" y="32" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.084s; transform-origin:12.0px 44.0px"/>
-                <line class="exp-s2-strike go" x1="4" y1="36" x2="20" y2="52" stroke="#1a2440" stroke-width="2" style="animation-delay:0.084s"/>
-                <rect class="exp-s2-cell reject" x="32" y="32" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.096s; transform-origin:44.0px 44.0px"/>
-                <line class="exp-s2-strike go" x1="36" y1="36" x2="52" y2="52" stroke="#1a2440" stroke-width="2" style="animation-delay:0.096s"/>
-                <rect class="exp-s2-cell reject" x="64" y="32" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.108s; transform-origin:76.0px 44.0px"/>
-                <line class="exp-s2-strike go" x1="68" y1="36" x2="84" y2="52" stroke="#1a2440" stroke-width="2" style="animation-delay:0.108s"/>
-                <rect class="exp-s2-cell reject" x="96" y="32" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.120s; transform-origin:108.0px 44.0px"/>
-                <line class="exp-s2-strike go" x1="100" y1="36" x2="116" y2="52" stroke="#1a2440" stroke-width="2" style="animation-delay:0.120s"/>
-                <rect class="exp-s2-cell reject" x="128" y="32" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.132s; transform-origin:140.0px 44.0px"/>
-                <line class="exp-s2-strike go" x1="132" y1="36" x2="148" y2="52" stroke="#1a2440" stroke-width="2" style="animation-delay:0.132s"/>
-                <rect class="exp-s2-cell reject" x="160" y="32" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.144s; transform-origin:172.0px 44.0px"/>
-                <line class="exp-s2-strike go" x1="164" y1="36" x2="180" y2="52" stroke="#1a2440" stroke-width="2" style="animation-delay:0.144s"/>
-                <rect class="exp-s2-cell reject" x="192" y="32" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.156s; transform-origin:204.0px 44.0px"/>
-                <line class="exp-s2-strike go" x1="196" y1="36" x2="212" y2="52" stroke="#1a2440" stroke-width="2" style="animation-delay:0.156s"/>
-                <rect class="exp-s2-cell reject" x="0" y="64" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.168s; transform-origin:12.0px 76.0px"/>
-                <line class="exp-s2-strike go" x1="4" y1="68" x2="20" y2="84" stroke="#1a2440" stroke-width="2" style="animation-delay:0.168s"/>
-                <rect class="exp-s2-cell reject" x="32" y="64" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.180s; transform-origin:44.0px 76.0px"/>
-                <line class="exp-s2-strike go" x1="36" y1="68" x2="52" y2="84" stroke="#1a2440" stroke-width="2" style="animation-delay:0.180s"/>
-                <rect class="exp-s2-cell reject" x="64" y="64" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.192s; transform-origin:76.0px 76.0px"/>
-                <line class="exp-s2-strike go" x1="68" y1="68" x2="84" y2="84" stroke="#1a2440" stroke-width="2" style="animation-delay:0.192s"/>
-                <rect class="exp-s2-cell reject" x="96" y="64" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.204s; transform-origin:108.0px 76.0px"/>
-                <line class="exp-s2-strike go" x1="100" y1="68" x2="116" y2="84" stroke="#1a2440" stroke-width="2" style="animation-delay:0.204s"/>
-                <rect class="exp-s2-cell winner-cell" x="128" y="64" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.216s; transform-origin:140.0px 76.0px"/>
-                <rect class="exp-s2-cell reject" x="160" y="64" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.228s; transform-origin:172.0px 76.0px"/>
-                <line class="exp-s2-strike go" x1="164" y1="68" x2="180" y2="84" stroke="#1a2440" stroke-width="2" style="animation-delay:0.228s"/>
-                <rect class="exp-s2-cell reject" x="192" y="64" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.240s; transform-origin:204.0px 76.0px"/>
-                <line class="exp-s2-strike go" x1="196" y1="68" x2="212" y2="84" stroke="#1a2440" stroke-width="2" style="animation-delay:0.240s"/>
-                <rect class="exp-s2-cell reject" x="0" y="96" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.252s; transform-origin:12.0px 108.0px"/>
-                <line class="exp-s2-strike go" x1="4" y1="100" x2="20" y2="116" stroke="#1a2440" stroke-width="2" style="animation-delay:0.252s"/>
-                <rect class="exp-s2-cell reject" x="32" y="96" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.264s; transform-origin:44.0px 108.0px"/>
-                <line class="exp-s2-strike go" x1="36" y1="100" x2="52" y2="116" stroke="#1a2440" stroke-width="2" style="animation-delay:0.264s"/>
-                <rect class="exp-s2-cell reject" x="64" y="96" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.276s; transform-origin:76.0px 108.0px"/>
-                <line class="exp-s2-strike go" x1="68" y1="100" x2="84" y2="116" stroke="#1a2440" stroke-width="2" style="animation-delay:0.276s"/>
-                <rect class="exp-s2-cell reject" x="96" y="96" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.288s; transform-origin:108.0px 108.0px"/>
-                <line class="exp-s2-strike go" x1="100" y1="100" x2="116" y2="116" stroke="#1a2440" stroke-width="2" style="animation-delay:0.288s"/>
-                <rect class="exp-s2-cell reject" x="128" y="96" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.300s; transform-origin:140.0px 108.0px"/>
-                <line class="exp-s2-strike go" x1="132" y1="100" x2="148" y2="116" stroke="#1a2440" stroke-width="2" style="animation-delay:0.300s"/>
-                <rect class="exp-s2-cell reject" x="160" y="96" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.312s; transform-origin:172.0px 108.0px"/>
-                <line class="exp-s2-strike go" x1="164" y1="100" x2="180" y2="116" stroke="#1a2440" stroke-width="2" style="animation-delay:0.312s"/>
-                <rect class="exp-s2-cell reject" x="192" y="96" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.324s; transform-origin:204.0px 108.0px"/>
-                <line class="exp-s2-strike go" x1="196" y1="100" x2="212" y2="116" stroke="#1a2440" stroke-width="2" style="animation-delay:0.324s"/>
-              </g>
-
-              <text x="90" y="138" font-size="9.5" fill="currentColor" opacity="0.5">SCANNING 10,000+ COMBINATIONS</text>
-              <text class="exp-s2-counttext" x="334" y="138" text-anchor="end" font-size="9.5" fill="#5fd4e0" opacity="0.85"></text>
-
-              <!-- ray from winning cell to the match card -->
-              <line class="exp-s2-ray go" x1="254" y1="226" x2="450" y2="226" stroke="#5fd4e0" stroke-width="1.5" stroke-dasharray="4 3"/>
-
-              <!-- winning match readout -->
-              <g transform="translate(560,226)"><g class="exp-s2-winner in">
-                <rect x="-110" y="-74" width="220" height="148" fill="none" stroke="#5fd4e0" stroke-opacity="0.6"/>
-                <line x1="-110" y1="-48" x2="110" y2="-48" stroke="currentColor" stroke-opacity="0.2"/>
-                <text x="0" y="-60" text-anchor="middle" font-size="9.5" fill="#5fd4e0" opacity="0.8" letter-spacing="0.08em">BEST MATCH FOUND</text>
-                <text x="0" y="-22" text-anchor="middle" font-size="14" fill="#f4f5fa" font-family="Fraunces, serif">Hahndorf Hill Shiraz</text>
-                <text x="0" y="-4" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.5">Adelaide Hills, SA</text>
-                <text x="0" y="40" text-anchor="middle" font-size="30" fill="#5fd4e0" font-weight="600">94%</text>
-                <text x="0" y="60" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.5" letter-spacing="0.06em">CONFIDENCE SCORE</text>
-              </g></g>
-            </g>
-
-            <!-- ============ STAGE 3 — Order is generated ============ -->
-            <g class="exp-stage exp-stage-3" font-family="JetBrains Mono, monospace">
-              <!-- a PO document assembles line by line, then gets stamped CONFIRMED and sent -->
-              <g transform="translate(220,130)">
-                <rect x="0" y="0" width="280" height="200" fill="none" stroke="currentColor" stroke-opacity="0.3"/>
-                <line x1="0" y1="30" x2="280" y2="30" stroke="currentColor" stroke-opacity="0.2"/>
-                <text x="14" y="20" font-size="10" fill="currentColor" opacity="0.6" letter-spacing="0.06em">PURCHASE ORDER — PO-10482</text>
-
-                <g class="exp-s5-line in" style="animation-delay:0.1s">
-                  <text x="14" y="52" font-size="9.5" fill="#5fd4e0">›</text>
-                  <text x="26" y="52" font-size="9.5" fill="currentColor" opacity="0.8">Hahndorf Hill Shiraz × 60</text>
-                </g>
-                <g class="exp-s5-line in" style="animation-delay:0.3s">
-                  <text x="14" y="72" font-size="9.5" fill="#5fd4e0">›</text>
-                  <text x="26" y="72" font-size="9.5" fill="currentColor" opacity="0.8">Adelaide Hills, SA</text>
-                </g>
-                <g class="exp-s5-line in" style="animation-delay:0.5s">
-                  <text x="14" y="92" font-size="9.5" fill="#5fd4e0">›</text>
-                  <text x="26" y="92" font-size="9.5" fill="currentColor" opacity="0.8">Unit price locked — PO value calculated</text>
-                </g>
-                <g class="exp-s5-line in" style="animation-delay:0.7s">
-                  <text x="14" y="112" font-size="9.5" fill="#5fd4e0">›</text>
-                  <text x="26" y="112" font-size="9.5" fill="currentColor" opacity="0.8">Delivery route: Barossa → Hong Kong</text>
-                </g>
-
-                <line x1="0" y1="130" x2="280" y2="130" stroke="currentColor" stroke-opacity="0.2"/>
-
-                <!-- stamp slams down once the order is complete -->
-                <g class="exp-s3-stamp">
-                  <rect x="86" y="146" width="108" height="34" fill="none" stroke="#5fd4e0" stroke-width="2"/>
-                  <text x="140" y="168" text-anchor="middle" font-size="13" fill="#5fd4e0" font-weight="700" letter-spacing="0.08em">CONFIRMED</text>
-                </g>
-              </g>
-
-              <!-- outbound signal: the confirmed order transmits out to the right -->
-              <line class="exp-s3-send" x1="500" y1="230" x2="700" y2="230" stroke="#5fd4e0" stroke-width="1.5" stroke-dasharray="5 4"/>
-              <circle class="exp-s3-sendnode" cx="700" cy="230" r="6" fill="#5fd4e0"/>
-              <text class="exp-s3-sendlabel" x="700" y="252" text-anchor="middle" font-size="9" fill="#5fd4e0" opacity="0.8" letter-spacing="0.05em">SENT</text>
-            </g>
-
-            <!-- ============ STAGE 4 — Vineyards are requested ============ -->
-            <g class="exp-stage exp-stage-4" font-family="JetBrains Mono, monospace">
-              <g transform="translate(0,0)">
-                <!-- three vineyards, left — a recognizable hillside-of-vines glyph each -->
-                <g transform="translate(175,148)" color="#b8935a">
-                  <use href="#exp-vineyard-glyph" x="0" y="0" transform="scale(1.1)"/>
-                  <circle cx="20" cy="-14" r="4" fill="#b8935a" class="exp-node"/>
-                  <text x="0" y="40" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.6">Vineyard A</text>
-                </g>
-                <g transform="translate(175,222)" color="#3a6ede">
-                  <use href="#exp-vineyard-glyph" x="0" y="0" transform="scale(1.1)"/>
-                  <circle cx="20" cy="-14" r="4" fill="#3a6ede" class="exp-node"/>
-                  <text x="0" y="40" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.6">Vineyard B</text>
-                </g>
-                <g transform="translate(175,296)" color="#5fd4e0">
-                  <use href="#exp-vineyard-glyph" x="0" y="0" transform="scale(1.1)"/>
-                  <circle cx="20" cy="-14" r="4" fill="#5fd4e0" class="exp-node"/>
-                  <text x="0" y="40" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.6">Vineyard C</text>
-                </g>
-
-                <!-- faint static wires -->
-                <path d="M193,144 C280,148 330,182 395,208" fill="none" stroke="currentColor" stroke-opacity="0.1"/>
-                <path d="M193,222 C270,222 330,220 395,220" fill="none" stroke="currentColor" stroke-opacity="0.1"/>
-                <path d="M193,296 C280,292 330,258 395,232" fill="none" stroke="currentColor" stroke-opacity="0.1"/>
-
-                <!-- hub, right: requests go OUT from Sapphire Panda to each vineyard -->
-                <g transform="translate(560,220)">
-                  <ellipse cx="0" cy="0" rx="120" ry="80" fill="url(#exp-glow-cyan)" opacity="0.22"/>
-                  <circle class="exp-hub-ring" r="40" fill="none" stroke="#5fd4e0" stroke-opacity="0.5"/>
-                  <circle r="6" fill="#5fd4e0"/>
-                  <text x="0" y="62" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.6" letter-spacing="0.05em">SAPPHIRE PANDA</text>
-                </g>
-
-                <!-- "REQUEST SENT" tags flashing at each vineyard as the pulse arrives -->
-                <g class="exp-s4-tag t1" transform="translate(175,148)"><text x="46" y="-11" font-size="8.5" fill="#b8935a" letter-spacing="0.04em">✓ REQUESTED</text></g>
-                <g class="exp-s4-tag t2" transform="translate(175,222)"><text x="46" y="-11" font-size="8.5" fill="#3a6ede" letter-spacing="0.04em">✓ REQUESTED</text></g>
-                <g class="exp-s4-tag t3" transform="translate(175,296)"><text x="46" y="-11" font-size="8.5" fill="#5fd4e0" letter-spacing="0.04em">✓ REQUESTED</text></g>
-
-                <!-- travelling signal pulses: hub outward to each vineyard -->
-                <circle class="exp-pulse go exp-p-a" r="5" fill="#b8935a"/>
-                <circle class="exp-pulse go exp-p-b" r="5" fill="#3a6ede"/>
-                <circle class="exp-pulse go exp-p-c" r="5" fill="#5fd4e0"/>
-              </g>
-            </g>
-
-            <!-- ============ STAGE 5 — Pallet is consolidated ============ -->
-            <g class="exp-stage exp-stage-5" font-family="JetBrains Mono, monospace">
-              <!-- seven rising bars, each a distinct wine SKU, converging into one complex pallet -->
-              <g transform="translate(190,306)">
-                <rect class="exp-s4-bar in" x="0" y="-104" width="26" height="104" fill="#3a6ede" opacity="0.75" style="animation-delay:0.05s"/>
-                <rect class="exp-s4-bar in" x="34" y="-150" width="26" height="150" fill="#5fd4e0" opacity="0.75" style="animation-delay:0.18s"/>
-                <rect class="exp-s4-bar in" x="68" y="-82" width="26" height="82" fill="#b8935a" opacity="0.75" style="animation-delay:0.31s"/>
-                <rect class="exp-s4-bar in" x="102" y="-130" width="26" height="130" fill="#6f93e8" opacity="0.75" style="animation-delay:0.44s"/>
-                <rect class="exp-s4-bar in" x="136" y="-68" width="26" height="68" fill="#a6c4ff" opacity="0.75" style="animation-delay:0.57s"/>
-                <rect class="exp-s4-bar in" x="170" y="-118" width="26" height="118" fill="#8fd9c4" opacity="0.75" style="animation-delay:0.70s"/>
-                <rect class="exp-s4-bar in" x="204" y="-92" width="26" height="92" fill="#e0b85f" opacity="0.75" style="animation-delay:0.83s"/>
-                <line x1="-10" y1="0" x2="240" y2="0" stroke="currentColor" stroke-opacity="0.3"/>
-              </g>
-
-              <!-- SKU count ticking up as bars land, reinforcing "multiple, complex" -->
-              <text x="190" y="138" font-size="9.5" fill="currentColor" opacity="0.5">MERGING SKUs FROM 3 VINEYARDS</text>
-
-              <!-- lock frame drawing around the consolidated set -->
-              <rect class="exp-s4-lock in" x="165" y="150" width="280" height="156" fill="none" stroke="#5fd4e0" stroke-width="1.5"/>
-
-              <!-- readout, right -->
-              <g transform="translate(590,222)" font-family="JetBrains Mono, monospace">
-                <text x="0" y="-40" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.5" letter-spacing="0.06em">PALLET STATUS</text>
-                <text x="0" y="-6" text-anchor="middle" font-size="34" fill="#5fd4e0" font-weight="600">1</text>
-                <text x="0" y="16" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.6">UNIQUE SHARED PALLET</text>
-                <text x="0" y="52" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.5">7 SKUs, 3 VINEYARDS, CONSOLIDATED</text>
-              </g>
-            </g>
-
-            <!-- ============ STAGE 6 — Agents clear customs ============ -->
-            <g class="exp-stage exp-stage-6" font-family="JetBrains Mono, monospace">
-              <!-- a scatter of paperwork — duty forms, certs, declarations — representing real complexity -->
-              <g transform="translate(70,138)">
-                <g class="exp-s6-doc d1" transform="translate(0,0) rotate(-8)">
-                  <rect x="-16" y="-20" width="32" height="40" fill="#0a0e1c" stroke="currentColor" stroke-opacity="0.4"/>
-                  <line x1="-9" y1="-10" x2="9" y2="-10" stroke="currentColor" stroke-opacity="0.35"/>
-                  <line x1="-9" y1="-2" x2="9" y2="-2" stroke="currentColor" stroke-opacity="0.3"/>
-                  <line x1="-9" y1="6" x2="4" y2="6" stroke="currentColor" stroke-opacity="0.3"/>
-                </g>
-                <g class="exp-s6-doc d2" transform="translate(44,24) rotate(6)">
-                  <rect x="-16" y="-20" width="32" height="40" fill="#0a0e1c" stroke="currentColor" stroke-opacity="0.4"/>
-                  <line x1="-9" y1="-10" x2="9" y2="-10" stroke="currentColor" stroke-opacity="0.35"/>
-                  <line x1="-9" y1="-2" x2="9" y2="-2" stroke="currentColor" stroke-opacity="0.3"/>
-                  <line x1="-9" y1="6" x2="4" y2="6" stroke="currentColor" stroke-opacity="0.3"/>
-                </g>
-                <g class="exp-s6-doc d3" transform="translate(10,52) rotate(3)">
-                  <rect x="-16" y="-20" width="32" height="40" fill="#0a0e1c" stroke="currentColor" stroke-opacity="0.4"/>
-                  <line x1="-9" y1="-10" x2="9" y2="-10" stroke="currentColor" stroke-opacity="0.35"/>
-                  <line x1="-9" y1="-2" x2="9" y2="-2" stroke="currentColor" stroke-opacity="0.3"/>
-                  <line x1="-9" y1="6" x2="4" y2="6" stroke="currentColor" stroke-opacity="0.3"/>
-                </g>
-                <g class="exp-s6-doc d4" transform="translate(50,-10) rotate(-4)">
-                  <rect x="-16" y="-20" width="32" height="40" fill="#0a0e1c" stroke="currentColor" stroke-opacity="0.4"/>
-                  <line x1="-9" y1="-10" x2="9" y2="-10" stroke="currentColor" stroke-opacity="0.35"/>
-                  <line x1="-9" y1="-2" x2="9" y2="-2" stroke="currentColor" stroke-opacity="0.3"/>
-                  <line x1="-9" y1="6" x2="4" y2="6" stroke="currentColor" stroke-opacity="0.3"/>
-                </g>
-              </g>
-              <text x="20" y="226" font-size="8.5" fill="currentColor" opacity="0.4" letter-spacing="0.04em">DUTY FORMS · CERTS · DECLARATIONS</text>
-
-              <!-- arrow showing the agent absorbing the paperwork into one clean process -->
-              <path class="exp-s6-absorb" d="M158,180 L198,180" stroke="#5fd4e0" stroke-width="1.5" marker-end="url(#exp-arrowhead)"/>
-
-              <!-- terminal readout: the agent's clean output -->
-              <g transform="translate(230,130)">
-                <rect x="0" y="0" width="260" height="190" fill="none" stroke="currentColor" stroke-opacity="0.25"/>
-                <line x1="0" y1="24" x2="260" y2="24" stroke="currentColor" stroke-opacity="0.2"/>
-                <text x="12" y="16" font-size="9.5" fill="#5fd4e0" opacity="0.85">AI AGENT: CLEARANCE</text>
-                <g class="exp-s5-line in" style="animation-delay:0.1s">
-                  <text x="12" y="42" font-size="9.5" fill="#5fd4e0">›</text>
-                  <text x="24" y="42" font-size="9.5" fill="currentColor" opacity="0.75">SHIRAZ&#39;22 ............ OK</text>
-                </g>
-                <g class="exp-s5-line in" style="animation-delay:0.35s">
-                  <text x="12" y="62" font-size="9.5" fill="#5fd4e0">›</text>
-                  <text x="24" y="62" font-size="9.5" fill="currentColor" opacity="0.75">CHARD&#39;23 ............. OK</text>
-                </g>
-                <g class="exp-s5-line in" style="animation-delay:0.6s">
-                  <text x="12" y="82" font-size="9.5" fill="#5fd4e0">›</text>
-                  <text x="24" y="82" font-size="9.5" fill="currentColor" opacity="0.75">ROSÉ&#39;23 .............. OK</text>
-                </g>
-                <g class="exp-s5-line in" style="animation-delay:0.85s">
-                  <text x="12" y="102" font-size="9.5" fill="#5fd4e0">›</text>
-                  <text x="24" y="102" font-size="9.5" fill="currentColor" opacity="0.75">GRENACHE&#39;21 .......... OK</text>
-                </g>
-                <g class="exp-s5-line in" style="animation-delay:1.1s">
-                  <text x="12" y="122" font-size="9.5" fill="#5fd4e0">›</text>
-                  <text x="24" y="122" font-size="9.5" fill="currentColor" opacity="0.75">+ 3 MORE SKUs ......... OK</text>
-                </g>
-                <line x1="0" y1="140" x2="260" y2="140" stroke="currentColor" stroke-opacity="0.2"/>
-                <g class="exp-s5-line in" style="animation-delay:1.4s">
-                  <rect x="12" y="152" width="90" height="24" fill="none" stroke="#5fd4e0" stroke-width="1.5"/>
-                  <text x="57" y="168" text-anchor="middle" font-size="10" fill="#5fd4e0" font-weight="600" letter-spacing="0.06em">CLEARED</text>
-                  <text x="112" y="168" font-size="9.5" fill="currentColor" opacity="0.5">CUSTOMS CONFIRMED</text>
-                </g>
-              </g>
-
-              <!-- freight glyph departing along a dashed route -->
-              <g transform="translate(550,226)">
-                <line class="exp-s5-wake" x1="0" y1="0" x2="150" y2="0" stroke="#5fd4e0" stroke-opacity="0.25" stroke-width="1.5"/>
-                <g class="exp-s5-depart">
-                  <rect x="-16" y="-16" width="32" height="32" fill="none" stroke="#5fd4e0" stroke-width="1.5"/>
-                  <rect x="-8" y="-8" width="16" height="16" fill="#5fd4e0" opacity="0.7"/>
-                </g>
-              </g>
-            </g>
-
-            <!-- ============ STAGE 7 — You receive it ============ -->
-            <g class="exp-stage exp-stage-7" font-family="JetBrains Mono, monospace">
-              <!-- single arrival node, left -->
-              <g transform="translate(150,222)">
-                <ellipse cx="0" cy="0" rx="90" ry="80" fill="url(#exp-glow-cyan)" opacity="0.22"/>
-                <circle r="20" fill="none" stroke="#5fd4e0" stroke-opacity="0.6" stroke-width="1.5"/>
-                <circle r="6" fill="#5fd4e0" class="exp-node"/>
-                <text x="0" y="46" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.6">HK ARRIVAL</text>
-              </g>
-
-              <!-- branching lines to three endpoints -->
-              <path class="exp-branch in exp-branch-1" d="M170,196 C280,156 380,134 480,128" fill="none" stroke="#3a6ede" stroke-width="1.5"/>
-              <path class="exp-branch in exp-branch-2" d="M170,222 C280,222 380,222 480,222" fill="none" stroke="#5fd4e0" stroke-width="1.5"/>
-              <path class="exp-branch in exp-branch-3" d="M170,248 C280,288 380,310 480,316" fill="none" stroke="#b8935a" stroke-width="1.5"/>
-
-              <!-- three endpoints, right -->
-              <g font-family="JetBrains Mono, monospace">
-                <g transform="translate(500,128)"><g class="exp-endpoint in exp-endpoint-1">
-                  <rect x="-16" y="-16" width="32" height="32" fill="none" stroke="#3a6ede" stroke-width="1.5"/>
-                  <rect x="-7" y="-7" width="14" height="14" fill="#3a6ede" opacity="0.7"/>
-                  <text x="26" y="4" font-size="9.5" fill="currentColor" opacity="0.65">RESTAURANT GROUP</text>
-                </g></g>
-                <g transform="translate(500,222)"><g class="exp-endpoint in exp-endpoint-2">
-                  <rect x="-16" y="-16" width="32" height="32" fill="none" stroke="#5fd4e0" stroke-width="1.5"/>
-                  <rect x="-7" y="-7" width="14" height="14" fill="#5fd4e0" opacity="0.7"/>
-                  <text x="26" y="4" font-size="9.5" fill="currentColor" opacity="0.65">WINE BAR</text>
-                </g></g>
-                <g transform="translate(500,316)"><g class="exp-endpoint in exp-endpoint-3">
-                  <rect x="-16" y="-16" width="32" height="32" fill="none" stroke="#b8935a" stroke-width="1.5"/>
-                  <rect x="-7" y="-7" width="14" height="14" fill="#b8935a" opacity="0.7"/>
-                  <text x="26" y="4" font-size="9.5" fill="currentColor" opacity="0.65">PRIVATE BUYER</text>
-                </g></g>
-              </g>
-            </g>
-          </g>
-        </svg>
-      </div>
-
-      <div class="explainer-progress" aria-hidden="true">
-        <span class="explainer-dot"></span>
-        <span class="explainer-dot"></span>
-        <span class="explainer-dot"></span>
-        <span class="explainer-dot"></span>
-        <span class="explainer-dot"></span>
-        <span class="explainer-dot"></span>
-        <span class="explainer-dot"></span>
-      </div>
-      <div class="explainer-caption">
-        01 LIST&nbsp;&nbsp;·&nbsp;&nbsp;02 AI MATCH&nbsp;&nbsp;·&nbsp;&nbsp;03 ORDER&nbsp;&nbsp;·&nbsp;&nbsp;04 REQUEST&nbsp;&nbsp;·&nbsp;&nbsp;05 CONSOLIDATE&nbsp;&nbsp;·&nbsp;&nbsp;06 CUSTOMS&nbsp;&nbsp;·&nbsp;&nbsp;07 RECEIVE
       </div>
     </div>
   </section>
