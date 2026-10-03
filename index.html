@@ -245,33 +245,21 @@
   .explainer-track{
     display:grid;
     grid-template-columns:repeat(7, 1fr);
-    gap:22px;
+    gap:8px;
     position:relative;
   }
-  .explainer-step:not(:last-child)::after{
-    content:"";
-    position:absolute;
-    top:68px;
-    right:-17px;
-    width:22px;
-    height:10px;
-    background-color:var(--ink-faint);
+  .explainer-chevron{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-top:auto;
+    padding-top:16px;
+    color:var(--ink-faint);
     opacity:0.6;
-    -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 10'%3E%3Cpath d='M0 5h15.5M11 1l4.5 4-4.5 4' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 10'%3E%3Cpath d='M0 5h15.5M11 1l4.5 4-4.5 4' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    -webkit-mask-size:contain;
-    mask-size:contain;
-    -webkit-mask-repeat:no-repeat;
-    mask-repeat:no-repeat;
-    z-index:2;
-    pointer-events:none;
-    transition:background-color 0.3s ease, opacity 0.3s ease;
+    transition:color 0.3s ease, opacity 0.3s ease;
   }
-  .explainer-step.is-active:not(:last-child)::after,
-  .explainer-step:not(:last-child):has(+ .explainer-step.is-active)::after{
-    background-color:#5fd4e0;
-    opacity:1;
-  }
+  .explainer-step:last-child .explainer-chevron{ visibility:hidden; }
+  .explainer-chevron svg{ width:26px; height:12px; display:block; }
   .explainer-step{
     background:linear-gradient(160deg, var(--surface), var(--surface-2));
     border:1px solid var(--border-soft);
@@ -336,16 +324,16 @@
     4%, 10%{ background:linear-gradient(90deg, var(--sapphire), var(--sapphire-glint), var(--cyan)); opacity:1; }
     16%{ background:var(--border-soft); opacity:0.7; }
   }
-  .explainer-step:nth-child(1)::after{ animation:expArrowCycle 21s infinite; animation-delay:0s; }
-  .explainer-step:nth-child(2)::after{ animation:expArrowCycle 21s infinite; animation-delay:3s; }
-  .explainer-step:nth-child(3)::after{ animation:expArrowCycle 21s infinite; animation-delay:6s; }
-  .explainer-step:nth-child(4)::after{ animation:expArrowCycle 21s infinite; animation-delay:9s; }
-  .explainer-step:nth-child(5)::after{ animation:expArrowCycle 21s infinite; animation-delay:12s; }
-  .explainer-step:nth-child(6)::after{ animation:expArrowCycle 21s infinite; animation-delay:15s; }
+  .explainer-step:nth-child(1) .explainer-chevron{ animation:expArrowCycle 21s infinite; animation-delay:0s; }
+  .explainer-step:nth-child(2) .explainer-chevron{ animation:expArrowCycle 21s infinite; animation-delay:3s; }
+  .explainer-step:nth-child(3) .explainer-chevron{ animation:expArrowCycle 21s infinite; animation-delay:6s; }
+  .explainer-step:nth-child(4) .explainer-chevron{ animation:expArrowCycle 21s infinite; animation-delay:9s; }
+  .explainer-step:nth-child(5) .explainer-chevron{ animation:expArrowCycle 21s infinite; animation-delay:12s; }
+  .explainer-step:nth-child(6) .explainer-chevron{ animation:expArrowCycle 21s infinite; animation-delay:15s; }
   @keyframes expArrowCycle{
-    0%, 100%{ background-color:var(--ink-faint); opacity:0.55; }
-    4%, 10%{ background-color:#5fd4e0; opacity:1; }
-    16%{ background-color:var(--ink-faint); opacity:0.55; }
+    0%, 100%{ color:var(--ink-faint); opacity:0.6; }
+    4%, 10%{ color:#5fd4e0; opacity:1; }
+    16%{ color:var(--ink-faint); opacity:0.6; }
   }
   .explainer-icon{ animation:expIconCycle 21s infinite; }
   .explainer-step:nth-child(1) .explainer-icon{ animation-delay:0s; }
@@ -362,7 +350,7 @@
   }
 
   @media (prefers-reduced-motion: reduce){
-    .explainer-step, .explainer-step::before, .explainer-icon{ animation:none !important; }
+    .explainer-step, .explainer-step::before, .explainer-icon, .explainer-chevron{ animation:none !important; }
   }
 
   @media (max-width: 900px){
@@ -382,6 +370,7 @@
     .explainer-step{ animation:none !important; }
     .explainer-step::before{ animation:none !important; background:var(--border-soft); opacity:0.7; }
     .explainer-icon{ animation:none !important; }
+    .explainer-chevron{ animation:none !important; }
     .explainer-step.is-active{
       border-color:#5fd4e0;
       box-shadow:0 0 0 1px rgba(95,212,224,0.25), 0 8px 24px -8px rgba(95,212,224,0.35);
@@ -391,6 +380,7 @@
       opacity:1;
     }
     .explainer-step.is-active .explainer-icon{ color:#5fd4e0; }
+    .explainer-step.is-active .explainer-chevron{ color:#5fd4e0; opacity:1; }
   }
   @media (max-width: 520px){
     .explainer-step{ flex-basis:92%; }
@@ -656,6 +646,11 @@
           </div>
           <h4>You list your requirements.</h4>
           <p>Style, region, price band and volume, no wine jargon required. <span class="sap">Your exact brief</span> becomes the seed for a build made only for you.</p>
+          <div class="explainer-chevron" aria-hidden="true">
+            <svg viewBox="0 0 26 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 6h19M15 1l5 5-5 5"/>
+            </svg>
+          </div>
         </div>
 
         <div class="explainer-step">
@@ -675,6 +670,11 @@
           </div>
           <h4>Sapphire Panda AI matches it.</h4>
           <p>Machine learning agents score your brief against our vineyard partners' data across <span class="sap">millions of combinations</span>, ranked in parallel into a shortlist built around <span class="sap">exactly what you asked for</span>.</p>
+          <div class="explainer-chevron" aria-hidden="true">
+            <svg viewBox="0 0 26 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 6h19M15 1l5 5-5 5"/>
+            </svg>
+          </div>
         </div>
 
         <div class="explainer-step">
@@ -689,6 +689,11 @@
           </div>
           <h4>Order is generated.</h4>
           <p>Automated agents confirm stock, generate SKUs and clear destination-country paperwork, permits and compliance checks. A live purchase order built with <span class="sap">no manual handling</span>.</p>
+          <div class="explainer-chevron" aria-hidden="true">
+            <svg viewBox="0 0 26 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 6h19M15 1l5 5-5 5"/>
+            </svg>
+          </div>
         </div>
 
         <div class="explainer-step">
@@ -707,6 +712,11 @@
           </div>
           <h4>Vineyards are requested.</h4>
           <p>Independent vineyards across regions confirm and fulfil the order in parallel, coordinated by AI agents running <span class="sap">thousands of checks</span> behind the scenes.</p>
+          <div class="explainer-chevron" aria-hidden="true">
+            <svg viewBox="0 0 26 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 6h19M15 1l5 5-5 5"/>
+            </svg>
+          </div>
         </div>
 
         <div class="explainer-step">
@@ -721,6 +731,11 @@
           </div>
           <h4>Pallet is consolidated.</h4>
           <p>A logistics agent builds a single load from <span class="sap">multiple wines and multiple vineyards</span>, a highly complex, one-of-a-kind build, packed and scheduled through to port automatically.</p>
+          <div class="explainer-chevron" aria-hidden="true">
+            <svg viewBox="0 0 26 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 6h19M15 1l5 5-5 5"/>
+            </svg>
+          </div>
         </div>
 
         <div class="explainer-step">
@@ -735,6 +750,11 @@
           </div>
           <h4>Agents clear customs.</h4>
           <p>Our AI-driven agents handle every form, permit and compliance check across borders. Real complexity, <span class="sap">fully streamlined</span>, so you never touch a single document.</p>
+          <div class="explainer-chevron" aria-hidden="true">
+            <svg viewBox="0 0 26 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 6h19M15 1l5 5-5 5"/>
+            </svg>
+          </div>
         </div>
 
         <div class="explainer-step">
@@ -749,6 +769,11 @@
           </div>
           <h4>You receive it.</h4>
           <p>One consolidated pallet splits out automatically to every buyer on arrival, with <span class="sap">full complexity resolved before it ever reaches you</span>.</p>
+          <div class="explainer-chevron" aria-hidden="true">
+            <svg viewBox="0 0 26 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 6h19M15 1l5 5-5 5"/>
+            </svg>
+          </div>
         </div>
 
       </div>
