@@ -306,9 +306,24 @@
     55%{transform:translateY(78px);}
     75%, 100%{transform:translateY(78px);}
   }
+  .exp-bottle{transform-box:fill-box; transform-origin:bottom center;}
+  .exp-bottle-dim{opacity:0.3; filter:saturate(0.4);}
+  .exp-bottle-bright{opacity:1; animation:expBottleGlow 2.6s ease-in-out infinite;}
+  @keyframes expBottleGlow{
+    0%, 100%{filter:drop-shadow(0 0 3px rgba(111,21,33,0.3));}
+    50%{filter:drop-shadow(0 0 10px rgba(226,90,110,0.55));}
+  }
 
   /* Stage 2 — AI matching: scoring lines pulse from the query node out to
      candidate vineyard nodes, and the winning match card fades in */
+  .exp-particle{transform-box:fill-box; transform-origin:center; animation:expParticleDrift 5s ease-in-out infinite;}
+  .exp-p2{animation-delay:0.6s;} .exp-p3{animation-delay:1.2s;} .exp-p4{animation-delay:1.8s;}
+  .exp-p5{animation-delay:0.3s;} .exp-p6{animation-delay:0.9s;} .exp-p7{animation-delay:1.5s;}
+  .exp-p8{animation-delay:2.1s;}
+  @keyframes expParticleDrift{
+    0%, 100%{transform:translate(0,0); opacity:0.35;}
+    50%{transform:translate(-6px,-8px); opacity:0.65;}
+  }
   .exp-lat{stroke-dasharray:6 5; animation:expLatPulse 1.6s linear infinite;}
   .exp-lat-2{animation-delay:0.15s;} .exp-lat-3{animation-delay:0.3s;}
   .exp-lat-4{animation-delay:0.45s;} .exp-lat-5{animation-delay:0.6s;}
@@ -351,6 +366,9 @@
   .exp-vy-a{offset-path:path('M190,130 C280,135 330,175 395,205');}
   .exp-vy-b{offset-path:path('M190,215 C270,215 330,210 395,210');}
   .exp-vy-c{offset-path:path('M190,300 C280,295 330,250 395,215');}
+  .exp-vy-a-glow{animation:expVySend 4s infinite; animation-delay:0.1s; offset-path:path('M190,130 C280,135 330,175 395,205');}
+  .exp-vy-b-glow{animation:expVySend 4s infinite; animation-delay:0.5s; offset-path:path('M190,215 C270,215 330,210 395,210');}
+  .exp-vy-c-glow{animation:expVySend 4s infinite; animation-delay:0.9s; offset-path:path('M190,300 C280,295 330,250 395,215');}
 
   /* Stage 4 — consolidation: distinct case colors stack onto one pallet */
   .exp-case{transform:translateY(-16px); opacity:0;}
@@ -408,6 +426,12 @@
     90%{transform:translateY(0);}
     100%{transform:translateY(0);}
   }
+  .exp-wake{animation:expWake 2.2s ease-in-out infinite;}
+  .exp-wake-2{animation-delay:0.4s;}
+  @keyframes expWake{
+    0%, 100%{opacity:0.2; transform:translateX(0);}
+    50%{opacity:0.5; transform:translateX(6px);}
+  }
 
   /* Stage 6 — distribution: the one pallet splits out to multiple buyers */
   .exp-route{stroke-dasharray:160; stroke-dashoffset:160;}
@@ -431,7 +455,8 @@
   @media (prefers-reduced-motion: reduce){
     .exp-stage, .exp-field-fill, .exp-cursor-1, .exp-vy, .exp-case, .exp-strap,
     .exp-pallet-move, .exp-crane-hook, .exp-route, .exp-buyer,
-    .exp-lat, .exp-node, .exp-match-card, .exp-sku, .exp-customs-stamp{animation:none !important;}
+    .exp-lat, .exp-node, .exp-match-card, .exp-sku, .exp-customs-stamp,
+    .exp-bottle-bright, .exp-particle, .exp-wake{animation:none !important;}
     .exp-stage{opacity:1;}
     .exp-field-fill{transform:scaleX(1);}
     .exp-case{transform:translateY(0); opacity:1;}
@@ -736,37 +761,105 @@
           <defs>
             <clipPath id="exp-clip-1"><rect x="40" y="40" width="300" height="260" rx="2"/></clipPath>
             <clipPath id="exp-clip-4"><rect x="40" y="40" width="680" height="260" rx="2"/></clipPath>
+
+            <radialGradient id="exp-glow-cyan" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#5fd4e0" stop-opacity="0.55"/>
+              <stop offset="100%" stop-color="#5fd4e0" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="exp-glow-blue" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#3a6ede" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="#3a6ede" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="exp-bottle-red" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#4a1420" stop-opacity="0.9"/>
+              <stop offset="50%" stop-color="#6b1d2b"/>
+              <stop offset="100%" stop-color="#3a0f18" stop-opacity="0.9"/>
+            </linearGradient>
+            <linearGradient id="exp-bottle-white" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#8fae3f" stop-opacity="0.75"/>
+              <stop offset="50%" stop-color="#a8c454"/>
+              <stop offset="100%" stop-color="#6f8c2e" stop-opacity="0.8"/>
+            </linearGradient>
+            <linearGradient id="exp-hull-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#16213f"/>
+              <stop offset="100%" stop-color="#0a1128"/>
+            </linearGradient>
+            <pattern id="exp-grid" width="26" height="26" patternUnits="userSpaceOnUse">
+              <path d="M26 0 L0 0 0 26" fill="none" stroke="currentColor" stroke-opacity="0.05"/>
+            </pattern>
+            <filter id="exp-soft-blur" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="3"/>
+            </filter>
           </defs>
+
+          <!-- shared faint data-grid backdrop -->
+          <rect x="0" y="0" width="760" height="340" fill="url(#exp-grid)"/>
 
           <!-- ============ STAGE 1 — Selection ============ -->
           <g class="exp-stage exp-stage-1">
             <text x="40" y="36" font-size="12.5" fill="currentColor" opacity="0.75" font-family="Inter, sans-serif" font-weight="500">Buyer selects what they're after</text>
             <g font-family="Inter, sans-serif">
               <!-- form card -->
-              <rect x="40" y="52" width="300" height="230" rx="2" fill="none" stroke="currentColor" stroke-opacity="0.18"/>
+              <rect x="40" y="52" width="230" height="230" rx="2" fill="none" stroke="currentColor" stroke-opacity="0.18"/>
               <!-- field 1: style -->
               <text x="58" y="82" font-size="10" fill="currentColor" opacity="0.5">Style</text>
-              <rect x="58" y="90" width="264" height="22" rx="1" fill="none" stroke="currentColor" stroke-opacity="0.25"/>
+              <rect x="58" y="90" width="194" height="22" rx="1" fill="none" stroke="currentColor" stroke-opacity="0.25"/>
               <rect class="exp-field-fill exp-f1" x="60" y="92" width="80" height="18" rx="1" fill="#3a6ede" opacity="0.5"/>
               <text x="68" y="105" font-size="10.5" fill="currentColor" opacity="0.8">Red — Shiraz</text>
               <!-- field 2: region -->
               <text x="58" y="134" font-size="10" fill="currentColor" opacity="0.5">Region</text>
-              <rect x="58" y="142" width="264" height="22" rx="1" fill="none" stroke="currentColor" stroke-opacity="0.25"/>
+              <rect x="58" y="142" width="194" height="22" rx="1" fill="none" stroke="currentColor" stroke-opacity="0.25"/>
               <rect class="exp-field-fill exp-f2" x="60" y="144" width="130" height="18" rx="1" fill="#5fd4e0" opacity="0.5"/>
               <text x="68" y="157" font-size="10.5" fill="currentColor" opacity="0.8">Barossa Valley, SA</text>
               <!-- field 3: price band -->
               <text x="58" y="186" font-size="10" fill="currentColor" opacity="0.5">Price band</text>
-              <rect x="58" y="194" width="264" height="22" rx="1" fill="none" stroke="currentColor" stroke-opacity="0.25"/>
+              <rect x="58" y="194" width="194" height="22" rx="1" fill="none" stroke="currentColor" stroke-opacity="0.25"/>
               <rect class="exp-field-fill exp-f3" x="60" y="196" width="95" height="18" rx="1" fill="#b8935a" opacity="0.5"/>
               <text x="68" y="209" font-size="10.5" fill="currentColor" opacity="0.8">$30 – 55 / bottle</text>
               <!-- field 4: volume -->
               <text x="58" y="238" font-size="10" fill="currentColor" opacity="0.5">Volume</text>
-              <rect x="58" y="246" width="264" height="22" rx="1" fill="none" stroke="currentColor" stroke-opacity="0.25"/>
+              <rect x="58" y="246" width="194" height="22" rx="1" fill="none" stroke="currentColor" stroke-opacity="0.25"/>
               <rect class="exp-field-fill exp-f4" x="60" y="248" width="60" height="18" rx="1" fill="#3a6ede" opacity="0.5"/>
               <text x="68" y="261" font-size="10.5" fill="currentColor" opacity="0.8">60 bottles</text>
             </g>
             <!-- moving cursor dot tracking field-to-field -->
-            <circle class="exp-cursor-1" cx="330" cy="101" r="3.5" fill="#5fd4e0"/>
+            <circle class="exp-cursor-1" cx="260" cy="101" r="3.5" fill="#5fd4e0"/>
+
+            <!-- a shelf of real bottle silhouettes, right: candidates narrow in as fields fill -->
+            <g transform="translate(330,52)">
+              <ellipse cx="195" cy="245" rx="190" ry="40" fill="url(#exp-glow-blue)" opacity="0.5"/>
+              <!-- six bottles, varying color/height; the matching ones (red) stay bright, others dim -->
+              <g class="exp-bottle exp-bottle-dim" transform="translate(10,40)">
+                <rect x="-9" y="0" width="18" height="150" rx="4" fill="url(#exp-bottle-white)"/>
+                <rect x="-5" y="-16" width="10" height="20" rx="2" fill="#c9a86a"/>
+                <rect x="-7" y="55" width="14" height="36" rx="1" fill="#1a2440" opacity="0.7"/>
+              </g>
+              <g class="exp-bottle exp-bottle-bright" transform="translate(50,22)">
+                <rect x="-10" y="0" width="20" height="168" rx="4" fill="url(#exp-bottle-red)"/>
+                <rect x="-5.5" y="-18" width="11" height="22" rx="2" fill="#c9a86a"/>
+                <rect x="-8" y="62" width="16" height="42" rx="1" fill="#0f1a3d" stroke="#c9a86a" stroke-width="1"/>
+              </g>
+              <g class="exp-bottle exp-bottle-dim" transform="translate(93,52)">
+                <rect x="-8" y="0" width="16" height="138" rx="4" fill="url(#exp-bottle-white)"/>
+                <rect x="-4.5" y="-14" width="9" height="18" rx="2" fill="#c9a86a"/>
+                <rect x="-6" y="50" width="12" height="32" rx="1" fill="#1a2440" opacity="0.7"/>
+              </g>
+              <g class="exp-bottle exp-bottle-bright" transform="translate(132,14)">
+                <rect x="-10.5" y="0" width="21" height="176" rx="4" fill="url(#exp-bottle-red)"/>
+                <rect x="-6" y="-19" width="12" height="23" rx="2" fill="#c9a86a"/>
+                <rect x="-8.5" y="64" width="17" height="46" rx="1" fill="#0f1a3d" stroke="#c9a86a" stroke-width="1"/>
+              </g>
+              <g class="exp-bottle exp-bottle-dim" transform="translate(176,46)">
+                <rect x="-9" y="0" width="18" height="144" rx="4" fill="url(#exp-bottle-white)"/>
+                <rect x="-5" y="-15" width="10" height="19" rx="2" fill="#c9a86a"/>
+                <rect x="-7" y="52" width="14" height="34" rx="1" fill="#1a2440" opacity="0.7"/>
+              </g>
+              <g class="exp-bottle exp-bottle-bright" transform="translate(218,30)">
+                <rect x="-10" y="0" width="20" height="160" rx="4" fill="url(#exp-bottle-red)"/>
+                <rect x="-5.5" y="-17" width="11" height="21" rx="2" fill="#c9a86a"/>
+                <rect x="-8" y="58" width="16" height="40" rx="1" fill="#0f1a3d" stroke="#c9a86a" stroke-width="1"/>
+              </g>
+            </g>
           </g>
 
           <!-- ============ STAGE 2 — AI matching ============ -->
@@ -774,6 +867,18 @@
             <text x="40" y="36" font-size="12.5" fill="currentColor" opacity="0.75" font-family="Inter, sans-serif" font-weight="500">AI scores millions of combinations</text>
             <g font-family="Inter, sans-serif">
               <text x="40" y="58" font-size="10" fill="currentColor" opacity="0.5">Matching the brief against every vineyard profile</text>
+            </g>
+            <!-- ambient glow + drifting data-particles behind the lattice -->
+            <ellipse cx="320" cy="195" rx="260" ry="140" fill="url(#exp-glow-blue)" opacity="0.28"/>
+            <g class="exp-particle-field" fill="#5fd4e0">
+              <circle class="exp-particle exp-p1" cx="230" cy="80" r="1.6" opacity="0.5"/>
+              <circle class="exp-particle exp-p2" cx="410" cy="60" r="1.3" opacity="0.4"/>
+              <circle class="exp-particle exp-p3" cx="520" cy="150" r="1.8" opacity="0.5"/>
+              <circle class="exp-particle exp-p4" cx="260" cy="310" r="1.4" opacity="0.4"/>
+              <circle class="exp-particle exp-p5" cx="430" cy="300" r="1.6" opacity="0.5"/>
+              <circle class="exp-particle exp-p6" cx="560" cy="250" r="1.3" opacity="0.4"/>
+              <circle class="exp-particle exp-p7" cx="380" cy="220" r="1.2" opacity="0.35"/>
+              <circle class="exp-particle exp-p8" cx="250" cy="170" r="1.2" opacity="0.35"/>
             </g>
             <!-- central query node -->
             <circle cx="150" cy="195" r="7" fill="#5fd4e0"/>
@@ -810,31 +915,44 @@
           <!-- ============ STAGE 3 — Order generation ============ -->
           <g class="exp-stage exp-stage-3">
             <text x="40" y="36" font-size="12.5" fill="currentColor" opacity="0.75" font-family="Inter, sans-serif" font-weight="500">Vineyards are contacted, order placed</text>
-            <!-- three vineyard origins, left -->
+            <!-- three vineyard origins, left — small trellis-row glyphs -->
             <g font-family="Inter, sans-serif">
-              <g>
-                <circle cx="175" cy="130" r="10" fill="none" stroke="#b8935a" stroke-opacity="0.7"/>
-                <circle cx="175" cy="130" r="3" fill="#b8935a"/>
-                <text x="175" y="156" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.55">Vineyard A</text>
+              <g transform="translate(175,130)">
+                <circle r="20" fill="none" stroke="#b8935a" stroke-opacity="0.25"/>
+                <line x1="-13" y1="-6" x2="13" y2="-6" stroke="#b8935a" stroke-opacity="0.5"/>
+                <line x1="-13" y1="6" x2="13" y2="6" stroke="#b8935a" stroke-opacity="0.5"/>
+                <circle cx="-9" cy="-6" r="1.6" fill="#b8935a"/><circle cx="-1" cy="-6" r="1.6" fill="#b8935a"/><circle cx="7" cy="-6" r="1.6" fill="#b8935a"/>
+                <circle cx="-9" cy="6" r="1.6" fill="#b8935a"/><circle cx="-1" cy="6" r="1.6" fill="#b8935a"/><circle cx="7" cy="6" r="1.6" fill="#b8935a"/>
+                <text x="0" y="36" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.55">Vineyard A</text>
               </g>
-              <g>
-                <circle cx="175" cy="215" r="10" fill="none" stroke="#3a6ede" stroke-opacity="0.7"/>
-                <circle cx="175" cy="215" r="3" fill="#3a6ede"/>
-                <text x="175" y="241" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.55">Vineyard B</text>
+              <g transform="translate(175,215)">
+                <circle r="20" fill="none" stroke="#3a6ede" stroke-opacity="0.25"/>
+                <line x1="-13" y1="-6" x2="13" y2="-6" stroke="#3a6ede" stroke-opacity="0.5"/>
+                <line x1="-13" y1="6" x2="13" y2="6" stroke="#3a6ede" stroke-opacity="0.5"/>
+                <circle cx="-9" cy="-6" r="1.6" fill="#3a6ede"/><circle cx="-1" cy="-6" r="1.6" fill="#3a6ede"/><circle cx="7" cy="-6" r="1.6" fill="#3a6ede"/>
+                <circle cx="-9" cy="6" r="1.6" fill="#3a6ede"/><circle cx="-1" cy="6" r="1.6" fill="#3a6ede"/><circle cx="7" cy="6" r="1.6" fill="#3a6ede"/>
+                <text x="0" y="36" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.55">Vineyard B</text>
               </g>
-              <g>
-                <circle cx="175" cy="300" r="10" fill="none" stroke="#5fd4e0" stroke-opacity="0.7"/>
-                <circle cx="175" cy="300" r="3" fill="#5fd4e0"/>
-                <text x="175" y="326" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.55">Vineyard C</text>
+              <g transform="translate(175,300)">
+                <circle r="20" fill="none" stroke="#5fd4e0" stroke-opacity="0.25"/>
+                <line x1="-13" y1="-6" x2="13" y2="-6" stroke="#5fd4e0" stroke-opacity="0.5"/>
+                <line x1="-13" y1="6" x2="13" y2="6" stroke="#5fd4e0" stroke-opacity="0.5"/>
+                <circle cx="-9" cy="-6" r="1.6" fill="#5fd4e0"/><circle cx="-1" cy="-6" r="1.6" fill="#5fd4e0"/><circle cx="7" cy="-6" r="1.6" fill="#5fd4e0"/>
+                <circle cx="-9" cy="6" r="1.6" fill="#5fd4e0"/><circle cx="-1" cy="6" r="1.6" fill="#5fd4e0"/><circle cx="7" cy="6" r="1.6" fill="#5fd4e0"/>
+                <text x="0" y="36" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.55">Vineyard C</text>
               </g>
             </g>
             <!-- collection point, right -->
             <g transform="translate(560,212)" font-family="Inter, sans-serif">
+              <ellipse cx="0" cy="4" rx="80" ry="50" fill="url(#exp-glow-blue)" opacity="0.35"/>
               <rect x="-38" y="-38" width="76" height="76" rx="2" fill="none" stroke="currentColor" stroke-opacity="0.3"/>
               <circle r="4" fill="currentColor" opacity="0.6"/>
               <text x="0" y="56" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.6">Sapphire Panda</text>
             </g>
-            <!-- travelling cases along their own path -->
+            <!-- travelling cases along their own path, with a soft glow trail -->
+            <circle class="exp-vy exp-vy-a-glow" r="9" fill="#b8935a" opacity="0.35" filter="url(#exp-soft-blur)"/>
+            <circle class="exp-vy exp-vy-b-glow" r="9" fill="#3a6ede" opacity="0.35" filter="url(#exp-soft-blur)"/>
+            <circle class="exp-vy exp-vy-c-glow" r="9" fill="#5fd4e0" opacity="0.35" filter="url(#exp-soft-blur)"/>
             <rect class="exp-vy exp-vy-a" x="-6" y="-6" width="12" height="12" rx="1" fill="#b8935a"/>
             <rect class="exp-vy exp-vy-b" x="-6" y="-6" width="12" height="12" rx="1" fill="#3a6ede"/>
             <rect class="exp-vy exp-vy-c" x="-6" y="-6" width="12" height="12" rx="1" fill="#5fd4e0"/>
@@ -848,14 +966,49 @@
             </g>
             <!-- pallet base -->
             <g transform="translate(380,268)">
+              <ellipse cx="0" cy="10" rx="190" ry="24" fill="url(#exp-glow-cyan)" opacity="0.3"/>
               <rect x="-150" y="0" width="300" height="12" fill="currentColor" opacity="0.28"/>
               <rect x="-150" y="12" width="300" height="5" fill="currentColor" opacity="0.5"/>
-              <!-- five distinct cases, each a different wine -->
-              <rect class="exp-case exp-case-1" x="-140" y="-46" width="52" height="46" fill="#3a6ede" opacity="0.82"/>
-              <rect class="exp-case exp-case-2" x="-82" y="-60" width="52" height="60" fill="#5fd4e0" opacity="0.82"/>
-              <rect class="exp-case exp-case-3" x="-24" y="-38" width="52" height="38" fill="#b8935a" opacity="0.82"/>
-              <rect class="exp-case exp-case-4" x="34" y="-54" width="52" height="54" fill="#6f93e8" opacity="0.82"/>
-              <rect class="exp-case exp-case-5" x="92" y="-34" width="52" height="34" fill="#a6c4ff" opacity="0.82"/>
+              <!-- five distinct cases, each a different wine, with case-grain texture and a bottle-neck cutout row -->
+              <g class="exp-case exp-case-1">
+                <rect x="-140" y="-46" width="52" height="46" fill="#3a6ede" opacity="0.82"/>
+                <circle cx="-126" cy="-38" r="4" fill="#0a1128" opacity="0.5"/>
+                <circle cx="-114" cy="-38" r="4" fill="#0a1128" opacity="0.5"/>
+                <circle cx="-102" cy="-38" r="4" fill="#0a1128" opacity="0.5"/>
+                <circle cx="-90" cy="-38" r="4" fill="#0a1128" opacity="0.5"/>
+                <rect x="-140" y="-46" width="52" height="46" fill="none" stroke="#f4f5fa" stroke-opacity="0.18"/>
+              </g>
+              <g class="exp-case exp-case-2">
+                <rect x="-82" y="-60" width="52" height="60" fill="#5fd4e0" opacity="0.82"/>
+                <circle cx="-68" cy="-50" r="4" fill="#0a1128" opacity="0.5"/>
+                <circle cx="-56" cy="-50" r="4" fill="#0a1128" opacity="0.5"/>
+                <circle cx="-44" cy="-50" r="4" fill="#0a1128" opacity="0.5"/>
+                <circle cx="-32" cy="-50" r="4" fill="#0a1128" opacity="0.5"/>
+                <rect x="-82" y="-60" width="52" height="60" fill="none" stroke="#f4f5fa" stroke-opacity="0.18"/>
+              </g>
+              <g class="exp-case exp-case-3">
+                <rect x="-24" y="-38" width="52" height="38" fill="#b8935a" opacity="0.82"/>
+                <circle cx="-10" cy="-30" r="4" fill="#0a1128" opacity="0.5"/>
+                <circle cx="2" cy="-30" r="4" fill="#0a1128" opacity="0.5"/>
+                <circle cx="14" cy="-30" r="4" fill="#0a1128" opacity="0.5"/>
+                <circle cx="26" cy="-30" r="4" fill="#0a1128" opacity="0.5"/>
+                <rect x="-24" y="-38" width="52" height="38" fill="none" stroke="#f4f5fa" stroke-opacity="0.18"/>
+              </g>
+              <g class="exp-case exp-case-4">
+                <rect x="34" y="-54" width="52" height="54" fill="#6f93e8" opacity="0.82"/>
+                <circle cx="48" cy="-44" r="4" fill="#0a1128" opacity="0.5"/>
+                <circle cx="60" cy="-44" r="4" fill="#0a1128" opacity="0.5"/>
+                <circle cx="72" cy="-44" r="4" fill="#0a1128" opacity="0.5"/>
+                <circle cx="84" cy="-44" r="4" fill="#0a1128" opacity="0.5"/>
+                <rect x="34" y="-54" width="52" height="54" fill="none" stroke="#f4f5fa" stroke-opacity="0.18"/>
+              </g>
+              <g class="exp-case exp-case-5">
+                <rect x="92" y="-34" width="52" height="34" fill="#a6c4ff" opacity="0.82"/>
+                <circle cx="106" cy="-26" r="4" fill="#0a1128" opacity="0.5"/>
+                <circle cx="118" cy="-26" r="4" fill="#0a1128" opacity="0.5"/>
+                <circle cx="130" cy="-26" r="4" fill="#0a1128" opacity="0.5"/>
+                <rect x="92" y="-34" width="52" height="34" fill="none" stroke="#f4f5fa" stroke-opacity="0.18"/>
+              </g>
               <!-- strap binding the load -->
               <path class="exp-strap" d="M-150,-30 L150,-30" fill="none" stroke="#f4f5fa" stroke-opacity="0.55" stroke-width="2" stroke-dasharray="4 4"/>
             </g>
@@ -900,12 +1053,33 @@
                 <line x1="30" y1="0" x2="30" y2="46" stroke="currentColor" stroke-opacity="0.3"/>
               </g>
             </g>
-            <!-- ship, right -->
+            <!-- ship, right: detailed container-ship silhouette -->
             <g transform="translate(590,195)">
-              <path d="M-110,60 L130,60 L112,92 L-92,92 Z" fill="#0f1a3d" stroke="#5fd4e0" stroke-opacity="0.55"/>
-              <rect x="-20" y="18" width="46" height="42" fill="#3a6ede" opacity="0.85"/>
-              <line x1="3" y1="18" x2="3" y2="-10" stroke="currentColor" stroke-opacity="0.45"/>
-              <path d="M-125,96 Q -95,104 -65,96 T -5,96 T 55,96 T 115,96" fill="none" stroke="#5fd4e0" stroke-opacity="0.3" stroke-width="1.5"/>
+              <ellipse cx="0" cy="96" rx="160" ry="22" fill="url(#exp-glow-blue)" opacity="0.4"/>
+              <!-- hull -->
+              <path d="M-125,62 L135,62 L120,98 L-110,98 Z" fill="url(#exp-hull-grad)" stroke="#5fd4e0" stroke-opacity="0.5"/>
+              <path d="M-125,62 L135,62 L132,70 L-122,70 Z" fill="#5fd4e0" opacity="0.18"/>
+              <!-- stacked containers on deck, varied colors -->
+              <g>
+                <rect x="-95" y="38" width="22" height="24" fill="#3a6ede" opacity="0.85"/>
+                <rect x="-71" y="30" width="22" height="32" fill="#5fd4e0" opacity="0.8"/>
+                <rect x="-47" y="38" width="22" height="24" fill="#b8935a" opacity="0.85"/>
+                <rect x="-71" y="14" width="22" height="18" fill="#6f93e8" opacity="0.8"/>
+                <rect x="-23" y="40" width="22" height="22" fill="#5fd4e0" opacity="0.75"/>
+                <rect x="1" y="32" width="22" height="30" fill="#3a6ede" opacity="0.8"/>
+                <rect x="25" y="42" width="20" height="20" fill="#a6c4ff" opacity="0.75"/>
+              </g>
+              <!-- bridge / superstructure -->
+              <rect x="55" y="6" width="34" height="56" rx="1" fill="#16213f" stroke="#5fd4e0" stroke-opacity="0.45"/>
+              <rect x="60" y="14" width="7" height="8" fill="#5fd4e0" opacity="0.5"/>
+              <rect x="71" y="14" width="7" height="8" fill="#5fd4e0" opacity="0.5"/>
+              <rect x="60" y="26" width="7" height="8" fill="#5fd4e0" opacity="0.3"/>
+              <rect x="71" y="26" width="7" height="8" fill="#5fd4e0" opacity="0.3"/>
+              <!-- funnel -->
+              <rect x="95" y="-6" width="10" height="18" rx="1" fill="#0f1a3d" stroke="#5fd4e0" stroke-opacity="0.4"/>
+              <!-- waterline wake -->
+              <path class="exp-wake" d="M-140,100 Q -100,108 -60,100 T 20,100 T 100,100 T 160,100" fill="none" stroke="#5fd4e0" stroke-opacity="0.35" stroke-width="1.5"/>
+              <path class="exp-wake exp-wake-2" d="M-140,112 Q -100,118 -60,112 T 20,112 T 100,112 T 160,112" fill="none" stroke="#5fd4e0" stroke-opacity="0.2" stroke-width="1.2"/>
             </g>
             <!-- the pallet travelling from crane to ship deck -->
             <g transform="translate(220,228)"><g class="exp-pallet-move">
