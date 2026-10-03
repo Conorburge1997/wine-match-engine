@@ -41,7 +41,7 @@
   h1,h2,h3{font-family:'Fraunces',serif; font-weight:400; letter-spacing:-0.005em; margin:0;}
   a{color:inherit;}
   .mono{font-family:'JetBrains Mono',monospace;}
-  .wrap{max-width:1080px; margin:0 auto; padding:0 32px;}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 32px; position:relative;}
 
   body{
     background-image:
@@ -92,19 +92,21 @@
     position:absolute; top:-10px; right:0; width:240px; height:240px;
     opacity:0.95; z-index:1; pointer-events:none;
     filter:drop-shadow(0 20px 50px rgba(58,110,222,0.45));
-    transition:opacity 0.3s ease;
   }
   @media (max-width: 1024px){ .hero-gem{display:none;} }
-  .hero-gem.is-hidden{opacity:0;}
 
-  .nav-gem{
-    width:0; height:30px; opacity:0; overflow:visible;
-    transition:width 0.3s ease, opacity 0.3s ease, margin-left 0.3s ease;
-    margin-left:0; flex-shrink:0;
-    filter:drop-shadow(0 4px 14px rgba(58,110,222,0.5));
+  /* Sapphires scattered down the right margin, outside the content column */
+  @media (max-width: 1400px){ .margin-gem{display:none;} }
+  .margin-gem{
+    position:absolute; top:50%; left:100%; margin-left:70px; width:56px; height:56px;
+    opacity:0; transform:translateY(10px) scale(0.85);
+    transition:opacity 0.8s ease, transform 0.8s ease;
+    filter:drop-shadow(0 10px 28px rgba(58,110,222,0.4));
     pointer-events:none;
   }
-  .nav-gem.is-visible{width:30px; opacity:1; margin-left:14px;}
+  .margin-gem.sm{width:34px; height:34px;}
+  .margin-gem.lg{width:78px; height:78px;}
+  .margin-gem.is-visible{opacity:0.9; transform:translateY(0) scale(1);}
 
   header{
     position:sticky; top:0; z-index:50;
@@ -575,18 +577,6 @@
         <circle cx="27" cy="22" r="3" fill="#060810"/>
       </svg>
       <span class="brand-word">Sapphire Panda</span>
-      <svg class="nav-gem gem-mark" id="navGem" viewBox="0 0 200 200" fill="none">
-        <polygon class="f1" points="100,10 145,70 100,95"/>
-        <polygon class="f2" points="100,10 55,70 100,95"/>
-        <polygon class="f6" points="55,70 100,95 78,140"/>
-        <polygon class="f3" points="145,70 100,95 122,140"/>
-        <polygon class="f7" points="100,95 78,140 100,190"/>
-        <polygon class="f5" points="100,95 122,140 100,190"/>
-        <polygon class="f4" points="55,70 30,125 78,140"/>
-        <polygon class="f4" points="145,70 170,125 122,140"/>
-        <polygon class="f6" points="30,125 78,140 100,190"/>
-        <polygon class="f3" points="170,125 122,140 100,190"/>
-      </svg>
     </a>
     <div class="nav-links">
       <div class="links">
@@ -631,6 +621,13 @@
 
   <section id="difference">
     <div class="wrap">
+      <svg class="margin-gem gem-mark" viewBox="0 0 200 200" fill="none">
+        <polygon class="f1" points="100,10 145,70 100,95"/><polygon class="f2" points="100,10 55,70 100,95"/>
+        <polygon class="f6" points="55,70 100,95 78,140"/><polygon class="f3" points="145,70 100,95 122,140"/>
+        <polygon class="f7" points="100,95 78,140 100,190"/><polygon class="f5" points="100,95 122,140 100,190"/>
+        <polygon class="f4" points="55,70 30,125 78,140"/><polygon class="f4" points="145,70 170,125 122,140"/>
+        <polygon class="f6" points="30,125 78,140 100,190"/><polygon class="f3" points="170,125 122,140 100,190"/>
+      </svg>
       <div class="section-head">
         <div class="section-eyebrow">The Difference</div>
         <h2>Same producers, same shipment, every time. Our engine ends the repetition.</h2>
@@ -675,6 +672,13 @@
 
   <section id="how">
     <div class="wrap">
+      <svg class="margin-gem sm gem-mark" viewBox="0 0 200 200" fill="none">
+        <polygon class="f1" points="100,10 145,70 100,95"/><polygon class="f2" points="100,10 55,70 100,95"/>
+        <polygon class="f6" points="55,70 100,95 78,140"/><polygon class="f3" points="145,70 100,95 122,140"/>
+        <polygon class="f7" points="100,95 78,140 100,190"/><polygon class="f5" points="100,95 122,140 100,190"/>
+        <polygon class="f4" points="55,70 30,125 78,140"/><polygon class="f4" points="145,70 170,125 122,140"/>
+        <polygon class="f6" points="30,125 78,140 100,190"/><polygon class="f3" points="170,125 122,140 100,190"/>
+      </svg>
       <div class="section-head">
         <div class="section-eyebrow">How It Works</div>
         <h2>From a buyer's brief to a matched, verified shipment.</h2>
@@ -841,6 +845,13 @@
 
   <section id="engine">
     <div class="wrap" style="padding-bottom:40px;">
+      <svg class="margin-gem lg gem-mark" viewBox="0 0 200 200" fill="none">
+        <polygon class="f1" points="100,10 145,70 100,95"/><polygon class="f2" points="100,10 55,70 100,95"/>
+        <polygon class="f6" points="55,70 100,95 78,140"/><polygon class="f3" points="145,70 100,95 122,140"/>
+        <polygon class="f7" points="100,95 78,140 100,190"/><polygon class="f5" points="100,95 122,140 100,190"/>
+        <polygon class="f4" points="55,70 30,125 78,140"/><polygon class="f4" points="145,70 170,125 122,140"/>
+        <polygon class="f6" points="30,125 78,140 100,190"/><polygon class="f3" points="170,125 122,140 100,190"/>
+      </svg>
       <div class="section-eyebrow" style="margin-bottom:18px;">The Engine</div>
       <div class="engine-panel sheen">
         <div class="engine-top">
@@ -895,6 +906,13 @@
 
   <section id="news">
     <div class="wrap">
+      <svg class="margin-gem sm gem-mark" viewBox="0 0 200 200" fill="none">
+        <polygon class="f1" points="100,10 145,70 100,95"/><polygon class="f2" points="100,10 55,70 100,95"/>
+        <polygon class="f6" points="55,70 100,95 78,140"/><polygon class="f3" points="145,70 100,95 122,140"/>
+        <polygon class="f7" points="100,95 78,140 100,190"/><polygon class="f5" points="100,95 122,140 100,190"/>
+        <polygon class="f4" points="55,70 30,125 78,140"/><polygon class="f4" points="145,70 170,125 122,140"/>
+        <polygon class="f6" points="30,125 78,140 100,190"/><polygon class="f3" points="170,125 122,140 100,190"/>
+      </svg>
       <div class="section-head">
         <div class="section-eyebrow">Industry News</div>
         <h2>What's happening across Australian wine right now.</h2>
@@ -922,6 +940,13 @@
 
   <section id="why">
     <div class="wrap">
+      <svg class="margin-gem gem-mark" viewBox="0 0 200 200" fill="none">
+        <polygon class="f1" points="100,10 145,70 100,95"/><polygon class="f2" points="100,10 55,70 100,95"/>
+        <polygon class="f6" points="55,70 100,95 78,140"/><polygon class="f3" points="145,70 100,95 122,140"/>
+        <polygon class="f7" points="100,95 78,140 100,190"/><polygon class="f5" points="100,95 122,140 100,190"/>
+        <polygon class="f4" points="55,70 30,125 78,140"/><polygon class="f4" points="145,70 170,125 122,140"/>
+        <polygon class="f6" points="30,125 78,140 100,190"/><polygon class="f3" points="170,125 122,140 100,190"/>
+      </svg>
       <div class="section-head">
         <div class="section-eyebrow">Why It Matters</div>
         <h2>What you're actually buying into.</h2>
@@ -1204,15 +1229,14 @@
   })();
 
   (function(){
-    var navGem = document.getElementById('navGem');
-    var heroGem = document.querySelector('.hero-gem');
-    if(!navGem || !heroGem) return;
-    function onScroll(){
-      var pastHero = window.scrollY > (heroGem.closest('.hero').offsetHeight - 140);
-      navGem.classList.toggle('is-visible', pastHero);
-    }
-    window.addEventListener('scroll', onScroll, { passive:true });
-    onScroll();
+    var gems = Array.prototype.slice.call(document.querySelectorAll('.margin-gem'));
+    if(!gems.length || !('IntersectionObserver' in window)) return;
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        entry.target.classList.toggle('is-visible', entry.isIntersecting);
+      });
+    }, { threshold: 0.15 });
+    gems.forEach(function(g){ observer.observe(g); });
   })();
 </script>
 
