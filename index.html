@@ -241,7 +241,7 @@
   .compare-col h3{font-size:14.5px; margin-bottom:6px; font-weight:500;}
   .compare-col p{color:var(--ink-dim); font-size:12.5px; margin:0; line-height:1.55;}
 
-  /* Video Explanation — HUD / wireframe animated sequence, 6 stages */
+  /* Video Explanation — HUD / wireframe animated sequence, 7 stages */
   .explainer-panel{
     background:#040611;
     border:1px solid var(--border-soft);
@@ -263,37 +263,42 @@
     100%{transform:translateY(300px); opacity:0;}
   }
 
-  /* 24s total loop, 6 stages of 4s each (16.667% of cycle per stage). */
+  /* 28s total loop, 7 stages of 4s each (14.2857% of cycle per stage). */
   .exp-stage{opacity:0;}
-  .exp-stage-1{animation:expS1 24s infinite;}
-  .exp-stage-2{animation:expS2 24s infinite;}
-  .exp-stage-3{animation:expS3 24s infinite;}
-  .exp-stage-4{animation:expS4 24s infinite;}
-  .exp-stage-5{animation:expS5 24s infinite;}
-  .exp-stage-6{animation:expS6 24s infinite;}
+  .exp-stage-1{animation:expS1 28s infinite;}
+  .exp-stage-2{animation:expS2 28s infinite;}
+  .exp-stage-3{animation:expS3 28s infinite;}
+  .exp-stage-4{animation:expS4 28s infinite;}
+  .exp-stage-5{animation:expS5 28s infinite;}
+  .exp-stage-6{animation:expS6 28s infinite;}
+  .exp-stage-7{animation:expS7 28s infinite;}
 
   @keyframes expS1{
-    0%{opacity:1;} 14.5%{opacity:1;} 16.7%{opacity:0;}
-    98%{opacity:0;} 100%{opacity:1;}
+    0%{opacity:1;} 12.5%{opacity:1;} 14.29%{opacity:0;}
+    98.5%{opacity:0;} 100%{opacity:1;}
   }
   @keyframes expS2{
-    0%, 14.5%{opacity:0;} 16.7%{opacity:1;} 31.2%{opacity:1;} 33.3%{opacity:0;}
+    0%, 12.5%{opacity:0;} 14.29%{opacity:1;} 26.8%{opacity:1;} 28.57%{opacity:0;}
     100%{opacity:0;}
   }
   @keyframes expS3{
-    0%, 31.2%{opacity:0;} 33.3%{opacity:1;} 47.9%{opacity:1;} 50%{opacity:0;}
+    0%, 26.8%{opacity:0;} 28.57%{opacity:1;} 41.1%{opacity:1;} 42.86%{opacity:0;}
     100%{opacity:0;}
   }
   @keyframes expS4{
-    0%, 47.9%{opacity:0;} 50%{opacity:1;} 64.5%{opacity:1;} 66.7%{opacity:0;}
+    0%, 41.1%{opacity:0;} 42.86%{opacity:1;} 55.4%{opacity:1;} 57.14%{opacity:0;}
     100%{opacity:0;}
   }
   @keyframes expS5{
-    0%, 64.5%{opacity:0;} 66.7%{opacity:1;} 81.2%{opacity:1;} 83.3%{opacity:0;}
+    0%, 55.4%{opacity:0;} 57.14%{opacity:1;} 69.6%{opacity:1;} 71.43%{opacity:0;}
     100%{opacity:0;}
   }
   @keyframes expS6{
-    0%, 81.2%{opacity:0;} 83.3%{opacity:1;} 98%{opacity:1;} 100%{opacity:0;}
+    0%, 69.6%{opacity:0;} 71.43%{opacity:1;} 83.9%{opacity:1;} 85.71%{opacity:0;}
+    100%{opacity:0;}
+  }
+  @keyframes expS7{
+    0%, 83.9%{opacity:0;} 85.71%{opacity:1;} 98.5%{opacity:1;} 100%{opacity:0;}
   }
 
   /* shared vocabulary: every stage is built from these few primitives */
@@ -440,16 +445,52 @@
     78%{opacity:0; offset-distance:100%;}
     100%{opacity:0; offset-distance:100%;}
   }
-  .exp-p-a{offset-path:path('M193,144 C280,148 330,182 395,208'); animation-delay:0.1s;}
-  .exp-p-b{offset-path:path('M193,222 C270,222 330,220 395,220'); animation-delay:0.5s;}
-  .exp-p-c{offset-path:path('M193,296 C280,292 330,258 395,232'); animation-delay:0.9s;}
+  .exp-p-a{offset-path:path('M395,208 C330,182 280,148 193,144'); animation-delay:0.1s;}
+  .exp-p-b{offset-path:path('M395,220 C330,220 270,222 193,222'); animation-delay:0.5s;}
+  .exp-p-c{offset-path:path('M395,232 C330,258 280,292 193,296'); animation-delay:0.9s;}
   .exp-hub-ring{animation:expHubPulse 1.3s ease-in-out infinite;}
   @keyframes expHubPulse{
     0%, 100%{opacity:0.4; stroke-width:1.5;}
     50%{opacity:0.9; stroke-width:2.5;}
   }
+  .exp-s4-tag{opacity:0;}
+  .exp-s4-tag.t1{animation:expTagIn 4s infinite; animation-delay:0.3s;}
+  .exp-s4-tag.t2{animation:expTagIn 4s infinite; animation-delay:0.7s;}
+  .exp-s4-tag.t3{animation:expTagIn 4s infinite; animation-delay:1.1s;}
+  @keyframes expTagIn{
+    0%, 15%{opacity:0;}
+    22%, 92%{opacity:0.9;}
+    100%{opacity:0;}
+  }
 
-  /* Stage 4 — consolidation: glowing bars rise into a single stacked column readout */
+  /* Stage 3 — order generated: a PO assembles, then a CONFIRMED stamp slams down and transmits out */
+  .exp-s3-stamp{
+    opacity:0; transform:scale(2.4) rotate(-14deg); transform-box:fill-box; transform-origin:center;
+    animation:expStampSlam 4s infinite;
+  }
+  @keyframes expStampSlam{
+    0%, 68%{opacity:0; transform:scale(2.4) rotate(-14deg);}
+    74%{opacity:1; transform:scale(0.85) rotate(-8deg);}
+    80%{transform:scale(1.05) rotate(-8deg);}
+    86%, 96%{opacity:1; transform:scale(1) rotate(-8deg);}
+    100%{opacity:0; transform:scale(1) rotate(-8deg);}
+  }
+  .exp-s3-send{opacity:0; stroke-dasharray:200; stroke-dashoffset:200; animation:expSendDraw 4s infinite;}
+  @keyframes expSendDraw{
+    0%, 80%{opacity:0; stroke-dashoffset:200;}
+    88%{opacity:0.9; stroke-dashoffset:0;}
+    96%{opacity:0.9;}
+    100%{opacity:0;}
+  }
+  .exp-s3-sendnode{opacity:0; animation:expSendNode 4s infinite;}
+  @keyframes expSendNode{
+    0%, 86%{opacity:0;}
+    92%, 98%{opacity:1;}
+    100%{opacity:0;}
+  }
+  .exp-s3-sendlabel{opacity:0; animation:expSendNode 4s infinite;}
+
+  /* Stage 5 — consolidation: glowing bars rise into a single stacked column readout */
   .exp-s4-bar{transform:scaleY(0); transform-box:fill-box; transform-origin:bottom;}
   .exp-s4-bar.in{animation:expBarRise 4s infinite;}
   @keyframes expBarRise{
@@ -466,16 +507,37 @@
     100%{stroke-dashoffset:0;}
   }
 
-  /* Stage 5 — export: terminal readout lines type in, clearance confirms, freight glyph departs */
+  /* Stage 6 — export: terminal readout lines type in, clearance confirms, freight glyph departs */
   .exp-s5-line{opacity:0;}
   .exp-s5-line.in{animation:expChipIn 4s infinite;}
   .exp-s5-depart{animation:expDepart 4s infinite;}
   @keyframes expDepart{
     0%, 55%{transform:translateX(0);}
-    95%{transform:translateX(250px);}
-    100%{transform:translateX(250px);}
+    95%{transform:translateX(130px);}
+    100%{transform:translateX(130px);}
   }
   .exp-s5-wake{stroke-dasharray:6 5; animation:expWireFlow 0.8s linear infinite;}
+
+  /* Stage 6 — paperwork scatter collapses into one streamlined agent process */
+  .exp-s6-doc{opacity:0.75; transform-box:fill-box; transform-origin:center;}
+  .exp-s6-doc.d1{animation:expDocAbsorb 4s infinite; animation-delay:0.1s;}
+  .exp-s6-doc.d2{animation:expDocAbsorb 4s infinite; animation-delay:0.25s;}
+  .exp-s6-doc.d3{animation:expDocAbsorb 4s infinite; animation-delay:0.4s;}
+  .exp-s6-doc.d4{animation:expDocAbsorb 4s infinite; animation-delay:0.55s;}
+  @keyframes expDocAbsorb{
+    0%, 10%{opacity:0.8; transform:scale(1) translateX(0);}
+    40%{opacity:0.8; transform:scale(1) translateX(0);}
+    60%{opacity:0; transform:scale(0.3) translateX(90px);}
+    100%{opacity:0; transform:scale(0.3) translateX(90px);}
+  }
+  .exp-s6-absorb{opacity:0; stroke-dasharray:46; stroke-dashoffset:46; animation:expAbsorbDraw 4s infinite;}
+  @keyframes expAbsorbDraw{
+    0%, 42%{opacity:0; stroke-dashoffset:46;}
+    50%{opacity:0.8; stroke-dashoffset:0;}
+    62%{opacity:0.8;}
+    70%{opacity:0;}
+    100%{opacity:0;}
+  }
 
   /* Stage 6 — distribution: single trunk line splits into branches lighting endpoint nodes */
   .exp-branch{stroke-dasharray:180; stroke-dashoffset:180;}
@@ -504,31 +566,39 @@
     .exp-stage, .exp-scanline, .exp-node, .exp-ring, .exp-wire, .exp-chip, .exp-readout,
     .exp-bracket-flash, .exp-s1-rowfill, .exp-s1-check, .exp-s1-cursor, .exp-s1-click,
     .exp-s1-bar, .exp-s2-scanbar, .exp-s2-cell, .exp-s2-strike, .exp-s2-ray,
-    .exp-s2-winner, .exp-s2-counter, .exp-pulse, .exp-hub-ring, .exp-s4-bar,
-    .exp-s4-lock, .exp-s5-line, .exp-s5-depart, .exp-s5-wake, .exp-branch, .exp-endpoint
+    .exp-s2-winner, .exp-s2-counter, .exp-s3-stamp, .exp-s3-send, .exp-s3-sendnode,
+    .exp-s3-sendlabel, .exp-s4-tag, .exp-pulse, .exp-hub-ring, .exp-s4-bar,
+    .exp-s4-lock, .exp-s5-line, .exp-s5-depart, .exp-s5-wake, .exp-branch, .exp-endpoint,
+    .exp-s6-doc, .exp-s6-absorb
     {animation:none !important;}
     .exp-stage{opacity:1;}
     .exp-chip, .exp-readout, .exp-s1-rowfill, .exp-s1-check, .exp-s1-bar,
-    .exp-s2-winner, .exp-s4-bar, .exp-s5-line, .exp-endpoint{opacity:1; transform:none;}
+    .exp-s2-winner, .exp-s4-tag, .exp-s4-bar, .exp-s5-line, .exp-endpoint{opacity:1; transform:none;}
+    .exp-s6-doc{opacity:0.75; transform:none;}
+    .exp-s6-absorb{opacity:0.8; stroke-dashoffset:0;}
     .exp-s1-cursor, .exp-s1-click, .exp-s2-scanbar{opacity:0;}
     .exp-s2-cell.reject{opacity:0.18; transform:scale(0.82);}
     .exp-s2-cell.winner-cell{opacity:1; fill:#5fd4e0; transform:scale(1.05);}
     .exp-s2-strike.go{opacity:0.9;}
     .exp-s2-ray.go{opacity:0.9; stroke-dashoffset:0;}
+    .exp-s3-stamp{opacity:1; transform:rotate(-8deg);}
+    .exp-s3-send{opacity:0.9; stroke-dashoffset:0;}
+    .exp-s3-sendnode, .exp-s3-sendlabel{opacity:1;}
     .exp-s4-lock, .exp-branch{stroke-dashoffset:0;}
   }
 
   .explainer-progress{display:flex; justify-content:center; gap:10px; padding:18px 0 20px;}
-  .explainer-dot{width:7px; height:7px; border-radius:50%; background:var(--border-soft); animation:expDot 24s infinite;}
+  .explainer-dot{width:7px; height:7px; border-radius:50%; background:var(--border-soft); animation:expDot 28s infinite;}
   .explainer-dot:nth-child(2){animation-delay:4s;}
   .explainer-dot:nth-child(3){animation-delay:8s;}
   .explainer-dot:nth-child(4){animation-delay:12s;}
   .explainer-dot:nth-child(5){animation-delay:16s;}
   .explainer-dot:nth-child(6){animation-delay:20s;}
+  .explainer-dot:nth-child(7){animation-delay:24s;}
   @keyframes expDot{
     0%{background:var(--cyan);}
-    16%{background:var(--cyan);}
-    16.7%{background:var(--border-soft);}
+    13.5%{background:var(--cyan);}
+    14.29%{background:var(--border-soft);}
     100%{background:var(--border-soft);}
   }
 
@@ -806,7 +876,7 @@
       </div>
 
       <div class="explainer-panel">
-        <svg class="explainer-svg" viewBox="0 0 760 360" role="img" aria-label="Animated six-stage HUD sequence: a buyer's selection locks onto a wine signal; AI matching sweeps and scores candidate vineyards, surfacing a 94 percent match; signal pulses travel from three vineyards to a central hub as the order is generated; bars rise and lock into one consolidated pallet readout; export clearance lines confirm and a freight glyph departs; and a single trunk line branches out to light up three buyer endpoints on arrival." preserveAspectRatio="xMidYMid meet">
+        <svg class="explainer-svg" viewBox="0 0 760 360" role="img" aria-label="Animated seven-stage HUD sequence: a buyer builds their order from a checklist; the Sapphire Panda AI scans a grid of candidate wines and greenlights the best match; a purchase order document assembles and gets stamped CONFIRMED; signal pulses travel from three vineyards to a central hub as the order is fulfilled; bars rise and lock into one consolidated pallet readout; export clearance lines confirm and a freight glyph departs; and a single trunk line branches out to light up three buyer endpoints on arrival." preserveAspectRatio="xMidYMid meet">
           <defs>
             <radialGradient id="exp-glow-cyan" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stop-color="#5fd4e0" stop-opacity="0.45"/>
@@ -828,6 +898,9 @@
               <line x1="10" y1="-1" x2="11" y2="17.5" stroke="currentColor" stroke-opacity="0.55" stroke-width="1"/>
               <line x1="18" y1="1" x2="19.5" y2="17" stroke="currentColor" stroke-opacity="0.55" stroke-width="1"/>
             </g>
+            <marker id="exp-arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 Z" fill="#5fd4e0"/>
+            </marker>
           </defs>
 
           <g clip-path="url(#exp-frame-clip)">
@@ -848,26 +921,29 @@
             </g>
 
             <!-- big bold title row, shared across every stage -->
-            <g class="exp-stage exp-stage-1" font-family="Inter, sans-serif"><text x="40" y="78" font-size="28" font-weight="700" fill="#f4f5fa">Select</text></g>
-            <g class="exp-stage exp-stage-2" font-family="Inter, sans-serif"><text x="40" y="78" font-size="28" font-weight="700" fill="#f4f5fa">AI matches it</text></g>
-            <g class="exp-stage exp-stage-3" font-family="Inter, sans-serif"><text x="40" y="78" font-size="28" font-weight="700" fill="#f4f5fa">Vineyards fulfil it</text></g>
-            <g class="exp-stage exp-stage-4" font-family="Inter, sans-serif"><text x="40" y="78" font-size="28" font-weight="700" fill="#f4f5fa">One pallet</text></g>
-            <g class="exp-stage exp-stage-5" font-family="Inter, sans-serif"><text x="40" y="78" font-size="28" font-weight="700" fill="#f4f5fa">Exported</text></g>
-            <g class="exp-stage exp-stage-6" font-family="Inter, sans-serif"><text x="40" y="78" font-size="28" font-weight="700" fill="#f4f5fa">Delivered</text></g>
-            <g class="exp-stage exp-stage-1" font-family="JetBrains Mono, monospace"><text x="720" y="54" text-anchor="end" font-size="13" fill="#5fd4e0" opacity="0.7">STEP 01 / 06</text></g>
-            <g class="exp-stage exp-stage-2" font-family="JetBrains Mono, monospace"><text x="720" y="54" text-anchor="end" font-size="13" fill="#5fd4e0" opacity="0.7">STEP 02 / 06</text></g>
-            <g class="exp-stage exp-stage-3" font-family="JetBrains Mono, monospace"><text x="720" y="54" text-anchor="end" font-size="13" fill="#5fd4e0" opacity="0.7">STEP 03 / 06</text></g>
-            <g class="exp-stage exp-stage-4" font-family="JetBrains Mono, monospace"><text x="720" y="54" text-anchor="end" font-size="13" fill="#5fd4e0" opacity="0.7">STEP 04 / 06</text></g>
-            <g class="exp-stage exp-stage-5" font-family="JetBrains Mono, monospace"><text x="720" y="54" text-anchor="end" font-size="13" fill="#5fd4e0" opacity="0.7">STEP 05 / 06</text></g>
-            <g class="exp-stage exp-stage-6" font-family="JetBrains Mono, monospace"><text x="720" y="54" text-anchor="end" font-size="13" fill="#5fd4e0" opacity="0.7">STEP 06 / 06</text></g>
+            <g class="exp-stage exp-stage-1" font-family="Inter, sans-serif"><text x="40" y="78" font-size="26" font-weight="700" fill="#f4f5fa">You list your requirements.</text></g>
+            <g class="exp-stage exp-stage-2" font-family="Inter, sans-serif"><text x="40" y="78" font-size="26" font-weight="700" fill="#f4f5fa">Sapphire Panda AI matches it.</text></g>
+            <g class="exp-stage exp-stage-3" font-family="Inter, sans-serif"><text x="40" y="78" font-size="26" font-weight="700" fill="#f4f5fa">Order is generated.</text></g>
+            <g class="exp-stage exp-stage-4" font-family="Inter, sans-serif"><text x="40" y="78" font-size="26" font-weight="700" fill="#f4f5fa">Vineyards are requested.</text></g>
+            <g class="exp-stage exp-stage-5" font-family="Inter, sans-serif"><text x="40" y="78" font-size="26" font-weight="700" fill="#f4f5fa">Pallet is consolidated.</text></g>
+            <g class="exp-stage exp-stage-6" font-family="Inter, sans-serif"><text x="40" y="78" font-size="26" font-weight="700" fill="#f4f5fa">Agents clear customs.</text></g>
+            <g class="exp-stage exp-stage-7" font-family="Inter, sans-serif"><text x="40" y="78" font-size="26" font-weight="700" fill="#f4f5fa">You receive it.</text></g>
+            <g class="exp-stage exp-stage-1" font-family="JetBrains Mono, monospace"><text x="720" y="54" text-anchor="end" font-size="13" fill="#5fd4e0" opacity="0.7">STEP 01 / 07</text></g>
+            <g class="exp-stage exp-stage-2" font-family="JetBrains Mono, monospace"><text x="720" y="54" text-anchor="end" font-size="13" fill="#5fd4e0" opacity="0.7">STEP 02 / 07</text></g>
+            <g class="exp-stage exp-stage-3" font-family="JetBrains Mono, monospace"><text x="720" y="54" text-anchor="end" font-size="13" fill="#5fd4e0" opacity="0.7">STEP 03 / 07</text></g>
+            <g class="exp-stage exp-stage-4" font-family="JetBrains Mono, monospace"><text x="720" y="54" text-anchor="end" font-size="13" fill="#5fd4e0" opacity="0.7">STEP 04 / 07</text></g>
+            <g class="exp-stage exp-stage-5" font-family="JetBrains Mono, monospace"><text x="720" y="54" text-anchor="end" font-size="13" fill="#5fd4e0" opacity="0.7">STEP 05 / 07</text></g>
+            <g class="exp-stage exp-stage-6" font-family="JetBrains Mono, monospace"><text x="720" y="54" text-anchor="end" font-size="13" fill="#5fd4e0" opacity="0.7">STEP 06 / 07</text></g>
+            <g class="exp-stage exp-stage-7" font-family="JetBrains Mono, monospace"><text x="720" y="54" text-anchor="end" font-size="13" fill="#5fd4e0" opacity="0.7">STEP 07 / 07</text></g>
 
             <!-- short one-line explanation under the title, shared slot -->
-            <g class="exp-stage exp-stage-1" font-family="Inter, sans-serif"><text x="40" y="99" font-size="13" fill="currentColor" opacity="0.55">Buyer sets style, region, price and volume.</text></g>
-            <g class="exp-stage exp-stage-2" font-family="Inter, sans-serif"><text x="40" y="99" font-size="13" fill="currentColor" opacity="0.55">Millions of combinations scored for the best fit.</text></g>
-            <g class="exp-stage exp-stage-3" font-family="Inter, sans-serif"><text x="40" y="99" font-size="13" fill="currentColor" opacity="0.55">The order is placed across independent vineyards.</text></g>
-            <g class="exp-stage exp-stage-4" font-family="Inter, sans-serif"><text x="40" y="99" font-size="13" fill="currentColor" opacity="0.55">Every wine consolidates onto one shared pallet.</text></g>
-            <g class="exp-stage exp-stage-5" font-family="Inter, sans-serif"><text x="40" y="99" font-size="13" fill="currentColor" opacity="0.55">SKUs registered, customs cleared, pallet departs.</text></g>
-            <g class="exp-stage exp-stage-6" font-family="Inter, sans-serif"><text x="40" y="99" font-size="13" fill="currentColor" opacity="0.55">One pallet splits out to every buyer on arrival.</text></g>
+            <g class="exp-stage exp-stage-1" font-family="Inter, sans-serif"><text x="40" y="99" font-size="13" fill="currentColor" opacity="0.55">Style, region, price and volume — tell us exactly what you want.</text></g>
+            <g class="exp-stage exp-stage-2" font-family="Inter, sans-serif"><text x="40" y="99" font-size="13" fill="currentColor" opacity="0.55">Thousands of combinations scored in seconds to find the best fit.</text></g>
+            <g class="exp-stage exp-stage-3" font-family="Inter, sans-serif"><text x="40" y="99" font-size="13" fill="currentColor" opacity="0.55">A live purchase order is built and sent automatically.</text></g>
+            <g class="exp-stage exp-stage-4" font-family="Inter, sans-serif"><text x="40" y="99" font-size="13" fill="currentColor" opacity="0.55">Independent vineyards across regions confirm and fulfil the order.</text></g>
+            <g class="exp-stage exp-stage-5" font-family="Inter, sans-serif"><text x="40" y="99" font-size="13" fill="currentColor" opacity="0.55">Multiple wines, multiple vineyards — one complex, unique pallet.</text></g>
+            <g class="exp-stage exp-stage-6" font-family="Inter, sans-serif"><text x="40" y="99" font-size="13" fill="currentColor" opacity="0.55">Our agents handle all the paperwork, so you don't have to.</text></g>
+            <g class="exp-stage exp-stage-7" font-family="Inter, sans-serif"><text x="40" y="99" font-size="13" fill="currentColor" opacity="0.55">One pallet splits out to every buyer on arrival.</text></g>
 
             <!-- divider rule separating header from the live scene -->
             <line x1="40" y1="114" x2="720" y2="114" stroke="#5fd4e0" stroke-opacity="0.15"/>
@@ -1008,9 +1084,48 @@
               </g></g>
             </g>
 
-
-            <!-- ============ STAGE 3 — Order generation ============ -->
+            <!-- ============ STAGE 3 — Order is generated ============ -->
             <g class="exp-stage exp-stage-3" font-family="JetBrains Mono, monospace">
+              <!-- a PO document assembles line by line, then gets stamped CONFIRMED and sent -->
+              <g transform="translate(220,130)">
+                <rect x="0" y="0" width="280" height="200" fill="none" stroke="currentColor" stroke-opacity="0.3"/>
+                <line x1="0" y1="30" x2="280" y2="30" stroke="currentColor" stroke-opacity="0.2"/>
+                <text x="14" y="20" font-size="10" fill="currentColor" opacity="0.6" letter-spacing="0.06em">PURCHASE ORDER — PO-10482</text>
+
+                <g class="exp-s5-line in" style="animation-delay:0.1s">
+                  <text x="14" y="52" font-size="9.5" fill="#5fd4e0">›</text>
+                  <text x="26" y="52" font-size="9.5" fill="currentColor" opacity="0.8">Hahndorf Hill Shiraz × 60</text>
+                </g>
+                <g class="exp-s5-line in" style="animation-delay:0.3s">
+                  <text x="14" y="72" font-size="9.5" fill="#5fd4e0">›</text>
+                  <text x="26" y="72" font-size="9.5" fill="currentColor" opacity="0.8">Adelaide Hills, SA</text>
+                </g>
+                <g class="exp-s5-line in" style="animation-delay:0.5s">
+                  <text x="14" y="92" font-size="9.5" fill="#5fd4e0">›</text>
+                  <text x="26" y="92" font-size="9.5" fill="currentColor" opacity="0.8">Unit price locked — PO value calculated</text>
+                </g>
+                <g class="exp-s5-line in" style="animation-delay:0.7s">
+                  <text x="14" y="112" font-size="9.5" fill="#5fd4e0">›</text>
+                  <text x="26" y="112" font-size="9.5" fill="currentColor" opacity="0.8">Delivery route: Barossa → Hong Kong</text>
+                </g>
+
+                <line x1="0" y1="130" x2="280" y2="130" stroke="currentColor" stroke-opacity="0.2"/>
+
+                <!-- stamp slams down once the order is complete -->
+                <g class="exp-s3-stamp">
+                  <rect x="86" y="146" width="108" height="34" fill="none" stroke="#5fd4e0" stroke-width="2"/>
+                  <text x="140" y="168" text-anchor="middle" font-size="13" fill="#5fd4e0" font-weight="700" letter-spacing="0.08em">CONFIRMED</text>
+                </g>
+              </g>
+
+              <!-- outbound signal: the confirmed order transmits out to the right -->
+              <line class="exp-s3-send" x1="500" y1="230" x2="700" y2="230" stroke="#5fd4e0" stroke-width="1.5" stroke-dasharray="5 4"/>
+              <circle class="exp-s3-sendnode" cx="700" cy="230" r="6" fill="#5fd4e0"/>
+              <text class="exp-s3-sendlabel" x="700" y="252" text-anchor="middle" font-size="9" fill="#5fd4e0" opacity="0.8" letter-spacing="0.05em">SENT</text>
+            </g>
+
+            <!-- ============ STAGE 4 — Vineyards are requested ============ -->
+            <g class="exp-stage exp-stage-4" font-family="JetBrains Mono, monospace">
               <g transform="translate(0,0)">
                 <!-- three vineyards, left — a recognizable hillside-of-vines glyph each -->
                 <g transform="translate(175,148)" color="#b8935a">
@@ -1034,7 +1149,7 @@
                 <path d="M193,222 C270,222 330,220 395,220" fill="none" stroke="currentColor" stroke-opacity="0.1"/>
                 <path d="M193,296 C280,292 330,258 395,232" fill="none" stroke="currentColor" stroke-opacity="0.1"/>
 
-                <!-- hub, right -->
+                <!-- hub, right: requests go OUT from Sapphire Panda to each vineyard -->
                 <g transform="translate(560,220)">
                   <ellipse cx="0" cy="0" rx="120" ry="80" fill="url(#exp-glow-cyan)" opacity="0.22"/>
                   <circle class="exp-hub-ring" r="40" fill="none" stroke="#5fd4e0" stroke-opacity="0.5"/>
@@ -1042,44 +1157,86 @@
                   <text x="0" y="62" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.6" letter-spacing="0.05em">SAPPHIRE PANDA</text>
                 </g>
 
-                <!-- travelling signal pulses -->
+                <!-- "REQUEST SENT" tags flashing at each vineyard as the pulse arrives -->
+                <g class="exp-s4-tag t1" transform="translate(175,148)"><text x="46" y="-11" font-size="8.5" fill="#b8935a" letter-spacing="0.04em">✓ REQUESTED</text></g>
+                <g class="exp-s4-tag t2" transform="translate(175,222)"><text x="46" y="-11" font-size="8.5" fill="#3a6ede" letter-spacing="0.04em">✓ REQUESTED</text></g>
+                <g class="exp-s4-tag t3" transform="translate(175,296)"><text x="46" y="-11" font-size="8.5" fill="#5fd4e0" letter-spacing="0.04em">✓ REQUESTED</text></g>
+
+                <!-- travelling signal pulses: hub outward to each vineyard -->
                 <circle class="exp-pulse go exp-p-a" r="5" fill="#b8935a"/>
                 <circle class="exp-pulse go exp-p-b" r="5" fill="#3a6ede"/>
                 <circle class="exp-pulse go exp-p-c" r="5" fill="#5fd4e0"/>
               </g>
             </g>
 
-            <!-- ============ STAGE 4 — Consolidation ============ -->
-            <g class="exp-stage exp-stage-4" font-family="JetBrains Mono, monospace">
-              <!-- five rising bars, each a different wine, glowing -->
-              <g transform="translate(230,306)">
-                <rect class="exp-s4-bar in" x="0" y="-120" width="34" height="120" fill="#3a6ede" opacity="0.7" style="animation-delay:0.1s"/>
-                <rect class="exp-s4-bar in" x="46" y="-168" width="34" height="168" fill="#5fd4e0" opacity="0.7" style="animation-delay:0.3s"/>
-                <rect class="exp-s4-bar in" x="92" y="-96" width="34" height="96" fill="#b8935a" opacity="0.7" style="animation-delay:0.5s"/>
-                <rect class="exp-s4-bar in" x="138" y="-144" width="34" height="144" fill="#6f93e8" opacity="0.7" style="animation-delay:0.7s"/>
-                <rect class="exp-s4-bar in" x="184" y="-80" width="34" height="80" fill="#a6c4ff" opacity="0.7" style="animation-delay:0.9s"/>
-                <line x1="-10" y1="0" x2="228" y2="0" stroke="currentColor" stroke-opacity="0.3"/>
+            <!-- ============ STAGE 5 — Pallet is consolidated ============ -->
+            <g class="exp-stage exp-stage-5" font-family="JetBrains Mono, monospace">
+              <!-- seven rising bars, each a distinct wine SKU, converging into one complex pallet -->
+              <g transform="translate(190,306)">
+                <rect class="exp-s4-bar in" x="0" y="-104" width="26" height="104" fill="#3a6ede" opacity="0.75" style="animation-delay:0.05s"/>
+                <rect class="exp-s4-bar in" x="34" y="-150" width="26" height="150" fill="#5fd4e0" opacity="0.75" style="animation-delay:0.18s"/>
+                <rect class="exp-s4-bar in" x="68" y="-82" width="26" height="82" fill="#b8935a" opacity="0.75" style="animation-delay:0.31s"/>
+                <rect class="exp-s4-bar in" x="102" y="-130" width="26" height="130" fill="#6f93e8" opacity="0.75" style="animation-delay:0.44s"/>
+                <rect class="exp-s4-bar in" x="136" y="-68" width="26" height="68" fill="#a6c4ff" opacity="0.75" style="animation-delay:0.57s"/>
+                <rect class="exp-s4-bar in" x="170" y="-118" width="26" height="118" fill="#8fd9c4" opacity="0.75" style="animation-delay:0.70s"/>
+                <rect class="exp-s4-bar in" x="204" y="-92" width="26" height="92" fill="#e0b85f" opacity="0.75" style="animation-delay:0.83s"/>
+                <line x1="-10" y1="0" x2="240" y2="0" stroke="currentColor" stroke-opacity="0.3"/>
               </g>
 
+              <!-- SKU count ticking up as bars land, reinforcing "multiple, complex" -->
+              <text x="190" y="138" font-size="9.5" fill="currentColor" opacity="0.5">MERGING SKUs FROM 3 VINEYARDS</text>
+
               <!-- lock frame drawing around the consolidated set -->
-              <rect class="exp-s4-lock in" x="205" y="130" width="250" height="175" fill="none" stroke="#5fd4e0" stroke-width="1.5"/>
+              <rect class="exp-s4-lock in" x="165" y="150" width="280" height="156" fill="none" stroke="#5fd4e0" stroke-width="1.5"/>
 
               <!-- readout, right -->
-              <g transform="translate(560,222)" font-family="JetBrains Mono, monospace">
+              <g transform="translate(590,222)" font-family="JetBrains Mono, monospace">
                 <text x="0" y="-40" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.5" letter-spacing="0.06em">PALLET STATUS</text>
                 <text x="0" y="-6" text-anchor="middle" font-size="34" fill="#5fd4e0" font-weight="600">1</text>
-                <text x="0" y="16" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.6">SHARED PALLET</text>
-                <text x="0" y="52" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.5">5 DISTINCT WINES, CONSOLIDATED</text>
+                <text x="0" y="16" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.6">UNIQUE SHARED PALLET</text>
+                <text x="0" y="52" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.5">7 SKUs, 3 VINEYARDS, CONSOLIDATED</text>
               </g>
             </g>
 
-            <!-- ============ STAGE 5 — Export ============ -->
-            <g class="exp-stage exp-stage-5" font-family="JetBrains Mono, monospace">
-              <!-- terminal readout -->
-              <g transform="translate(40,130)">
+            <!-- ============ STAGE 6 — Agents clear customs ============ -->
+            <g class="exp-stage exp-stage-6" font-family="JetBrains Mono, monospace">
+              <!-- a scatter of paperwork — duty forms, certs, declarations — representing real complexity -->
+              <g transform="translate(70,138)">
+                <g class="exp-s6-doc d1" transform="translate(0,0) rotate(-8)">
+                  <rect x="-16" y="-20" width="32" height="40" fill="#0a0e1c" stroke="currentColor" stroke-opacity="0.4"/>
+                  <line x1="-9" y1="-10" x2="9" y2="-10" stroke="currentColor" stroke-opacity="0.35"/>
+                  <line x1="-9" y1="-2" x2="9" y2="-2" stroke="currentColor" stroke-opacity="0.3"/>
+                  <line x1="-9" y1="6" x2="4" y2="6" stroke="currentColor" stroke-opacity="0.3"/>
+                </g>
+                <g class="exp-s6-doc d2" transform="translate(44,24) rotate(6)">
+                  <rect x="-16" y="-20" width="32" height="40" fill="#0a0e1c" stroke="currentColor" stroke-opacity="0.4"/>
+                  <line x1="-9" y1="-10" x2="9" y2="-10" stroke="currentColor" stroke-opacity="0.35"/>
+                  <line x1="-9" y1="-2" x2="9" y2="-2" stroke="currentColor" stroke-opacity="0.3"/>
+                  <line x1="-9" y1="6" x2="4" y2="6" stroke="currentColor" stroke-opacity="0.3"/>
+                </g>
+                <g class="exp-s6-doc d3" transform="translate(10,52) rotate(3)">
+                  <rect x="-16" y="-20" width="32" height="40" fill="#0a0e1c" stroke="currentColor" stroke-opacity="0.4"/>
+                  <line x1="-9" y1="-10" x2="9" y2="-10" stroke="currentColor" stroke-opacity="0.35"/>
+                  <line x1="-9" y1="-2" x2="9" y2="-2" stroke="currentColor" stroke-opacity="0.3"/>
+                  <line x1="-9" y1="6" x2="4" y2="6" stroke="currentColor" stroke-opacity="0.3"/>
+                </g>
+                <g class="exp-s6-doc d4" transform="translate(50,-10) rotate(-4)">
+                  <rect x="-16" y="-20" width="32" height="40" fill="#0a0e1c" stroke="currentColor" stroke-opacity="0.4"/>
+                  <line x1="-9" y1="-10" x2="9" y2="-10" stroke="currentColor" stroke-opacity="0.35"/>
+                  <line x1="-9" y1="-2" x2="9" y2="-2" stroke="currentColor" stroke-opacity="0.3"/>
+                  <line x1="-9" y1="6" x2="4" y2="6" stroke="currentColor" stroke-opacity="0.3"/>
+                </g>
+              </g>
+              <text x="20" y="226" font-size="8.5" fill="currentColor" opacity="0.4" letter-spacing="0.04em">DUTY FORMS · CERTS · DECLARATIONS</text>
+
+              <!-- arrow showing the agent absorbing the paperwork into one clean process -->
+              <path class="exp-s6-absorb" d="M158,180 L198,180" stroke="#5fd4e0" stroke-width="1.5" marker-end="url(#exp-arrowhead)"/>
+
+              <!-- terminal readout: the agent's clean output -->
+              <g transform="translate(230,130)">
                 <rect x="0" y="0" width="260" height="190" fill="none" stroke="currentColor" stroke-opacity="0.25"/>
                 <line x1="0" y1="24" x2="260" y2="24" stroke="currentColor" stroke-opacity="0.2"/>
-                <text x="12" y="16" font-size="9.5" fill="currentColor" opacity="0.5">SKU REGISTRY</text>
+                <text x="12" y="16" font-size="9.5" fill="#5fd4e0" opacity="0.85">AI AGENT: CLEARANCE</text>
                 <g class="exp-s5-line in" style="animation-delay:0.1s">
                   <text x="12" y="42" font-size="9.5" fill="#5fd4e0">›</text>
                   <text x="24" y="42" font-size="9.5" fill="currentColor" opacity="0.75">SHIRAZ&#39;22 ............ OK</text>
@@ -1098,7 +1255,7 @@
                 </g>
                 <g class="exp-s5-line in" style="animation-delay:1.1s">
                   <text x="12" y="122" font-size="9.5" fill="#5fd4e0">›</text>
-                  <text x="24" y="122" font-size="9.5" fill="currentColor" opacity="0.75">6TH SKU .............. OK</text>
+                  <text x="24" y="122" font-size="9.5" fill="currentColor" opacity="0.75">+ 3 MORE SKUs ......... OK</text>
                 </g>
                 <line x1="0" y1="140" x2="260" y2="140" stroke="currentColor" stroke-opacity="0.2"/>
                 <g class="exp-s5-line in" style="animation-delay:1.4s">
@@ -1109,8 +1266,8 @@
               </g>
 
               <!-- freight glyph departing along a dashed route -->
-              <g transform="translate(360,226)">
-                <line class="exp-s5-wake" x1="0" y1="0" x2="340" y2="0" stroke="#5fd4e0" stroke-opacity="0.25" stroke-width="1.5"/>
+              <g transform="translate(550,226)">
+                <line class="exp-s5-wake" x1="0" y1="0" x2="150" y2="0" stroke="#5fd4e0" stroke-opacity="0.25" stroke-width="1.5"/>
                 <g class="exp-s5-depart">
                   <rect x="-16" y="-16" width="32" height="32" fill="none" stroke="#5fd4e0" stroke-width="1.5"/>
                   <rect x="-8" y="-8" width="16" height="16" fill="#5fd4e0" opacity="0.7"/>
@@ -1118,8 +1275,8 @@
               </g>
             </g>
 
-            <!-- ============ STAGE 6 — Distribution ============ -->
-            <g class="exp-stage exp-stage-6" font-family="JetBrains Mono, monospace">
+            <!-- ============ STAGE 7 — You receive it ============ -->
+            <g class="exp-stage exp-stage-7" font-family="JetBrains Mono, monospace">
               <!-- single arrival node, left -->
               <g transform="translate(150,222)">
                 <ellipse cx="0" cy="0" rx="90" ry="80" fill="url(#exp-glow-cyan)" opacity="0.22"/>
@@ -1163,9 +1320,10 @@
         <span class="explainer-dot"></span>
         <span class="explainer-dot"></span>
         <span class="explainer-dot"></span>
+        <span class="explainer-dot"></span>
       </div>
       <div class="explainer-caption">
-        01 SELECT&nbsp;&nbsp;·&nbsp;&nbsp;02 AI MATCH&nbsp;&nbsp;·&nbsp;&nbsp;03 ORDER GEN&nbsp;&nbsp;·&nbsp;&nbsp;04 CONSOLIDATE&nbsp;&nbsp;·&nbsp;&nbsp;05 EXPORT&nbsp;&nbsp;·&nbsp;&nbsp;06 DISTRIBUTE
+        01 LIST&nbsp;&nbsp;·&nbsp;&nbsp;02 AI MATCH&nbsp;&nbsp;·&nbsp;&nbsp;03 ORDER&nbsp;&nbsp;·&nbsp;&nbsp;04 REQUEST&nbsp;&nbsp;·&nbsp;&nbsp;05 CONSOLIDATE&nbsp;&nbsp;·&nbsp;&nbsp;06 CUSTOMS&nbsp;&nbsp;·&nbsp;&nbsp;07 RECEIVE
       </div>
     </div>
   </section>
