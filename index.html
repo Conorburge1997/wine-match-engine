@@ -241,6 +241,110 @@
   .compare-col h3{font-size:14.5px; margin-bottom:6px; font-weight:500;}
   .compare-col p{color:var(--ink-dim); font-size:12.5px; margin:0; line-height:1.55;}
 
+  /* Video Explanation — animated SVG sequence */
+  .explainer-panel{
+    background:linear-gradient(160deg, var(--surface), var(--surface-2));
+    border:1px solid var(--border-soft);
+    border-radius:var(--radius);
+    padding:28px 20px 10px;
+    color:var(--ink-dim);
+  }
+  .explainer-svg{display:block; width:100%; height:auto;}
+
+  /* 16s total loop, 4 stages of 4s each: hold ~2.6s, fade out ~0.8s, fade in next ~0.6s */
+  .exp-stage{opacity:0;}
+  .exp-stage-1{animation:expStage1 16s infinite;}
+  .exp-stage-2{animation:expStage2 16s infinite;}
+  .exp-stage-3{animation:expStage3 16s infinite;}
+  .exp-stage-4{animation:expStage4 16s infinite;}
+
+  @keyframes expStage1{
+    0%{opacity:1;}
+    18%{opacity:1;}
+    23%{opacity:0;}
+    98%{opacity:0;}
+    100%{opacity:1;}
+  }
+  @keyframes expStage2{
+    0%, 20%{opacity:0;}
+    25%{opacity:1;}
+    43%{opacity:1;}
+    48%{opacity:0;}
+    100%{opacity:0;}
+  }
+  @keyframes expStage3{
+    0%, 45%{opacity:0;}
+    50%{opacity:1;}
+    68%{opacity:1;}
+    73%{opacity:0;}
+    100%{opacity:0;}
+  }
+  @keyframes expStage4{
+    0%, 70%{opacity:0;}
+    75%{opacity:1;}
+    93%{opacity:1;}
+    98%{opacity:0;}
+    100%{opacity:0;}
+  }
+
+  .exp-glass-1, .exp-glass-2, .exp-glass-3{animation:expBob 2.4s ease-in-out infinite;}
+  .exp-glass-2{animation-delay:0.3s;}
+  .exp-glass-3{animation-delay:0.6s;}
+  @keyframes expBob{
+    0%, 100%{transform:translateY(0);}
+    50%{transform:translateY(-5px);}
+  }
+  .exp-cursor{animation:expClick 2.4s ease-in-out infinite;}
+  @keyframes expClick{
+    0%, 70%, 100%{opacity:0.9; transform:scale(1);}
+    78%{opacity:0.9; transform:scale(0.6);}
+    85%{opacity:0.9; transform:scale(1);}
+  }
+
+  .exp-check{animation:expPop 4s ease-in-out infinite;}
+  @keyframes expPop{
+    0%, 25%{opacity:0; transform:scale(0.6);}
+    35%, 85%{opacity:1; transform:scale(1);}
+    100%{opacity:1; transform:scale(1);}
+  }
+
+  .exp-vine-a{animation:expConverge 4s ease-in-out infinite;}
+  .exp-vine-b{animation:expConverge 4s ease-in-out infinite; animation-delay:0.3s;}
+  .exp-vine-c{animation:expConverge 4s ease-in-out infinite; animation-delay:0.6s;}
+  @keyframes expConverge{
+    0%{transform:translateY(0); opacity:1;}
+    55%{transform:translateY(90px); opacity:0.4;}
+    100%{transform:translateY(90px); opacity:0.4;}
+  }
+
+  .exp-ship{animation:expSail 4.5s ease-in-out infinite;}
+  @keyframes expSail{
+    0%{transform:translateX(0);}
+    100%{transform:translateX(60px);}
+  }
+  .exp-wake{animation:expWake 1.6s ease-in-out infinite;}
+  @keyframes expWake{
+    0%, 100%{opacity:0.15;}
+    50%{opacity:0.45;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .exp-stage, .exp-glass-1, .exp-glass-2, .exp-glass-3, .exp-cursor, .exp-check, .exp-vine-a, .exp-vine-b, .exp-vine-c, .exp-ship, .exp-wake{animation:none !important;}
+    .exp-stage{opacity:1;}
+  }
+
+  .explainer-progress{display:flex; justify-content:center; gap:10px; padding:18px 0 4px;}
+  .explainer-dot{width:7px; height:7px; border-radius:50%; background:var(--border-soft); animation:expDot 16s infinite;}
+  .explainer-dot:nth-child(2){animation-delay:4s;}
+  .explainer-dot:nth-child(3){animation-delay:8s;}
+  .explainer-dot:nth-child(4){animation-delay:12s;}
+  @keyframes expDot{
+    0%{background:var(--cyan);}
+    24%{background:var(--cyan);}
+    25%{background:var(--border-soft);}
+    100%{background:var(--border-soft);}
+  }
+
   .steps{display:grid; grid-template-columns:repeat(4, 1fr); gap:18px;}
   .step{
     background:linear-gradient(160deg, var(--surface), var(--surface-2));
@@ -503,6 +607,120 @@
       </div>
     </div>
   </section>
+
+  <section id="video-explanation">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="section-eyebrow">Video Explanation</div>
+        <h2>Watch the pallet come together.</h2>
+        <p>An animated walkthrough of the same process above — from a buyer's selection to vineyards consolidating onto one export pallet.</p>
+      </div>
+
+      <div class="explainer-panel sheen">
+        <svg class="explainer-svg" viewBox="0 0 1000 360" role="img" aria-label="Animated sequence: a buyer selects wines, the order is processed and verified, several independent vineyards consolidate their stock onto one shared pallet, and the pallet is exported by ship." preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="exp-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 Z" fill="currentColor"/>
+            </marker>
+            <linearGradient id="exp-grad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#3a6ede"/>
+              <stop offset="100%" stop-color="#5fd4e0"/>
+            </linearGradient>
+          </defs>
+
+          <!-- base track -->
+          <line x1="60" y1="300" x2="940" y2="300" stroke="currentColor" stroke-opacity="0.12" stroke-width="1"/>
+
+          <!-- stage labels -->
+          <text x="150" y="330" text-anchor="middle" font-size="11" letter-spacing="0.08em" fill="currentColor" opacity="0.55" font-family="Inter, sans-serif">01 — SELECT</text>
+          <text x="400" y="330" text-anchor="middle" font-size="11" letter-spacing="0.08em" fill="currentColor" opacity="0.55" font-family="Inter, sans-serif">02 — PROCESS &amp; VERIFY</text>
+          <text x="650" y="330" text-anchor="middle" font-size="11" letter-spacing="0.08em" fill="currentColor" opacity="0.55" font-family="Inter, sans-serif">03 — CONSOLIDATE</text>
+          <text x="880" y="330" text-anchor="middle" font-size="11" letter-spacing="0.08em" fill="currentColor" opacity="0.55" font-family="Inter, sans-serif">04 — EXPORT</text>
+
+          <!-- Stage 1: buyer selects wines -->
+          <g class="exp-stage exp-stage-1">
+            <circle cx="150" cy="190" r="56" fill="none" stroke="currentColor" stroke-opacity="0.15"/>
+            <g class="exp-glass-1">
+              <rect x="108" y="150" width="20" height="60" rx="2" fill="#3a6ede" opacity="0.85"/>
+              <rect x="108" y="150" width="20" height="18" rx="2" fill="#a6c4ff" opacity="0.9"/>
+            </g>
+            <g class="exp-glass-2">
+              <rect x="140" y="140" width="20" height="70" rx="2" fill="#5fd4e0" opacity="0.85"/>
+              <rect x="140" y="140" width="20" height="16" rx="2" fill="#dffaff" opacity="0.9"/>
+            </g>
+            <g class="exp-glass-3">
+              <rect x="172" y="158" width="20" height="52" rx="2" fill="#b8935a" opacity="0.85"/>
+              <rect x="172" y="158" width="20" height="14" rx="2" fill="#f0d9b5" opacity="0.9"/>
+            </g>
+            <g class="exp-cursor" fill="currentColor">
+              <circle cx="150" cy="140" r="4"/>
+            </g>
+          </g>
+
+          <line x1="230" y1="230" x2="320" y2="230" stroke="url(#exp-grad)" stroke-width="1.5" marker-end="url(#exp-arrow)" opacity="0.55"/>
+
+          <!-- Stage 2: order processing / verification -->
+          <g class="exp-stage exp-stage-2">
+            <rect x="365" y="150" width="70" height="90" rx="2" fill="none" stroke="currentColor" stroke-opacity="0.3"/>
+            <line x1="378" y1="172" x2="422" y2="172" stroke="currentColor" stroke-opacity="0.4"/>
+            <line x1="378" y1="188" x2="422" y2="188" stroke="currentColor" stroke-opacity="0.4"/>
+            <line x1="378" y1="204" x2="410" y2="204" stroke="currentColor" stroke-opacity="0.4"/>
+            <g class="exp-check">
+              <circle cx="430" cy="222" r="14" fill="#5fd4e0" opacity="0.18"/>
+              <path d="M424,222 L429,227 L438,216" fill="none" stroke="#5fd4e0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+          </g>
+
+          <line x1="480" y1="230" x2="570" y2="230" stroke="url(#exp-grad)" stroke-width="1.5" marker-end="url(#exp-arrow)" opacity="0.55"/>
+
+          <!-- Stage 3: vineyards consolidate onto pallet -->
+          <g class="exp-stage exp-stage-3">
+            <g class="exp-vine exp-vine-a">
+              <circle cx="560" cy="130" r="9" fill="none" stroke="#b8935a" stroke-opacity="0.7"/>
+              <circle cx="560" cy="130" r="3" fill="#b8935a"/>
+            </g>
+            <g class="exp-vine exp-vine-b">
+              <circle cx="650" cy="110" r="9" fill="none" stroke="#3a6ede" stroke-opacity="0.7"/>
+              <circle cx="650" cy="110" r="3" fill="#3a6ede"/>
+            </g>
+            <g class="exp-vine exp-vine-c">
+              <circle cx="740" cy="130" r="9" fill="none" stroke="#5fd4e0" stroke-opacity="0.7"/>
+              <circle cx="740" cy="130" r="3" fill="#5fd4e0"/>
+            </g>
+            <!-- pallet -->
+            <g transform="translate(650,230)">
+              <rect x="-55" y="0" width="110" height="10" fill="currentColor" opacity="0.25"/>
+              <rect x="-45" y="-48" width="22" height="48" fill="#3a6ede" opacity="0.8"/>
+              <rect x="-18" y="-58" width="22" height="58" fill="#5fd4e0" opacity="0.8"/>
+              <rect x="9" y="-40" width="22" height="40" fill="#b8935a" opacity="0.8"/>
+              <rect x="-55" y="8" width="110" height="4" fill="currentColor" opacity="0.4"/>
+            </g>
+          </g>
+
+          <line x1="730" y1="230" x2="820" y2="230" stroke="url(#exp-grad)" stroke-width="1.5" marker-end="url(#exp-arrow)" opacity="0.55"/>
+
+          <!-- Stage 4: export by ship -->
+          <g class="exp-stage exp-stage-4">
+            <g class="exp-ship">
+              <path d="M850,235 L950,235 L938,255 L862,255 Z" fill="#0f1a3d" stroke="#5fd4e0" stroke-opacity="0.6"/>
+              <rect x="885" y="212" width="30" height="23" fill="#3a6ede" opacity="0.85"/>
+              <line x1="900" y1="212" x2="900" y2="195" stroke="currentColor" stroke-opacity="0.5"/>
+            </g>
+            <path class="exp-wake" d="M840,258 Q 870,264 900,258 T 960,258" fill="none" stroke="#5fd4e0" stroke-opacity="0.35" stroke-width="1.5"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="explainer-progress" aria-hidden="true">
+        <span class="explainer-dot"></span>
+        <span class="explainer-dot"></span>
+        <span class="explainer-dot"></span>
+        <span class="explainer-dot"></span>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap"><div class="rule"></div></div>
 
   <section id="engine">
     <div class="wrap" style="padding-bottom:40px;">
