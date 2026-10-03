@@ -241,109 +241,224 @@
   .compare-col h3{font-size:14.5px; margin-bottom:6px; font-weight:500;}
   .compare-col p{color:var(--ink-dim); font-size:12.5px; margin:0; line-height:1.55;}
 
-  /* Video Explanation — animated SVG sequence */
+  /* Video Explanation — animated SVG storyboard, 5 stages */
   .explainer-panel{
     background:linear-gradient(160deg, var(--surface), var(--surface-2));
     border:1px solid var(--border-soft);
     border-radius:var(--radius);
-    padding:28px 20px 10px;
+    padding:36px 36px 28px;
     color:var(--ink-dim);
   }
   .explainer-svg{display:block; width:100%; height:auto;}
 
-  /* 16s total loop, 4 stages of 4s each: hold ~2.6s, fade out ~0.8s, fade in next ~0.6s */
+  /* 24s total loop, 6 stages of 4s each (16.667% of cycle per stage).
+     Each stage: fade/hold in its own window (hold ~2.8s, ~0.5s cross-dissolve either side). */
   .exp-stage{opacity:0;}
-  .exp-stage-1{animation:expStage1 16s infinite;}
-  .exp-stage-2{animation:expStage2 16s infinite;}
-  .exp-stage-3{animation:expStage3 16s infinite;}
-  .exp-stage-4{animation:expStage4 16s infinite;}
+  .exp-stage-1{animation:expS1 24s infinite;}
+  .exp-stage-2{animation:expS2 24s infinite;}
+  .exp-stage-3{animation:expS3 24s infinite;}
+  .exp-stage-4{animation:expS4 24s infinite;}
+  .exp-stage-5{animation:expS5 24s infinite;}
+  .exp-stage-6{animation:expS6 24s infinite;}
 
-  @keyframes expStage1{
-    0%{opacity:1;}
-    18%{opacity:1;}
-    23%{opacity:0;}
-    98%{opacity:0;}
-    100%{opacity:1;}
+  @keyframes expS1{
+    0%{opacity:1;} 14.5%{opacity:1;} 16.7%{opacity:0;}
+    98%{opacity:0;} 100%{opacity:1;}
   }
-  @keyframes expStage2{
-    0%, 20%{opacity:0;}
-    25%{opacity:1;}
-    43%{opacity:1;}
-    48%{opacity:0;}
+  @keyframes expS2{
+    0%, 14.5%{opacity:0;} 16.7%{opacity:1;} 31.2%{opacity:1;} 33.3%{opacity:0;}
     100%{opacity:0;}
   }
-  @keyframes expStage3{
-    0%, 45%{opacity:0;}
-    50%{opacity:1;}
-    68%{opacity:1;}
-    73%{opacity:0;}
+  @keyframes expS3{
+    0%, 31.2%{opacity:0;} 33.3%{opacity:1;} 47.9%{opacity:1;} 50%{opacity:0;}
     100%{opacity:0;}
   }
-  @keyframes expStage4{
-    0%, 70%{opacity:0;}
-    75%{opacity:1;}
-    93%{opacity:1;}
-    98%{opacity:0;}
+  @keyframes expS4{
+    0%, 47.9%{opacity:0;} 50%{opacity:1;} 64.5%{opacity:1;} 66.7%{opacity:0;}
     100%{opacity:0;}
   }
-
-  .exp-glass-1, .exp-glass-2, .exp-glass-3{animation:expBob 2.4s ease-in-out infinite;}
-  .exp-glass-2{animation-delay:0.3s;}
-  .exp-glass-3{animation-delay:0.6s;}
-  @keyframes expBob{
-    0%, 100%{transform:translateY(0);}
-    50%{transform:translateY(-5px);}
+  @keyframes expS5{
+    0%, 64.5%{opacity:0;} 66.7%{opacity:1;} 81.2%{opacity:1;} 83.3%{opacity:0;}
+    100%{opacity:0;}
   }
-  .exp-cursor{animation:expClick 2.4s ease-in-out infinite;}
-  @keyframes expClick{
-    0%, 70%, 100%{opacity:0.9; transform:scale(1);}
-    78%{opacity:0.9; transform:scale(0.6);}
-    85%{opacity:0.9; transform:scale(1);}
+  @keyframes expS6{
+    0%, 81.2%{opacity:0;} 83.3%{opacity:1;} 98%{opacity:1;} 100%{opacity:0;}
   }
 
-  .exp-check{animation:expPop 4s ease-in-out infinite;}
-  @keyframes expPop{
-    0%, 25%{opacity:0; transform:scale(0.6);}
-    35%, 85%{opacity:1; transform:scale(1);}
-    100%{opacity:1; transform:scale(1);}
+  /* Stage 1 — order creation: form fields fill in, one at a time */
+  .exp-field-fill{transform-origin:left; transform:scaleX(0);}
+  .exp-f1{animation:expFill 4s infinite; animation-delay:0.2s;}
+  .exp-f2{animation:expFill 4s infinite; animation-delay:0.6s;}
+  .exp-f3{animation:expFill 4s infinite; animation-delay:1.0s;}
+  .exp-f4{animation:expFill 4s infinite; animation-delay:1.4s;}
+  @keyframes expFill{
+    0%{transform:scaleX(0);}
+    12%{transform:scaleX(1);}
+    85%{transform:scaleX(1);}
+    95%{transform:scaleX(0);}
+    100%{transform:scaleX(0);}
+  }
+  .exp-cursor-1{animation:expCursorMove 4s infinite;}
+  @keyframes expCursorMove{
+    0%{transform:translateY(0);}
+    15%{transform:translateY(26px);}
+    35%{transform:translateY(52px);}
+    55%{transform:translateY(78px);}
+    75%, 100%{transform:translateY(78px);}
   }
 
-  .exp-vine-a{animation:expConverge 4s ease-in-out infinite;}
-  .exp-vine-b{animation:expConverge 4s ease-in-out infinite; animation-delay:0.3s;}
-  .exp-vine-c{animation:expConverge 4s ease-in-out infinite; animation-delay:0.6s;}
-  @keyframes expConverge{
-    0%{transform:translateY(0); opacity:1;}
-    55%{transform:translateY(90px); opacity:0.4;}
-    100%{transform:translateY(90px); opacity:0.4;}
+  /* Stage 2 — AI matching: scoring lines pulse from the query node out to
+     candidate vineyard nodes, and the winning match card fades in */
+  .exp-lat{stroke-dasharray:6 5; animation:expLatPulse 1.6s linear infinite;}
+  .exp-lat-2{animation-delay:0.15s;} .exp-lat-3{animation-delay:0.3s;}
+  .exp-lat-4{animation-delay:0.45s;} .exp-lat-5{animation-delay:0.6s;}
+  .exp-lat-6{animation-delay:0.2s;} .exp-lat-7{animation-delay:0.4s;}
+  .exp-lat-8{animation-delay:0.6s;}
+  @keyframes expLatPulse{
+    0%{stroke-dashoffset:22;}
+    100%{stroke-dashoffset:0;}
+  }
+  .exp-node{animation:expNodePulse 4s infinite;}
+  .exp-node-1{animation-delay:0.2s;} .exp-node-2{animation-delay:0.4s;}
+  .exp-node-3{animation-delay:0.6s;} .exp-node-4{animation-delay:0.8s;}
+  .exp-node-5{animation-delay:1.0s;}
+  @keyframes expNodePulse{
+    0%, 100%{opacity:0.7; r:4;}
+    50%{opacity:1; r:5.5;}
+  }
+  .exp-match-card{opacity:0; transform:scale(0.92); transform-box:fill-box; transform-origin:center;}
+  .exp-stage-2 .exp-match-card{animation:expMatchCard 4s infinite;}
+  @keyframes expMatchCard{
+    0%, 40%{opacity:0; transform:scale(0.92);}
+    58%{opacity:1; transform:scale(1);}
+    92%{opacity:1; transform:scale(1);}
+    100%{opacity:0; transform:scale(1);}
   }
 
-  .exp-ship{animation:expSail 4.5s ease-in-out infinite;}
-  @keyframes expSail{
+  /* Stage 3 — order generation: three separate vineyards each send a case
+     along their own path to one collection point */
+  .exp-vy{opacity:0;}
+  .exp-vy-a{animation:expVySend 4s infinite; animation-delay:0.1s;}
+  .exp-vy-b{animation:expVySend 4s infinite; animation-delay:0.5s;}
+  .exp-vy-c{animation:expVySend 4s infinite; animation-delay:0.9s;}
+  @keyframes expVySend{
+    0%{opacity:0; offset-distance:0%;}
+    8%{opacity:1;}
+    70%{opacity:1; offset-distance:100%;}
+    82%{opacity:0; offset-distance:100%;}
+    100%{opacity:0; offset-distance:100%;}
+  }
+  .exp-vy-a{offset-path:path('M190,130 C280,135 330,175 395,205');}
+  .exp-vy-b{offset-path:path('M190,215 C270,215 330,210 395,210');}
+  .exp-vy-c{offset-path:path('M190,300 C280,295 330,250 395,215');}
+
+  /* Stage 4 — consolidation: distinct case colors stack onto one pallet */
+  .exp-case{transform:translateY(-16px); opacity:0;}
+  .exp-case-1{animation:expStack 4s infinite; animation-delay:0.3s;}
+  .exp-case-2{animation:expStack 4s infinite; animation-delay:0.7s;}
+  .exp-case-3{animation:expStack 4s infinite; animation-delay:1.1s;}
+  .exp-case-4{animation:expStack 4s infinite; animation-delay:1.5s;}
+  .exp-case-5{animation:expStack 4s infinite; animation-delay:1.9s;}
+  @keyframes expStack{
+    0%{transform:translateY(-16px); opacity:0;}
+    18%{transform:translateY(0); opacity:1;}
+    90%{transform:translateY(0); opacity:1;}
+    100%{transform:translateY(0); opacity:1;}
+  }
+  .exp-strap{stroke-dasharray:240; stroke-dashoffset:240; animation:expStrap 4s infinite; animation-delay:2.1s;}
+  @keyframes expStrap{
+    0%, 10%{stroke-dashoffset:240;}
+    35%{stroke-dashoffset:0;}
+    100%{stroke-dashoffset:0;}
+  }
+
+  /* Stage 5 — export: SKUs register one by one, customs stamp lands, then
+     the pallet moves through the port gate onto the ship */
+  .exp-sku{opacity:0; transform:translateX(-6px);}
+  .exp-sku-1{animation:expSkuIn 4s infinite; animation-delay:0.1s;}
+  .exp-sku-2{animation:expSkuIn 4s infinite; animation-delay:0.35s;}
+  .exp-sku-3{animation:expSkuIn 4s infinite; animation-delay:0.6s;}
+  .exp-sku-4{animation:expSkuIn 4s infinite; animation-delay:0.85s;}
+  @keyframes expSkuIn{
+    0%{opacity:0; transform:translateX(-6px);}
+    10%{opacity:1; transform:translateX(0);}
+    95%{opacity:1; transform:translateX(0);}
+    100%{opacity:0; transform:translateX(0);}
+  }
+  .exp-customs-stamp{opacity:0; transform:scale(1.6); transform-box:fill-box; transform-origin:center;}
+  .exp-stage-5 .exp-customs-stamp{animation:expStamp 4s infinite;}
+  @keyframes expStamp{
+    0%, 38%{opacity:0; transform:scale(1.6);}
+    46%{opacity:1; transform:scale(1);}
+    95%{opacity:1; transform:scale(1);}
+    100%{opacity:0; transform:scale(1);}
+  }
+  .exp-pallet-move{animation:expPalletMove 4s infinite;}
+  @keyframes expPalletMove{
     0%{transform:translateX(0);}
-    100%{transform:translateX(60px);}
+    50%{transform:translateX(0);}
+    88%{transform:translateX(280px);}
+    100%{transform:translateX(280px);}
   }
-  .exp-wake{animation:expWake 1.6s ease-in-out infinite;}
-  @keyframes expWake{
-    0%, 100%{opacity:0.15;}
-    50%{opacity:0.45;}
+  .exp-crane-hook{animation:expHook 4s infinite;}
+  @keyframes expHook{
+    0%, 48%{transform:translateY(0);}
+    58%{transform:translateY(18px);}
+    68%, 80%{transform:translateY(18px);}
+    90%{transform:translateY(0);}
+    100%{transform:translateY(0);}
+  }
+
+  /* Stage 6 — distribution: the one pallet splits out to multiple buyers */
+  .exp-route{stroke-dasharray:160; stroke-dashoffset:160;}
+  .exp-route-1{animation:expRoute 4s infinite; animation-delay:0.4s;}
+  .exp-route-2{animation:expRoute 4s infinite; animation-delay:0.65s;}
+  .exp-route-3{animation:expRoute 4s infinite; animation-delay:0.9s;}
+  @keyframes expRoute{
+    0%, 8%{stroke-dashoffset:160;}
+    55%{stroke-dashoffset:0;}
+    100%{stroke-dashoffset:0;}
+  }
+  .exp-buyer{opacity:0.25; transform:scale(0.85); transform-box:fill-box; transform-origin:center;}
+  .exp-buyer-1{animation:expBuyerLight 4s infinite; animation-delay:0.9s;}
+  .exp-buyer-2{animation:expBuyerLight 4s infinite; animation-delay:1.15s;}
+  .exp-buyer-3{animation:expBuyerLight 4s infinite; animation-delay:1.4s;}
+  @keyframes expBuyerLight{
+    0%, 15%{opacity:0.25; transform:scale(0.85);}
+    35%, 100%{opacity:1; transform:scale(1);}
   }
 
   @media (prefers-reduced-motion: reduce){
-    .exp-stage, .exp-glass-1, .exp-glass-2, .exp-glass-3, .exp-cursor, .exp-check, .exp-vine-a, .exp-vine-b, .exp-vine-c, .exp-ship, .exp-wake{animation:none !important;}
+    .exp-stage, .exp-field-fill, .exp-cursor-1, .exp-vy, .exp-case, .exp-strap,
+    .exp-pallet-move, .exp-crane-hook, .exp-route, .exp-buyer,
+    .exp-lat, .exp-node, .exp-match-card, .exp-sku, .exp-customs-stamp{animation:none !important;}
     .exp-stage{opacity:1;}
+    .exp-field-fill{transform:scaleX(1);}
+    .exp-case{transform:translateY(0); opacity:1;}
+    .exp-strap{stroke-dashoffset:0;}
+    .exp-route{stroke-dashoffset:0;}
+    .exp-buyer{opacity:1; transform:scale(1);}
+    .exp-vy{opacity:1;}
+    .exp-match-card{opacity:1; transform:scale(1);}
+    .exp-sku{opacity:1; transform:translateX(0);}
+    .exp-customs-stamp{opacity:1; transform:scale(1);}
   }
 
-  .explainer-progress{display:flex; justify-content:center; gap:10px; padding:18px 0 4px;}
-  .explainer-dot{width:7px; height:7px; border-radius:50%; background:var(--border-soft); animation:expDot 16s infinite;}
+  .explainer-progress{display:flex; justify-content:center; gap:10px; padding:22px 0 4px;}
+  .explainer-dot{width:7px; height:7px; border-radius:50%; background:var(--border-soft); animation:expDot 24s infinite;}
   .explainer-dot:nth-child(2){animation-delay:4s;}
   .explainer-dot:nth-child(3){animation-delay:8s;}
   .explainer-dot:nth-child(4){animation-delay:12s;}
+  .explainer-dot:nth-child(5){animation-delay:16s;}
+  .explainer-dot:nth-child(6){animation-delay:20s;}
   @keyframes expDot{
     0%{background:var(--cyan);}
-    24%{background:var(--cyan);}
-    25%{background:var(--border-soft);}
+    16%{background:var(--cyan);}
+    16.7%{background:var(--border-soft);}
     100%{background:var(--border-soft);}
   }
+
+  .explainer-caption{text-align:center; font-size:12.5px; color:var(--ink-faint); margin-top:14px; min-height:18px;}
 
   .steps{display:grid; grid-template-columns:repeat(4, 1fr); gap:18px;}
   .step{
@@ -612,101 +727,227 @@
     <div class="wrap">
       <div class="section-head">
         <div class="section-eyebrow">Video Explanation</div>
-        <h2>Watch the pallet come together.</h2>
-        <p>An animated walkthrough of the same process above — from a buyer's selection to vineyards consolidating onto one export pallet.</p>
+        <h2>One pallet, six moves.</h2>
+        <p>From a buyer's selection to AI matching millions of combinations, vineyards fulfilling the order, consolidation onto a single pallet, export through customs, and distribution to every buyer on arrival.</p>
       </div>
 
       <div class="explainer-panel sheen">
-        <svg class="explainer-svg" viewBox="0 0 1000 360" role="img" aria-label="Animated sequence: a buyer selects wines, the order is processed and verified, several independent vineyards consolidate their stock onto one shared pallet, and the pallet is exported by ship." preserveAspectRatio="xMidYMid meet">
+        <svg class="explainer-svg" viewBox="0 0 760 340" role="img" aria-label="Animated six-stage sequence: a buyer selects style, region, price and volume; AI matching scores millions of data points to find the best-fit wines; vineyards are contacted and the order is generated across several of them; those different wines are consolidated onto one shared pallet; the pallet is exported through customs with every SKU registered; and on arrival it is distributed to multiple buyers from the one pallet." preserveAspectRatio="xMidYMid meet">
           <defs>
-            <marker id="exp-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-              <path d="M0,0 L10,5 L0,10 Z" fill="currentColor"/>
-            </marker>
-            <linearGradient id="exp-grad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stop-color="#3a6ede"/>
-              <stop offset="100%" stop-color="#5fd4e0"/>
-            </linearGradient>
+            <clipPath id="exp-clip-1"><rect x="40" y="40" width="300" height="260" rx="2"/></clipPath>
+            <clipPath id="exp-clip-4"><rect x="40" y="40" width="680" height="260" rx="2"/></clipPath>
           </defs>
 
-          <!-- base track -->
-          <line x1="60" y1="300" x2="940" y2="300" stroke="currentColor" stroke-opacity="0.12" stroke-width="1"/>
-
-          <!-- stage labels -->
-          <text x="150" y="330" text-anchor="middle" font-size="11" letter-spacing="0.08em" fill="currentColor" opacity="0.55" font-family="Inter, sans-serif">01 — SELECT</text>
-          <text x="400" y="330" text-anchor="middle" font-size="11" letter-spacing="0.08em" fill="currentColor" opacity="0.55" font-family="Inter, sans-serif">02 — PROCESS &amp; VERIFY</text>
-          <text x="650" y="330" text-anchor="middle" font-size="11" letter-spacing="0.08em" fill="currentColor" opacity="0.55" font-family="Inter, sans-serif">03 — CONSOLIDATE</text>
-          <text x="880" y="330" text-anchor="middle" font-size="11" letter-spacing="0.08em" fill="currentColor" opacity="0.55" font-family="Inter, sans-serif">04 — EXPORT</text>
-
-          <!-- Stage 1: buyer selects wines -->
+          <!-- ============ STAGE 1 — Selection ============ -->
           <g class="exp-stage exp-stage-1">
-            <circle cx="150" cy="190" r="56" fill="none" stroke="currentColor" stroke-opacity="0.15"/>
-            <g class="exp-glass-1">
-              <rect x="108" y="150" width="20" height="60" rx="2" fill="#3a6ede" opacity="0.85"/>
-              <rect x="108" y="150" width="20" height="18" rx="2" fill="#a6c4ff" opacity="0.9"/>
+            <text x="40" y="36" font-size="12.5" fill="currentColor" opacity="0.75" font-family="Inter, sans-serif" font-weight="500">Buyer selects what they're after</text>
+            <g font-family="Inter, sans-serif">
+              <!-- form card -->
+              <rect x="40" y="52" width="300" height="230" rx="2" fill="none" stroke="currentColor" stroke-opacity="0.18"/>
+              <!-- field 1: style -->
+              <text x="58" y="82" font-size="10" fill="currentColor" opacity="0.5">Style</text>
+              <rect x="58" y="90" width="264" height="22" rx="1" fill="none" stroke="currentColor" stroke-opacity="0.25"/>
+              <rect class="exp-field-fill exp-f1" x="60" y="92" width="80" height="18" rx="1" fill="#3a6ede" opacity="0.5"/>
+              <text x="68" y="105" font-size="10.5" fill="currentColor" opacity="0.8">Red — Shiraz</text>
+              <!-- field 2: region -->
+              <text x="58" y="134" font-size="10" fill="currentColor" opacity="0.5">Region</text>
+              <rect x="58" y="142" width="264" height="22" rx="1" fill="none" stroke="currentColor" stroke-opacity="0.25"/>
+              <rect class="exp-field-fill exp-f2" x="60" y="144" width="130" height="18" rx="1" fill="#5fd4e0" opacity="0.5"/>
+              <text x="68" y="157" font-size="10.5" fill="currentColor" opacity="0.8">Barossa Valley, SA</text>
+              <!-- field 3: price band -->
+              <text x="58" y="186" font-size="10" fill="currentColor" opacity="0.5">Price band</text>
+              <rect x="58" y="194" width="264" height="22" rx="1" fill="none" stroke="currentColor" stroke-opacity="0.25"/>
+              <rect class="exp-field-fill exp-f3" x="60" y="196" width="95" height="18" rx="1" fill="#b8935a" opacity="0.5"/>
+              <text x="68" y="209" font-size="10.5" fill="currentColor" opacity="0.8">$30 – 55 / bottle</text>
+              <!-- field 4: volume -->
+              <text x="58" y="238" font-size="10" fill="currentColor" opacity="0.5">Volume</text>
+              <rect x="58" y="246" width="264" height="22" rx="1" fill="none" stroke="currentColor" stroke-opacity="0.25"/>
+              <rect class="exp-field-fill exp-f4" x="60" y="248" width="60" height="18" rx="1" fill="#3a6ede" opacity="0.5"/>
+              <text x="68" y="261" font-size="10.5" fill="currentColor" opacity="0.8">60 bottles</text>
             </g>
-            <g class="exp-glass-2">
-              <rect x="140" y="140" width="20" height="70" rx="2" fill="#5fd4e0" opacity="0.85"/>
-              <rect x="140" y="140" width="20" height="16" rx="2" fill="#dffaff" opacity="0.9"/>
-            </g>
-            <g class="exp-glass-3">
-              <rect x="172" y="158" width="20" height="52" rx="2" fill="#b8935a" opacity="0.85"/>
-              <rect x="172" y="158" width="20" height="14" rx="2" fill="#f0d9b5" opacity="0.9"/>
-            </g>
-            <g class="exp-cursor" fill="currentColor">
-              <circle cx="150" cy="140" r="4"/>
-            </g>
+            <!-- moving cursor dot tracking field-to-field -->
+            <circle class="exp-cursor-1" cx="330" cy="101" r="3.5" fill="#5fd4e0"/>
           </g>
 
-          <line x1="230" y1="230" x2="320" y2="230" stroke="url(#exp-grad)" stroke-width="1.5" marker-end="url(#exp-arrow)" opacity="0.55"/>
-
-          <!-- Stage 2: order processing / verification -->
+          <!-- ============ STAGE 2 — AI matching ============ -->
           <g class="exp-stage exp-stage-2">
-            <rect x="365" y="150" width="70" height="90" rx="2" fill="none" stroke="currentColor" stroke-opacity="0.3"/>
-            <line x1="378" y1="172" x2="422" y2="172" stroke="currentColor" stroke-opacity="0.4"/>
-            <line x1="378" y1="188" x2="422" y2="188" stroke="currentColor" stroke-opacity="0.4"/>
-            <line x1="378" y1="204" x2="410" y2="204" stroke="currentColor" stroke-opacity="0.4"/>
-            <g class="exp-check">
-              <circle cx="430" cy="222" r="14" fill="#5fd4e0" opacity="0.18"/>
-              <path d="M424,222 L429,227 L438,216" fill="none" stroke="#5fd4e0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <text x="40" y="36" font-size="12.5" fill="currentColor" opacity="0.75" font-family="Inter, sans-serif" font-weight="500">AI scores millions of combinations</text>
+            <g font-family="Inter, sans-serif">
+              <text x="40" y="58" font-size="10" fill="currentColor" opacity="0.5">Matching the brief against every vineyard profile</text>
             </g>
+            <!-- central query node -->
+            <circle cx="150" cy="195" r="7" fill="#5fd4e0"/>
+            <circle cx="150" cy="195" r="16" fill="none" stroke="#5fd4e0" stroke-opacity="0.35"/>
+            <!-- scoring lattice: lines from query to a grid of candidate nodes -->
+            <g class="exp-lattice">
+              <line class="exp-lat exp-lat-1" x1="150" y1="195" x2="320" y2="95" stroke="#3a6ede" stroke-opacity="0.35"/>
+              <line class="exp-lat exp-lat-2" x1="150" y1="195" x2="340" y2="140" stroke="#3a6ede" stroke-opacity="0.35"/>
+              <line class="exp-lat exp-lat-3" x1="150" y1="195" x2="350" y2="195" stroke="#3a6ede" stroke-opacity="0.35"/>
+              <line class="exp-lat exp-lat-4" x1="150" y1="195" x2="340" y2="250" stroke="#3a6ede" stroke-opacity="0.35"/>
+              <line class="exp-lat exp-lat-5" x1="150" y1="195" x2="320" y2="295" stroke="#3a6ede" stroke-opacity="0.35"/>
+              <line class="exp-lat exp-lat-6" x1="150" y1="195" x2="470" y2="110" stroke="#3a6ede" stroke-opacity="0.2"/>
+              <line class="exp-lat exp-lat-7" x1="150" y1="195" x2="490" y2="195" stroke="#3a6ede" stroke-opacity="0.2"/>
+              <line class="exp-lat exp-lat-8" x1="150" y1="195" x2="470" y2="280" stroke="#3a6ede" stroke-opacity="0.2"/>
+              <circle class="exp-node exp-node-1" cx="320" cy="95" r="4" fill="#6f93e8"/>
+              <circle class="exp-node exp-node-2" cx="340" cy="140" r="4" fill="#6f93e8"/>
+              <circle class="exp-node exp-node-3" cx="350" cy="195" r="5" fill="#5fd4e0"/>
+              <circle class="exp-node exp-node-4" cx="340" cy="250" r="4" fill="#6f93e8"/>
+              <circle class="exp-node exp-node-5" cx="320" cy="295" r="4" fill="#6f93e8"/>
+              <circle class="exp-node exp-node-6" cx="470" cy="110" r="3" fill="currentColor" opacity="0.4"/>
+              <circle class="exp-node exp-node-7" cx="490" cy="195" r="3" fill="currentColor" opacity="0.4"/>
+              <circle class="exp-node exp-node-8" cx="470" cy="280" r="3" fill="currentColor" opacity="0.4"/>
+            </g>
+            <!-- winning match surfaces on the right -->
+            <g transform="translate(600,195)" font-family="Inter, sans-serif"><g class="exp-match-card">
+              <rect x="-70" y="-46" width="140" height="92" rx="2" fill="none" stroke="#5fd4e0" stroke-opacity="0.55"/>
+              <text x="0" y="-22" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.55">Best fit found</text>
+              <text x="0" y="-2" text-anchor="middle" font-size="12.5" fill="currentColor" opacity="0.85" font-family="Fraunces, serif">Hahndorf Hill Shiraz</text>
+              <text x="0" y="22" text-anchor="middle" font-size="18" fill="#5fd4e0" font-weight="600">94%</text>
+              <text x="0" y="38" text-anchor="middle" font-size="9" fill="currentColor" opacity="0.5">match score</text>
+            </g></g>
           </g>
 
-          <line x1="480" y1="230" x2="570" y2="230" stroke="url(#exp-grad)" stroke-width="1.5" marker-end="url(#exp-arrow)" opacity="0.55"/>
-
-          <!-- Stage 3: vineyards consolidate onto pallet -->
+          <!-- ============ STAGE 3 — Order generation ============ -->
           <g class="exp-stage exp-stage-3">
-            <g class="exp-vine exp-vine-a">
-              <circle cx="560" cy="130" r="9" fill="none" stroke="#b8935a" stroke-opacity="0.7"/>
-              <circle cx="560" cy="130" r="3" fill="#b8935a"/>
+            <text x="40" y="36" font-size="12.5" fill="currentColor" opacity="0.75" font-family="Inter, sans-serif" font-weight="500">Vineyards are contacted, order placed</text>
+            <!-- three vineyard origins, left -->
+            <g font-family="Inter, sans-serif">
+              <g>
+                <circle cx="175" cy="130" r="10" fill="none" stroke="#b8935a" stroke-opacity="0.7"/>
+                <circle cx="175" cy="130" r="3" fill="#b8935a"/>
+                <text x="175" y="156" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.55">Vineyard A</text>
+              </g>
+              <g>
+                <circle cx="175" cy="215" r="10" fill="none" stroke="#3a6ede" stroke-opacity="0.7"/>
+                <circle cx="175" cy="215" r="3" fill="#3a6ede"/>
+                <text x="175" y="241" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.55">Vineyard B</text>
+              </g>
+              <g>
+                <circle cx="175" cy="300" r="10" fill="none" stroke="#5fd4e0" stroke-opacity="0.7"/>
+                <circle cx="175" cy="300" r="3" fill="#5fd4e0"/>
+                <text x="175" y="326" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.55">Vineyard C</text>
+              </g>
             </g>
-            <g class="exp-vine exp-vine-b">
-              <circle cx="650" cy="110" r="9" fill="none" stroke="#3a6ede" stroke-opacity="0.7"/>
-              <circle cx="650" cy="110" r="3" fill="#3a6ede"/>
+            <!-- collection point, right -->
+            <g transform="translate(560,212)" font-family="Inter, sans-serif">
+              <rect x="-38" y="-38" width="76" height="76" rx="2" fill="none" stroke="currentColor" stroke-opacity="0.3"/>
+              <circle r="4" fill="currentColor" opacity="0.6"/>
+              <text x="0" y="56" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.6">Sapphire Panda</text>
             </g>
-            <g class="exp-vine exp-vine-c">
-              <circle cx="740" cy="130" r="9" fill="none" stroke="#5fd4e0" stroke-opacity="0.7"/>
-              <circle cx="740" cy="130" r="3" fill="#5fd4e0"/>
+            <!-- travelling cases along their own path -->
+            <rect class="exp-vy exp-vy-a" x="-6" y="-6" width="12" height="12" rx="1" fill="#b8935a"/>
+            <rect class="exp-vy exp-vy-b" x="-6" y="-6" width="12" height="12" rx="1" fill="#3a6ede"/>
+            <rect class="exp-vy exp-vy-c" x="-6" y="-6" width="12" height="12" rx="1" fill="#5fd4e0"/>
+          </g>
+
+          <!-- ============ STAGE 4 — Consolidation ============ -->
+          <g class="exp-stage exp-stage-4">
+            <text x="40" y="36" font-size="12.5" fill="currentColor" opacity="0.75" font-family="Inter, sans-serif" font-weight="500">Consolidated onto one pallet</text>
+            <g font-family="Inter, sans-serif">
+              <text x="40" y="58" font-size="10" fill="currentColor" opacity="0.5">5 wines, 1 shared pallet</text>
             </g>
-            <!-- pallet -->
-            <g transform="translate(650,230)">
-              <rect x="-55" y="0" width="110" height="10" fill="currentColor" opacity="0.25"/>
-              <rect x="-45" y="-48" width="22" height="48" fill="#3a6ede" opacity="0.8"/>
-              <rect x="-18" y="-58" width="22" height="58" fill="#5fd4e0" opacity="0.8"/>
-              <rect x="9" y="-40" width="22" height="40" fill="#b8935a" opacity="0.8"/>
-              <rect x="-55" y="8" width="110" height="4" fill="currentColor" opacity="0.4"/>
+            <!-- pallet base -->
+            <g transform="translate(380,268)">
+              <rect x="-150" y="0" width="300" height="12" fill="currentColor" opacity="0.28"/>
+              <rect x="-150" y="12" width="300" height="5" fill="currentColor" opacity="0.5"/>
+              <!-- five distinct cases, each a different wine -->
+              <rect class="exp-case exp-case-1" x="-140" y="-46" width="52" height="46" fill="#3a6ede" opacity="0.82"/>
+              <rect class="exp-case exp-case-2" x="-82" y="-60" width="52" height="60" fill="#5fd4e0" opacity="0.82"/>
+              <rect class="exp-case exp-case-3" x="-24" y="-38" width="52" height="38" fill="#b8935a" opacity="0.82"/>
+              <rect class="exp-case exp-case-4" x="34" y="-54" width="52" height="54" fill="#6f93e8" opacity="0.82"/>
+              <rect class="exp-case exp-case-5" x="92" y="-34" width="52" height="34" fill="#a6c4ff" opacity="0.82"/>
+              <!-- strap binding the load -->
+              <path class="exp-strap" d="M-150,-30 L150,-30" fill="none" stroke="#f4f5fa" stroke-opacity="0.55" stroke-width="2" stroke-dasharray="4 4"/>
             </g>
           </g>
 
-          <line x1="730" y1="230" x2="820" y2="230" stroke="url(#exp-grad)" stroke-width="1.5" marker-end="url(#exp-arrow)" opacity="0.55"/>
-
-          <!-- Stage 4: export by ship -->
-          <g class="exp-stage exp-stage-4">
-            <g class="exp-ship">
-              <path d="M850,235 L950,235 L938,255 L862,255 Z" fill="#0f1a3d" stroke="#5fd4e0" stroke-opacity="0.6"/>
-              <rect x="885" y="212" width="30" height="23" fill="#3a6ede" opacity="0.85"/>
-              <line x1="900" y1="212" x2="900" y2="195" stroke="currentColor" stroke-opacity="0.5"/>
+          <!-- ============ STAGE 5 — Export ============ -->
+          <g class="exp-stage exp-stage-5">
+            <text x="40" y="36" font-size="12.5" fill="currentColor" opacity="0.75" font-family="Inter, sans-serif" font-weight="500">Exported through customs</text>
+            <!-- port gate -->
+            <line x1="120" y1="60" x2="120" y2="270" stroke="currentColor" stroke-opacity="0.18" stroke-dasharray="3 5"/>
+            <text x="48" y="52" font-size="9.5" fill="currentColor" opacity="0.45" font-family="Inter, sans-serif">Port of Melbourne</text>
+            <!-- customs / SKU registration card -->
+            <g transform="translate(48,70)" font-family="Inter, sans-serif">
+              <rect x="0" y="0" width="150" height="150" rx="2" fill="none" stroke="currentColor" stroke-opacity="0.25"/>
+              <text x="14" y="22" font-size="9.5" fill="currentColor" opacity="0.55">SKUs registered</text>
+              <g class="exp-sku exp-sku-1">
+                <circle cx="20" cy="42" r="3" fill="#5fd4e0"/>
+                <text x="30" y="46" font-size="9" fill="currentColor" opacity="0.7">SKU — Shiraz &apos;22</text>
+              </g>
+              <g class="exp-sku exp-sku-2">
+                <circle cx="20" cy="64" r="3" fill="#5fd4e0"/>
+                <text x="30" y="68" font-size="9" fill="currentColor" opacity="0.7">SKU — Chard &apos;23</text>
+              </g>
+              <g class="exp-sku exp-sku-3">
+                <circle cx="20" cy="86" r="3" fill="#5fd4e0"/>
+                <text x="30" y="90" font-size="9" fill="currentColor" opacity="0.7">SKU — Rosé &apos;23</text>
+              </g>
+              <g class="exp-sku exp-sku-4">
+                <circle cx="20" cy="108" r="3" fill="#5fd4e0"/>
+                <text x="30" y="112" font-size="9" fill="currentColor" opacity="0.7">SKU — Grenache &apos;21</text>
+              </g>
+              <g transform="translate(112,128) rotate(-14)"><g class="exp-customs-stamp">
+                <rect x="-26" y="-11" width="52" height="22" rx="2" fill="none" stroke="#5fd4e0" stroke-width="1.5"/>
+                <text x="0" y="4" text-anchor="middle" font-size="8" fill="#5fd4e0" font-weight="600">CLEARED</text>
+              </g></g>
             </g>
-            <path class="exp-wake" d="M840,258 Q 870,264 900,258 T 960,258" fill="none" stroke="#5fd4e0" stroke-opacity="0.35" stroke-width="1.5"/>
+            <!-- crane -->
+            <g transform="translate(240,70)">
+              <line x1="0" y1="0" x2="0" y2="170" stroke="currentColor" stroke-opacity="0.3" stroke-width="2"/>
+              <line x1="-10" y1="0" x2="40" y2="0" stroke="currentColor" stroke-opacity="0.3" stroke-width="2"/>
+              <g class="exp-crane-hook">
+                <line x1="30" y1="0" x2="30" y2="46" stroke="currentColor" stroke-opacity="0.3"/>
+              </g>
+            </g>
+            <!-- ship, right -->
+            <g transform="translate(590,195)">
+              <path d="M-110,60 L130,60 L112,92 L-92,92 Z" fill="#0f1a3d" stroke="#5fd4e0" stroke-opacity="0.55"/>
+              <rect x="-20" y="18" width="46" height="42" fill="#3a6ede" opacity="0.85"/>
+              <line x1="3" y1="18" x2="3" y2="-10" stroke="currentColor" stroke-opacity="0.45"/>
+              <path d="M-125,96 Q -95,104 -65,96 T -5,96 T 55,96 T 115,96" fill="none" stroke="#5fd4e0" stroke-opacity="0.3" stroke-width="1.5"/>
+            </g>
+            <!-- the pallet travelling from crane to ship deck -->
+            <g transform="translate(220,228)"><g class="exp-pallet-move">
+              <rect x="-26" y="0" width="52" height="8" fill="currentColor" opacity="0.3"/>
+              <rect x="-20" y="-26" width="18" height="26" fill="#5fd4e0" opacity="0.82"/>
+              <rect x="0" y="-32" width="18" height="32" fill="#b8935a" opacity="0.82"/>
+            </g></g>
+          </g>
+
+          <!-- ============ STAGE 6 — Distribution ============ -->
+          <g class="exp-stage exp-stage-6">
+            <text x="40" y="36" font-size="12.5" fill="currentColor" opacity="0.75" font-family="Inter, sans-serif" font-weight="500">Distributed to every buyer, on arrival</text>
+            <!-- arrival pallet, left -->
+            <g transform="translate(140,195)" font-family="Inter, sans-serif">
+              <rect x="-40" y="10" width="80" height="8" fill="currentColor" opacity="0.3"/>
+              <rect x="-34" y="-34" width="22" height="34" fill="#3a6ede" opacity="0.82"/>
+              <rect x="-8" y="-44" width="22" height="44" fill="#5fd4e0" opacity="0.82"/>
+              <rect x="18" y="-26" width="22" height="26" fill="#b8935a" opacity="0.82"/>
+              <text x="0" y="36" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.5">Hong Kong arrival</text>
+            </g>
+            <!-- diverging routes to three buyers -->
+            <path class="exp-route exp-route-1" d="M190,190 C 320,150 400,90 500,78" fill="none" stroke="#3a6ede" stroke-opacity="0.55" stroke-width="1.5"/>
+            <path class="exp-route exp-route-2" d="M190,195 C 320,195 400,195 500,195" fill="none" stroke="#5fd4e0" stroke-opacity="0.55" stroke-width="1.5"/>
+            <path class="exp-route exp-route-3" d="M190,200 C 320,240 400,295 500,308" fill="none" stroke="#b8935a" stroke-opacity="0.55" stroke-width="1.5"/>
+            <!-- three buyers, right -->
+            <g font-family="Inter, sans-serif">
+              <g transform="translate(518,78)"><g class="exp-buyer exp-buyer-1">
+                <rect x="-16" y="-16" width="32" height="32" rx="2" fill="none" stroke="#3a6ede" stroke-opacity="0.7"/>
+                <rect x="-8" y="-6" width="16" height="16" fill="#3a6ede" opacity="0.6"/>
+                <text x="24" y="4" font-size="10" fill="currentColor" opacity="0.65">Restaurant group</text>
+              </g></g>
+              <g transform="translate(518,195)"><g class="exp-buyer exp-buyer-2">
+                <rect x="-16" y="-16" width="32" height="32" rx="2" fill="none" stroke="#5fd4e0" stroke-opacity="0.7"/>
+                <rect x="-8" y="-6" width="16" height="16" fill="#5fd4e0" opacity="0.6"/>
+                <text x="24" y="4" font-size="10" fill="currentColor" opacity="0.65">Wine bar</text>
+              </g></g>
+              <g transform="translate(518,308)"><g class="exp-buyer exp-buyer-3">
+                <rect x="-16" y="-16" width="32" height="32" rx="2" fill="none" stroke="#b8935a" stroke-opacity="0.7"/>
+                <rect x="-8" y="-6" width="16" height="16" fill="#b8935a" opacity="0.6"/>
+                <text x="24" y="4" font-size="10" fill="currentColor" opacity="0.65">Private buyer</text>
+              </g></g>
+            </g>
           </g>
         </svg>
       </div>
@@ -716,6 +957,11 @@
         <span class="explainer-dot"></span>
         <span class="explainer-dot"></span>
         <span class="explainer-dot"></span>
+        <span class="explainer-dot"></span>
+        <span class="explainer-dot"></span>
+      </div>
+      <div class="explainer-caption">
+        Selection&nbsp;&nbsp;·&nbsp;&nbsp;AI matching&nbsp;&nbsp;·&nbsp;&nbsp;Order generation&nbsp;&nbsp;·&nbsp;&nbsp;Consolidation&nbsp;&nbsp;·&nbsp;&nbsp;Export&nbsp;&nbsp;·&nbsp;&nbsp;Distribution
       </div>
     </div>
   </section>
