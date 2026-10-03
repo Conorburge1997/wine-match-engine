@@ -245,7 +245,32 @@
   .explainer-track{
     display:grid;
     grid-template-columns:repeat(7, 1fr);
-    gap:8px;
+    gap:22px;
+    position:relative;
+  }
+  .explainer-step:not(:last-child)::after{
+    content:"";
+    position:absolute;
+    top:68px;
+    right:-17px;
+    width:22px;
+    height:10px;
+    background-color:var(--ink-faint);
+    opacity:0.6;
+    -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 10'%3E%3Cpath d='M0 5h15.5M11 1l4.5 4-4.5 4' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 10'%3E%3Cpath d='M0 5h15.5M11 1l4.5 4-4.5 4' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    -webkit-mask-size:contain;
+    mask-size:contain;
+    -webkit-mask-repeat:no-repeat;
+    mask-repeat:no-repeat;
+    z-index:2;
+    pointer-events:none;
+    transition:background-color 0.3s ease, opacity 0.3s ease;
+  }
+  .explainer-step.is-active:not(:last-child)::after,
+  .explainer-step:not(:last-child):has(+ .explainer-step.is-active)::after{
+    background-color:#5fd4e0;
+    opacity:1;
   }
   .explainer-step{
     background:linear-gradient(160deg, var(--surface), var(--surface-2));
@@ -310,6 +335,17 @@
     0%, 100%{ background:var(--border-soft); opacity:0.7; }
     4%, 10%{ background:linear-gradient(90deg, var(--sapphire), var(--sapphire-glint), var(--cyan)); opacity:1; }
     16%{ background:var(--border-soft); opacity:0.7; }
+  }
+  .explainer-step:nth-child(1)::after{ animation:expArrowCycle 21s infinite; animation-delay:0s; }
+  .explainer-step:nth-child(2)::after{ animation:expArrowCycle 21s infinite; animation-delay:3s; }
+  .explainer-step:nth-child(3)::after{ animation:expArrowCycle 21s infinite; animation-delay:6s; }
+  .explainer-step:nth-child(4)::after{ animation:expArrowCycle 21s infinite; animation-delay:9s; }
+  .explainer-step:nth-child(5)::after{ animation:expArrowCycle 21s infinite; animation-delay:12s; }
+  .explainer-step:nth-child(6)::after{ animation:expArrowCycle 21s infinite; animation-delay:15s; }
+  @keyframes expArrowCycle{
+    0%, 100%{ background-color:var(--ink-faint); opacity:0.55; }
+    4%, 10%{ background-color:#5fd4e0; opacity:1; }
+    16%{ background-color:var(--ink-faint); opacity:0.55; }
   }
   .explainer-icon{ animation:expIconCycle 21s infinite; }
   .explainer-step:nth-child(1) .explainer-icon{ animation-delay:0s; }
