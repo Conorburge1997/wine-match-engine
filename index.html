@@ -379,21 +379,52 @@
     0%{transform:scaleX(0);} 25%{transform:scaleX(1);} 92%{transform:scaleX(1);} 100%{transform:scaleX(0);}
   }
 
-  /* Stage 2 — AI matching: radial sweep + lighting candidate nodes + score readout */
-  .exp-s2-sweep{animation:expSweep 2.4s linear infinite; transform-box:fill-box; transform-origin:center;}
-  @keyframes expSweep{ to{transform:rotate(360deg);} }
-  .exp-s2-node{opacity:0.3;}
-  .exp-s2-node.hit{animation:expNodeHit 2.4s infinite;}
-  @keyframes expNodeHit{
-    0%, 100%{opacity:0.3;}
-    8%, 18%{opacity:1;}
+  /* Stage 2 — AI matching: a grid of candidates gets scanned, most dismissed, one greenlit */
+  .exp-s2-scanbar{opacity:0; animation:expScanBar 4s infinite;}
+  @keyframes expScanBar{
+    0%, 4%{opacity:0; transform:translateY(0);}
+    6%{opacity:0.9;}
+    46%{opacity:0.9; transform:translateY(182px);}
+    50%{opacity:0;}
+    100%{opacity:0;}
+  }
+  .exp-s2-cell{opacity:0.85; transform-box:fill-box; transform-origin:center;}
+  .exp-s2-cell.reject{animation:expCellReject 4s infinite;}
+  @keyframes expCellReject{
+    0%, 8%{opacity:0.85; transform:scale(1);}
+    50%{opacity:0.85; transform:scale(1);}
+    58%{opacity:0.18; transform:scale(0.82);}
+    100%{opacity:0.18; transform:scale(0.82);}
+  }
+  .exp-s2-cell.winner-cell{animation:expCellWin 4s infinite;}
+  @keyframes expCellWin{
+    0%, 8%{opacity:0.85; transform:scale(1); fill:#6f93e8;}
+    46%{opacity:1; transform:scale(1); fill:#6f93e8;}
+    52%{opacity:1; transform:scale(1.3); fill:#5fd4e0;}
+    60%{transform:scale(1.05); fill:#5fd4e0;}
+    100%{opacity:1; transform:scale(1.05); fill:#5fd4e0;}
+  }
+  .exp-s2-strike{opacity:0; transform-box:fill-box; transform-origin:center;}
+  .exp-s2-strike.go{animation:expStrikeIn 4s infinite;}
+  @keyframes expStrikeIn{
+    0%, 55%{opacity:0;}
+    60%, 100%{opacity:0.9;}
+  }
+  .exp-s2-counttext{animation:expCounterTick 4s infinite steps(1);}
+  .exp-s2-ray{opacity:0; stroke-dasharray:140; stroke-dashoffset:140;}
+  .exp-s2-ray.go{animation:expRayDraw 4s infinite;}
+  @keyframes expRayDraw{
+    0%, 50%{opacity:0; stroke-dashoffset:140;}
+    58%{opacity:0.9; stroke-dashoffset:0;}
+    92%{opacity:0.9;}
+    100%{opacity:0;}
   }
   .exp-s2-winner{opacity:0; transform:scale(0.7); transform-box:fill-box; transform-origin:center;}
   .exp-s2-winner.in{animation:expWinnerIn 4s infinite;}
   @keyframes expWinnerIn{
-    0%, 45%{opacity:0; transform:scale(0.7);}
-    58%{opacity:1; transform:scale(1.1);}
-    66%{transform:scale(1);}
+    0%, 55%{opacity:0; transform:scale(0.7);}
+    64%{opacity:1; transform:scale(1.1);}
+    70%{transform:scale(1);}
     92%{opacity:1; transform:scale(1);}
     100%{opacity:0; transform:scale(1);}
   }
@@ -472,14 +503,18 @@
   @media (prefers-reduced-motion: reduce){
     .exp-stage, .exp-scanline, .exp-node, .exp-ring, .exp-wire, .exp-chip, .exp-readout,
     .exp-bracket-flash, .exp-s1-rowfill, .exp-s1-check, .exp-s1-cursor, .exp-s1-click,
-    .exp-s1-bar, .exp-s2-sweep,
-    .exp-s2-node, .exp-s2-winner, .exp-s2-counter, .exp-pulse, .exp-hub-ring, .exp-s4-bar,
+    .exp-s1-bar, .exp-s2-scanbar, .exp-s2-cell, .exp-s2-strike, .exp-s2-ray,
+    .exp-s2-winner, .exp-s2-counter, .exp-pulse, .exp-hub-ring, .exp-s4-bar,
     .exp-s4-lock, .exp-s5-line, .exp-s5-depart, .exp-s5-wake, .exp-branch, .exp-endpoint
     {animation:none !important;}
     .exp-stage{opacity:1;}
     .exp-chip, .exp-readout, .exp-s1-rowfill, .exp-s1-check, .exp-s1-bar,
     .exp-s2-winner, .exp-s4-bar, .exp-s5-line, .exp-endpoint{opacity:1; transform:none;}
-    .exp-s1-cursor, .exp-s1-click{opacity:0;}
+    .exp-s1-cursor, .exp-s1-click, .exp-s2-scanbar{opacity:0;}
+    .exp-s2-cell.reject{opacity:0.18; transform:scale(0.82);}
+    .exp-s2-cell.winner-cell{opacity:1; fill:#5fd4e0; transform:scale(1.05);}
+    .exp-s2-strike.go{opacity:0.9;}
+    .exp-s2-ray.go{opacity:0.9; stroke-dashoffset:0;}
     .exp-s4-lock, .exp-branch{stroke-dashoffset:0;}
   }
 
@@ -781,6 +816,18 @@
               <path d="M24 0 L0 0 0 24" fill="none" stroke="#5fd4e0" stroke-opacity="0.045"/>
             </pattern>
             <clipPath id="exp-frame-clip"><rect x="1" y="1" width="758" height="358"/></clipPath>
+            <!-- vineyard glyph: a sloped hillside with rows of vines, recognizable at a glance -->
+            <g id="exp-vineyard-glyph">
+              <path d="M-26,18 L-26,6 C-14,-2 14,-2 26,6 L26,18 Z" fill="none" stroke="currentColor" stroke-opacity="0.5" stroke-width="1.3"/>
+              <path d="M-21,13 L21,13" stroke="currentColor" stroke-opacity="0.45" stroke-width="1"/>
+              <path d="M-19,8 L19,8" stroke="currentColor" stroke-opacity="0.4" stroke-width="1"/>
+              <path d="M-15,3.5 L15,3.5" stroke="currentColor" stroke-opacity="0.35" stroke-width="1"/>
+              <line x1="-14" y1="1" x2="-16" y2="17" stroke="currentColor" stroke-opacity="0.55" stroke-width="1"/>
+              <line x1="-6" y1="-1" x2="-7" y2="17.5" stroke="currentColor" stroke-opacity="0.55" stroke-width="1"/>
+              <line x1="2" y1="-1.5" x2="2" y2="18" stroke="currentColor" stroke-opacity="0.55" stroke-width="1"/>
+              <line x1="10" y1="-1" x2="11" y2="17.5" stroke="currentColor" stroke-opacity="0.55" stroke-width="1"/>
+              <line x1="18" y1="1" x2="19.5" y2="17" stroke="currentColor" stroke-opacity="0.55" stroke-width="1"/>
+            </g>
           </defs>
 
           <g clip-path="url(#exp-frame-clip)">
@@ -873,25 +920,71 @@
 
             <!-- ============ STAGE 2 — AI matching ============ -->
             <g class="exp-stage exp-stage-2" font-family="JetBrains Mono, monospace">
-              <g transform="translate(180,200)">
-                <ellipse cx="0" cy="0" rx="150" ry="110" fill="url(#exp-glow-cyan)" opacity="0.25"/>
-                <circle r="100" fill="none" stroke="currentColor" stroke-opacity="0.12"/>
-                <circle r="65" fill="none" stroke="currentColor" stroke-opacity="0.12"/>
-                <circle r="30" fill="none" stroke="currentColor" stroke-opacity="0.12"/>
-                <!-- rotating radar sweep -->
-                <g class="exp-s2-sweep">
-                  <path d="M0,0 L0,-100 A100,100 0 0,1 26,-96 Z" fill="#5fd4e0" opacity="0.12"/>
-                  <line x1="0" y1="0" x2="0" y2="-100" stroke="#5fd4e0" stroke-opacity="0.5"/>
-                </g>
-                <!-- candidate nodes around the radar -->
-                <circle class="exp-s2-node hit" cx="-70" cy="-55" r="4" fill="#6f93e8"/>
-                <circle class="exp-s2-node hit" cx="62" cy="-68" r="4" fill="#6f93e8"/>
-                <circle class="exp-s2-node hit" cx="88" cy="20" r="4" fill="#6f93e8"/>
-                <circle class="exp-s2-node hit" cx="-30" cy="82" r="4" fill="#6f93e8"/>
-                <circle class="exp-s2-node hit" cx="-92" cy="10" r="4" fill="#6f93e8"/>
-                <circle class="exp-s2-node hit" cx="40" cy="78" r="4" fill="#6f93e8"/>
-                <circle r="6" fill="#5fd4e0" class="exp-node"/>
+              <!-- grid of candidate wines being scanned; most rejected, one greenlit -->
+              <g transform="translate(90,96)">
+                <rect class="exp-s2-scanbar" x="-14" y="-14" width="244" height="6" fill="#5fd4e0" opacity="0.5"/>
+                <rect class="exp-s2-cell reject" x="0" y="0" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.000s; transform-origin:12.0px 12.0px"/>
+                <line class="exp-s2-strike go" x1="4" y1="4" x2="20" y2="20" stroke="#1a2440" stroke-width="2" style="animation-delay:0.000s"/>
+                <rect class="exp-s2-cell reject" x="32" y="0" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.012s; transform-origin:44.0px 12.0px"/>
+                <line class="exp-s2-strike go" x1="36" y1="4" x2="52" y2="20" stroke="#1a2440" stroke-width="2" style="animation-delay:0.012s"/>
+                <rect class="exp-s2-cell reject" x="64" y="0" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.024s; transform-origin:76.0px 12.0px"/>
+                <line class="exp-s2-strike go" x1="68" y1="4" x2="84" y2="20" stroke="#1a2440" stroke-width="2" style="animation-delay:0.024s"/>
+                <rect class="exp-s2-cell reject" x="96" y="0" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.036s; transform-origin:108.0px 12.0px"/>
+                <line class="exp-s2-strike go" x1="100" y1="4" x2="116" y2="20" stroke="#1a2440" stroke-width="2" style="animation-delay:0.036s"/>
+                <rect class="exp-s2-cell reject" x="128" y="0" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.048s; transform-origin:140.0px 12.0px"/>
+                <line class="exp-s2-strike go" x1="132" y1="4" x2="148" y2="20" stroke="#1a2440" stroke-width="2" style="animation-delay:0.048s"/>
+                <rect class="exp-s2-cell reject" x="160" y="0" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.060s; transform-origin:172.0px 12.0px"/>
+                <line class="exp-s2-strike go" x1="164" y1="4" x2="180" y2="20" stroke="#1a2440" stroke-width="2" style="animation-delay:0.060s"/>
+                <rect class="exp-s2-cell reject" x="192" y="0" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.072s; transform-origin:204.0px 12.0px"/>
+                <line class="exp-s2-strike go" x1="196" y1="4" x2="212" y2="20" stroke="#1a2440" stroke-width="2" style="animation-delay:0.072s"/>
+                <rect class="exp-s2-cell reject" x="0" y="32" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.084s; transform-origin:12.0px 44.0px"/>
+                <line class="exp-s2-strike go" x1="4" y1="36" x2="20" y2="52" stroke="#1a2440" stroke-width="2" style="animation-delay:0.084s"/>
+                <rect class="exp-s2-cell reject" x="32" y="32" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.096s; transform-origin:44.0px 44.0px"/>
+                <line class="exp-s2-strike go" x1="36" y1="36" x2="52" y2="52" stroke="#1a2440" stroke-width="2" style="animation-delay:0.096s"/>
+                <rect class="exp-s2-cell reject" x="64" y="32" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.108s; transform-origin:76.0px 44.0px"/>
+                <line class="exp-s2-strike go" x1="68" y1="36" x2="84" y2="52" stroke="#1a2440" stroke-width="2" style="animation-delay:0.108s"/>
+                <rect class="exp-s2-cell reject" x="96" y="32" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.120s; transform-origin:108.0px 44.0px"/>
+                <line class="exp-s2-strike go" x1="100" y1="36" x2="116" y2="52" stroke="#1a2440" stroke-width="2" style="animation-delay:0.120s"/>
+                <rect class="exp-s2-cell reject" x="128" y="32" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.132s; transform-origin:140.0px 44.0px"/>
+                <line class="exp-s2-strike go" x1="132" y1="36" x2="148" y2="52" stroke="#1a2440" stroke-width="2" style="animation-delay:0.132s"/>
+                <rect class="exp-s2-cell reject" x="160" y="32" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.144s; transform-origin:172.0px 44.0px"/>
+                <line class="exp-s2-strike go" x1="164" y1="36" x2="180" y2="52" stroke="#1a2440" stroke-width="2" style="animation-delay:0.144s"/>
+                <rect class="exp-s2-cell reject" x="192" y="32" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.156s; transform-origin:204.0px 44.0px"/>
+                <line class="exp-s2-strike go" x1="196" y1="36" x2="212" y2="52" stroke="#1a2440" stroke-width="2" style="animation-delay:0.156s"/>
+                <rect class="exp-s2-cell reject" x="0" y="64" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.168s; transform-origin:12.0px 76.0px"/>
+                <line class="exp-s2-strike go" x1="4" y1="68" x2="20" y2="84" stroke="#1a2440" stroke-width="2" style="animation-delay:0.168s"/>
+                <rect class="exp-s2-cell reject" x="32" y="64" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.180s; transform-origin:44.0px 76.0px"/>
+                <line class="exp-s2-strike go" x1="36" y1="68" x2="52" y2="84" stroke="#1a2440" stroke-width="2" style="animation-delay:0.180s"/>
+                <rect class="exp-s2-cell reject" x="64" y="64" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.192s; transform-origin:76.0px 76.0px"/>
+                <line class="exp-s2-strike go" x1="68" y1="68" x2="84" y2="84" stroke="#1a2440" stroke-width="2" style="animation-delay:0.192s"/>
+                <rect class="exp-s2-cell reject" x="96" y="64" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.204s; transform-origin:108.0px 76.0px"/>
+                <line class="exp-s2-strike go" x1="100" y1="68" x2="116" y2="84" stroke="#1a2440" stroke-width="2" style="animation-delay:0.204s"/>
+                <rect class="exp-s2-cell winner-cell" x="128" y="64" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.216s; transform-origin:140.0px 76.0px"/>
+                <rect class="exp-s2-cell reject" x="160" y="64" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.228s; transform-origin:172.0px 76.0px"/>
+                <line class="exp-s2-strike go" x1="164" y1="68" x2="180" y2="84" stroke="#1a2440" stroke-width="2" style="animation-delay:0.228s"/>
+                <rect class="exp-s2-cell reject" x="192" y="64" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.240s; transform-origin:204.0px 76.0px"/>
+                <line class="exp-s2-strike go" x1="196" y1="68" x2="212" y2="84" stroke="#1a2440" stroke-width="2" style="animation-delay:0.240s"/>
+                <rect class="exp-s2-cell reject" x="0" y="96" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.252s; transform-origin:12.0px 108.0px"/>
+                <line class="exp-s2-strike go" x1="4" y1="100" x2="20" y2="116" stroke="#1a2440" stroke-width="2" style="animation-delay:0.252s"/>
+                <rect class="exp-s2-cell reject" x="32" y="96" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.264s; transform-origin:44.0px 108.0px"/>
+                <line class="exp-s2-strike go" x1="36" y1="100" x2="52" y2="116" stroke="#1a2440" stroke-width="2" style="animation-delay:0.264s"/>
+                <rect class="exp-s2-cell reject" x="64" y="96" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.276s; transform-origin:76.0px 108.0px"/>
+                <line class="exp-s2-strike go" x1="68" y1="100" x2="84" y2="116" stroke="#1a2440" stroke-width="2" style="animation-delay:0.276s"/>
+                <rect class="exp-s2-cell reject" x="96" y="96" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.288s; transform-origin:108.0px 108.0px"/>
+                <line class="exp-s2-strike go" x1="100" y1="100" x2="116" y2="116" stroke="#1a2440" stroke-width="2" style="animation-delay:0.288s"/>
+                <rect class="exp-s2-cell reject" x="128" y="96" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.300s; transform-origin:140.0px 108.0px"/>
+                <line class="exp-s2-strike go" x1="132" y1="100" x2="148" y2="116" stroke="#1a2440" stroke-width="2" style="animation-delay:0.300s"/>
+                <rect class="exp-s2-cell reject" x="160" y="96" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.312s; transform-origin:172.0px 108.0px"/>
+                <line class="exp-s2-strike go" x1="164" y1="100" x2="180" y2="116" stroke="#1a2440" stroke-width="2" style="animation-delay:0.312s"/>
+                <rect class="exp-s2-cell reject" x="192" y="96" width="24" height="24" rx="2" fill="#6f93e8" style="animation-delay:0.324s; transform-origin:204.0px 108.0px"/>
+                <line class="exp-s2-strike go" x1="196" y1="100" x2="212" y2="116" stroke="#1a2440" stroke-width="2" style="animation-delay:0.324s"/>
               </g>
+
+              <text x="90" y="88" font-size="9.5" fill="currentColor" opacity="0.5">SCANNING 10,000+ COMBINATIONS</text>
+              <text class="exp-s2-counttext" x="334" y="88" text-anchor="end" font-size="9.5" fill="#5fd4e0" opacity="0.85"></text>
+
+              <!-- ray from winning cell to the match card -->
+              <line class="exp-s2-ray go" x1="254" y1="172" x2="450" y2="172" stroke="#5fd4e0" stroke-width="1.5" stroke-dasharray="4 3"/>
 
               <!-- winning match readout -->
               <g transform="translate(560,200)"><g class="exp-s2-winner in">
@@ -905,24 +998,25 @@
               </g></g>
             </g>
 
+
             <!-- ============ STAGE 3 — Order generation ============ -->
             <g class="exp-stage exp-stage-3" font-family="JetBrains Mono, monospace">
               <g transform="translate(0,56)">
-                <!-- three vineyard nodes, left -->
-                <g transform="translate(175,110)">
-                  <circle class="exp-ring" r="18" fill="none" stroke="#b8935a" stroke-opacity="0.3" stroke-dasharray="3 4"/>
-                  <circle r="5" fill="#b8935a" class="exp-node"/>
-                  <text x="0" y="38" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.55">VINEYARD.A</text>
+                <!-- three vineyards, left — a recognizable hillside-of-vines glyph each -->
+                <g transform="translate(175,110)" color="#b8935a">
+                  <use href="#exp-vineyard-glyph" x="0" y="0" transform="scale(1.3)"/>
+                  <circle cx="24" cy="-16" r="4" fill="#b8935a" class="exp-node"/>
+                  <text x="0" y="46" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.6">Vineyard A</text>
                 </g>
-                <g transform="translate(175,195)">
-                  <circle class="exp-ring" r="18" fill="none" stroke="#3a6ede" stroke-opacity="0.3" stroke-dasharray="3 4"/>
-                  <circle r="5" fill="#3a6ede" class="exp-node"/>
-                  <text x="0" y="38" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.55">VINEYARD.B</text>
+                <g transform="translate(175,195)" color="#3a6ede">
+                  <use href="#exp-vineyard-glyph" x="0" y="0" transform="scale(1.3)"/>
+                  <circle cx="24" cy="-16" r="4" fill="#3a6ede" class="exp-node"/>
+                  <text x="0" y="46" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.6">Vineyard B</text>
                 </g>
-                <g transform="translate(175,280)">
-                  <circle class="exp-ring" r="18" fill="none" stroke="#5fd4e0" stroke-opacity="0.3" stroke-dasharray="3 4"/>
-                  <circle r="5" fill="#5fd4e0" class="exp-node"/>
-                  <text x="0" y="38" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.55">VINEYARD.C</text>
+                <g transform="translate(175,280)" color="#5fd4e0">
+                  <use href="#exp-vineyard-glyph" x="0" y="0" transform="scale(1.3)"/>
+                  <circle cx="24" cy="-16" r="4" fill="#5fd4e0" class="exp-node"/>
+                  <text x="0" y="46" text-anchor="middle" font-size="9.5" fill="currentColor" opacity="0.6">Vineyard C</text>
                 </g>
 
                 <!-- faint static wires -->
