@@ -42,6 +42,7 @@
   a{color:inherit;}
   .mono{font-family:'JetBrains Mono',monospace;}
   .wrap{max-width:1080px; margin:0 auto; padding:0 32px;}
+  .wrap-wide{max-width:1360px;}
 
   body{
     background-image:
@@ -245,16 +246,23 @@
   .explainer-track{
     display:grid;
     grid-template-columns:repeat(7, 1fr);
-    gap:14px;
+    gap:10px;
+    max-width:1320px;
+    margin:0 auto;
   }
   .explainer-step{
     background:linear-gradient(160deg, var(--surface), var(--surface-2));
     border:1px solid var(--border-soft);
     border-radius:var(--radius);
-    padding:20px 16px 18px;
+    padding:22px 14px 24px;
     position:relative;
     overflow:hidden;
     min-width:0;
+    min-height:320px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
   }
   .explainer-step::before{
     content:"";
@@ -263,17 +271,21 @@
     transition:background 0.3s ease;
   }
   .explainer-num{
-    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.08em;
-    color:var(--ink-faint); display:block; margin-bottom:10px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.08em;
+    color:var(--ink-faint); display:block; margin-bottom:12px;
   }
-  .explainer-icon{width:34px; height:34px; margin-bottom:12px; color:var(--ink-dim);}
+  .explainer-icon{width:34px; height:34px; margin-bottom:14px; color:var(--ink-dim);}
   .explainer-icon svg{width:100%; height:100%; display:block;}
   .explainer-step h4{
     font-family:'Inter', sans-serif; font-size:14.5px; font-weight:700; color:var(--ink);
-    margin:0 0 6px; line-height:1.3;
+    margin:0 0 10px; line-height:1.3;
   }
   .explainer-step p{
-    font-size:11.5px; line-height:1.5; color:var(--ink-faint); margin:0;
+    font-size:12.5px; line-height:1.6; color:var(--ink-faint); margin:0;
+  }
+  .explainer-step p .sap{
+    color:var(--sapphire-glint);
+    font-weight:600;
   }
 
   /* the travelling highlight: each card lights up in turn, then settles back */
@@ -572,46 +584,16 @@
     </div>
   </section>
 
-  <section id="how">
+  <section id="video-explanation">
     <div class="wrap">
       <div class="section-head">
         <div class="section-eyebrow">How It Works</div>
         <h2>From a buyer's brief to a matched, verified shipment.</h2>
-        <p>A network of specialised agents handles the matching, the verification and the logistics — coordinated automatically, end to end.</p>
-      </div>
-      <div class="steps">
-        <div class="step">
-          <span class="step-num">01</span>
-          <h3>Tell us what you're after</h3>
-          <p>Style, region, price band, volume. No wine jargon required.</p>
-        </div>
-        <div class="step">
-          <span class="step-num">02</span>
-          <h3>Millions of combinations, ranked by AI into a shortlist</h3>
-          <p>Machine learning agents score and match your brief against our vineyard partners&rsquo; data across millions of combinations, ranked in parallel into a shortlist of hidden gems.</p>
-        </div>
-        <div class="step">
-          <span class="step-num">03</span>
-          <h3>Agent order generation &amp; compliance confirmation</h3>
-          <p>Automated agents confirm stock, generate SKUs and clear destination-country paperwork, permits and compliance checks — no manual handling.</p>
-        </div>
-        <div class="step">
-          <span class="step-num">04</span>
-          <h3>Automated custom pallet build &amp; export</h3>
-          <p>A logistics agent builds a unique, pallet-compatible load from your order, packed and scheduled through to port.</p>
-        </div>
+        <p>A network of specialised AI agents handles the matching, the verification and the logistics — coordinated automatically, end to end.</p>
       </div>
     </div>
-  </section>
 
-  <section id="video-explanation">
-    <div class="wrap">
-      <div class="section-head">
-        <div class="section-eyebrow">Video Explanation</div>
-        <h2>Every step, one view.</h2>
-        <p>A live read of the matching engine, end to end — from a buyer's signal to the one shared pallet, to distribution on arrival.</p>
-      </div>
-
+    <div class="wrap wrap-wide">
       <div class="explainer-track">
 
         <div class="explainer-step">
@@ -628,20 +610,26 @@
             </svg>
           </div>
           <h4>You list your requirements.</h4>
-          <p>Style, region, price and volume — tell us exactly what you want.</p>
+          <p>Style, region, price band and volume — no wine jargon required. <span class="sap">Your exact brief</span> becomes the seed for a build made only for you.</p>
         </div>
 
         <div class="explainer-step">
           <span class="explainer-num">02</span>
           <div class="explainer-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="1"/>
-              <path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>
-              <circle cx="15" cy="9" r="1.6" fill="currentColor" stroke="none"/>
+              <circle cx="12" cy="12" r="3.4"/>
+              <circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/>
+              <circle cx="12" cy="3.5" r="1.3" fill="currentColor" stroke="none"/>
+              <circle cx="19.5" cy="8" r="1.3" fill="currentColor" stroke="none"/>
+              <circle cx="19.5" cy="16" r="1.3" fill="currentColor" stroke="none"/>
+              <circle cx="12" cy="20.5" r="1.3" fill="currentColor" stroke="none"/>
+              <circle cx="4.5" cy="16" r="1.3" fill="currentColor" stroke="none"/>
+              <circle cx="4.5" cy="8" r="1.3" fill="currentColor" stroke="none"/>
+              <path d="M12 3.5v5M19.5 8l-4.9 3.1M19.5 16l-4.9-3.1M12 20.5v-5M4.5 16l4.9-3.1M4.5 8l4.9 3.1" stroke-width="1"/>
             </svg>
           </div>
           <h4>Sapphire Panda AI matches it.</h4>
-          <p>Thousands of combinations scored in seconds to find the best fit.</p>
+          <p>Machine learning agents score your brief against our vineyard partners' data across <span class="sap">millions of combinations</span>, ranked in parallel into a shortlist built around <span class="sap">exactly what you asked for</span>.</p>
         </div>
 
         <div class="explainer-step">
@@ -655,7 +643,7 @@
             </svg>
           </div>
           <h4>Order is generated.</h4>
-          <p>A live purchase order is built and sent automatically.</p>
+          <p>Automated agents confirm stock, generate SKUs and clear destination-country paperwork, permits and compliance checks — a live purchase order built with <span class="sap">no manual handling</span>.</p>
         </div>
 
         <div class="explainer-step">
@@ -673,47 +661,49 @@
             </svg>
           </div>
           <h4>Vineyards are requested.</h4>
-          <p>Independent vineyards across regions confirm and fulfil the order.</p>
+          <p>Independent vineyards across regions confirm and fulfil the order in parallel, coordinated by AI agents running <span class="sap">thousands of checks</span> behind the scenes.</p>
         </div>
 
         <div class="explainer-step">
           <span class="explainer-num">05</span>
           <div class="explainer-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 21V11l2-2h10l2 2v10z"/>
-              <path d="M5 15h14M5 18h14"/>
-              <path d="M9 11V6M12 11V4M15 11V6"/>
+              <path d="M2.5 8.5L12 3l9.5 5.5L12 14z"/>
+              <path d="M2.5 8.5v7L12 21l9.5-5.5v-7"/>
+              <path d="M12 14v7"/>
+              <path d="M6.2 6.3l9.6 5.6M17.8 6.3l-9.6 5.6" stroke-width="1" stroke-opacity="0.55"/>
             </svg>
           </div>
           <h4>Pallet is consolidated.</h4>
-          <p>Multiple wines, multiple vineyards — one complex, unique pallet.</p>
+          <p>A logistics agent builds a single load from <span class="sap">multiple wines and multiple vineyards</span> — a highly complex, one-of-a-kind build, packed and scheduled through to port automatically.</p>
         </div>
 
         <div class="explainer-step">
           <span class="explainer-num">06</span>
           <div class="explainer-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 7l8-4 8 4v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9z"/>
-              <path d="M9 12l2 2 4-4.5" stroke-width="1.5"/>
+              <rect x="3" y="4.5" width="18" height="13.5" rx="1"/>
+              <circle cx="9" cy="11.2" r="2.6"/>
+              <path d="M13.5 9h4.5M13.5 12h4.5M5.5 15.3h13" stroke-width="1.2"/>
+              <path d="M3 19.5l3.2 2.5h11.6l3.2-2.5" stroke-width="1.3"/>
             </svg>
           </div>
           <h4>Agents clear customs.</h4>
-          <p>Our agents handle all the paperwork, so you don't have to.</p>
+          <p>Our AI-driven agents handle every form, permit and compliance check across borders — real complexity, <span class="sap">fully streamlined</span>, so you never touch a single document.</p>
         </div>
 
         <div class="explainer-step">
           <span class="explainer-num">07</span>
           <div class="explainer-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 3v9"/>
-              <path d="M12 12l-6 7M12 12l6 7M12 12l0 8"/>
-              <circle cx="6" cy="20.5" r="1.4" fill="currentColor" stroke="none"/>
-              <circle cx="12" cy="21" r="1.4" fill="currentColor" stroke="none"/>
-              <circle cx="18" cy="20.5" r="1.4" fill="currentColor" stroke="none"/>
+              <path d="M3.5 8L12 3.5 20.5 8 12 12.5z"/>
+              <path d="M3.5 8v8.5L12 21l8.5-4.5V8"/>
+              <path d="M12 12.5V21"/>
+              <path d="M16.3 14.6l2.4-1.3M16.3 14.6v2.7" stroke-width="1.3"/>
             </svg>
           </div>
           <h4>You receive it.</h4>
-          <p>One pallet splits out to every buyer on arrival.</p>
+          <p>One consolidated pallet splits out automatically to every buyer on arrival — <span class="sap">full complexity resolved before it ever reaches you</span>.</p>
         </div>
 
       </div>
