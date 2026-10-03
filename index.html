@@ -335,17 +335,29 @@
       overflow-x:auto;
       scroll-snap-type:x mandatory;
       gap:12px;
-      margin:0 -20px;
-      padding:4px 20px 10px;
+      padding:4px 0 10px;
       -webkit-overflow-scrolling:touch;
     }
     .explainer-step{
-      flex:0 0 72%;
+      flex:0 0 88%;
       scroll-snap-align:start;
     }
+    /* on mobile, only the card in view lights up — driven by JS via .is-active, not the auto-cycle */
+    .explainer-step{ animation:none !important; }
+    .explainer-step::before{ animation:none !important; background:var(--border-soft); opacity:0.7; }
+    .explainer-icon{ animation:none !important; }
+    .explainer-step.is-active{
+      border-color:#5fd4e0;
+      box-shadow:0 0 0 1px rgba(95,212,224,0.25), 0 8px 24px -8px rgba(95,212,224,0.35);
+    }
+    .explainer-step.is-active::before{
+      background:linear-gradient(90deg, var(--sapphire), var(--sapphire-glint), var(--cyan));
+      opacity:1;
+    }
+    .explainer-step.is-active .explainer-icon{ color:#5fd4e0; }
   }
   @media (max-width: 520px){
-    .explainer-step{ flex-basis:82%; }
+    .explainer-step{ flex-basis:92%; }
   }
 
 
@@ -1050,6 +1062,27 @@
         if(footer) footer.style.display = '';
         if(items.length > 1) startAutoplay();
       });
+  })();
+</script>
+
+<script>
+  // Mobile: highlight whichever explainer card is currently centred in the swipeable strip.
+  (function(){
+    var track = document.querySelector('.explainer-track');
+    if(!track || !('IntersectionObserver' in window)) return;
+    var cards = Array.prototype.slice.call(track.querySelectorAll('.explainer-step'));
+    if(!cards.length) return;
+
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting && entry.intersectionRatio >= 0.6){
+          cards.forEach(function(c){ c.classList.remove('is-active'); });
+          entry.target.classList.add('is-active');
+        }
+      });
+    }, { root: track, threshold: [0.6] });
+
+    cards.forEach(function(c){ observer.observe(c); });
   })();
 </script>
 
