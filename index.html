@@ -250,6 +250,13 @@
     position:relative;
   }
   .explainer-step{ grid-row:1; }
+  .explainer-step-1{ grid-column:1; }
+  .explainer-step-2{ grid-column:2; }
+  .explainer-step-3{ grid-column:3; }
+  .explainer-step-4{ grid-column:4; }
+  .explainer-step-5{ grid-column:5; }
+  .explainer-step-6{ grid-column:6; }
+  .explainer-step-7{ grid-column:7; }
   .explainer-chevron{
     grid-row:2;
     display:flex;
@@ -266,8 +273,19 @@
   .explainer-chevron-4{ grid-column:4; }
   .explainer-chevron-5{ grid-column:5; }
   .explainer-chevron-6{ grid-column:6; }
-  .explainer-chevron-7{ grid-column:7; visibility:hidden; pointer-events:none; }
   .explainer-chevron svg{ width:34px; height:16px; display:block; }
+  .explainer-endmark{
+    grid-row:2;
+    grid-column:7;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--ink-faint);
+    opacity:0.5;
+    transition:color 0.3s ease, opacity 0.3s ease, filter 0.3s ease;
+    filter:none;
+  }
+  .explainer-endmark svg{ width:20px; height:20px; display:block; }
   .explainer-step{
     background:linear-gradient(160deg, var(--surface), var(--surface-2));
     border:1px solid var(--border-soft);
@@ -308,25 +326,25 @@
 
   /* the travelling highlight: each card lights up in turn, then settles back */
   .explainer-step{ animation:expCardCycle 21s infinite; }
-  .explainer-step:nth-child(1){ animation-delay:0s; }
-  .explainer-step:nth-child(2){ animation-delay:3s; }
-  .explainer-step:nth-child(3){ animation-delay:6s; }
-  .explainer-step:nth-child(4){ animation-delay:9s; }
-  .explainer-step:nth-child(5){ animation-delay:12s; }
-  .explainer-step:nth-child(6){ animation-delay:15s; }
-  .explainer-step:nth-child(7){ animation-delay:18s; }
+  .explainer-step-1{ animation-delay:0s; }
+  .explainer-step-2{ animation-delay:3s; }
+  .explainer-step-3{ animation-delay:6s; }
+  .explainer-step-4{ animation-delay:9s; }
+  .explainer-step-5{ animation-delay:12s; }
+  .explainer-step-6{ animation-delay:15s; }
+  .explainer-step-7{ animation-delay:18s; }
   @keyframes expCardCycle{
     0%, 100%{ border-color:var(--border-soft); box-shadow:none; }
     4%, 10%{ border-color:#5fd4e0; box-shadow:0 0 0 1px rgba(95,212,224,0.25), 0 8px 24px -8px rgba(95,212,224,0.35); }
     16%{ border-color:var(--border-soft); box-shadow:none; }
   }
-  .explainer-step:nth-child(1)::before{ animation:expBarCycle 21s infinite; animation-delay:0s; }
-  .explainer-step:nth-child(2)::before{ animation:expBarCycle 21s infinite; animation-delay:3s; }
-  .explainer-step:nth-child(3)::before{ animation:expBarCycle 21s infinite; animation-delay:6s; }
-  .explainer-step:nth-child(4)::before{ animation:expBarCycle 21s infinite; animation-delay:9s; }
-  .explainer-step:nth-child(5)::before{ animation:expBarCycle 21s infinite; animation-delay:12s; }
-  .explainer-step:nth-child(6)::before{ animation:expBarCycle 21s infinite; animation-delay:15s; }
-  .explainer-step:nth-child(7)::before{ animation:expBarCycle 21s infinite; animation-delay:18s; }
+  .explainer-step-1::before{ animation:expBarCycle 21s infinite; animation-delay:0s; }
+  .explainer-step-2::before{ animation:expBarCycle 21s infinite; animation-delay:3s; }
+  .explainer-step-3::before{ animation:expBarCycle 21s infinite; animation-delay:6s; }
+  .explainer-step-4::before{ animation:expBarCycle 21s infinite; animation-delay:9s; }
+  .explainer-step-5::before{ animation:expBarCycle 21s infinite; animation-delay:12s; }
+  .explainer-step-6::before{ animation:expBarCycle 21s infinite; animation-delay:15s; }
+  .explainer-step-7::before{ animation:expBarCycle 21s infinite; animation-delay:18s; }
   @keyframes expBarCycle{
     0%, 100%{ background:var(--border-soft); opacity:0.7; }
     4%, 10%{ background:linear-gradient(90deg, var(--sapphire), var(--sapphire-glint), var(--cyan)); opacity:1; }
@@ -338,19 +356,20 @@
   .explainer-chevron-4{ animation:expArrowCycle 21s infinite; animation-delay:9s; }
   .explainer-chevron-5{ animation:expArrowCycle 21s infinite; animation-delay:12s; }
   .explainer-chevron-6{ animation:expArrowCycle 21s infinite; animation-delay:15s; }
+  .explainer-endmark{ animation:expArrowCycle 21s infinite; animation-delay:18s; }
   @keyframes expArrowCycle{
     0%, 100%{ color:var(--ink-faint); opacity:0.5; filter:drop-shadow(0 0 0 rgba(95,212,224,0)); }
     4%, 10%{ color:#5fd4e0; opacity:1; filter:drop-shadow(0 0 6px rgba(95,212,224,0.9)); }
     16%{ color:var(--ink-faint); opacity:0.5; filter:drop-shadow(0 0 0 rgba(95,212,224,0)); }
   }
   .explainer-icon{ animation:expIconCycle 21s infinite; }
-  .explainer-step:nth-child(1) .explainer-icon{ animation-delay:0s; }
-  .explainer-step:nth-child(2) .explainer-icon{ animation-delay:3s; }
-  .explainer-step:nth-child(3) .explainer-icon{ animation-delay:6s; }
-  .explainer-step:nth-child(4) .explainer-icon{ animation-delay:9s; }
-  .explainer-step:nth-child(5) .explainer-icon{ animation-delay:12s; }
-  .explainer-step:nth-child(6) .explainer-icon{ animation-delay:15s; }
-  .explainer-step:nth-child(7) .explainer-icon{ animation-delay:18s; }
+  .explainer-step-1 .explainer-icon{ animation-delay:0s; }
+  .explainer-step-2 .explainer-icon{ animation-delay:3s; }
+  .explainer-step-3 .explainer-icon{ animation-delay:6s; }
+  .explainer-step-4 .explainer-icon{ animation-delay:9s; }
+  .explainer-step-5 .explainer-icon{ animation-delay:12s; }
+  .explainer-step-6 .explainer-icon{ animation-delay:15s; }
+  .explainer-step-7 .explainer-icon{ animation-delay:18s; }
   @keyframes expIconCycle{
     0%, 100%{ color:var(--ink-dim); }
     4%, 10%{ color:#5fd4e0; }
@@ -358,7 +377,7 @@
   }
 
   @media (prefers-reduced-motion: reduce){
-    .explainer-step, .explainer-step::before, .explainer-icon, .explainer-chevron{ animation:none !important; }
+    .explainer-step, .explainer-step::before, .explainer-icon, .explainer-chevron, .explainer-endmark{ animation:none !important; }
   }
 
   @media (max-width: 900px){
@@ -374,7 +393,7 @@
       flex:0 0 88%;
       scroll-snap-align:start;
     }
-    .explainer-chevron{ display:none; }
+    .explainer-chevron, .explainer-endmark{ display:none; }
     /* on mobile, only the card in view lights up — driven by JS via .is-active, not the auto-cycle */
     .explainer-step{ animation:none !important; }
     .explainer-step::before{ animation:none !important; background:var(--border-soft); opacity:0.7; }
@@ -638,7 +657,7 @@
     <div class="wrap">
       <div class="explainer-track">
 
-        <div class="explainer-step">
+        <div class="explainer-step explainer-step-1">
           <span class="explainer-num">01</span>
           <div class="explainer-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -655,12 +674,12 @@
           <p>Style, region, price band and volume, no wine jargon required. <span class="sap">Your exact brief</span> becomes the seed for a build made only for you.</p>
         </div>
         <div class="explainer-chevron explainer-chevron-1" aria-hidden="true">
-          <svg viewBox="0 0 34 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 34 16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M1 8h24M19 1l7 7-7 7"/>
           </svg>
         </div>
 
-        <div class="explainer-step">
+        <div class="explainer-step explainer-step-2">
           <span class="explainer-num">02</span>
           <div class="explainer-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -679,12 +698,12 @@
           <p>Machine learning agents score your brief against our vineyard partners' data across <span class="sap">millions of combinations</span>, ranked in parallel into a shortlist built around <span class="sap">exactly what you asked for</span>.</p>
         </div>
         <div class="explainer-chevron explainer-chevron-2" aria-hidden="true">
-          <svg viewBox="0 0 34 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 34 16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M1 8h24M19 1l7 7-7 7"/>
           </svg>
         </div>
 
-        <div class="explainer-step">
+        <div class="explainer-step explainer-step-3">
           <span class="explainer-num">03</span>
           <div class="explainer-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -698,12 +717,12 @@
           <p>Automated agents confirm stock, generate SKUs and clear destination-country paperwork, permits and compliance checks. A live purchase order built with <span class="sap">no manual handling</span>.</p>
         </div>
         <div class="explainer-chevron explainer-chevron-3" aria-hidden="true">
-          <svg viewBox="0 0 34 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 34 16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M1 8h24M19 1l7 7-7 7"/>
           </svg>
         </div>
 
-        <div class="explainer-step">
+        <div class="explainer-step explainer-step-4">
           <span class="explainer-num">04</span>
           <div class="explainer-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -721,12 +740,12 @@
           <p>Independent vineyards across regions confirm and fulfil the order in parallel, coordinated by AI agents running <span class="sap">thousands of checks</span> behind the scenes.</p>
         </div>
         <div class="explainer-chevron explainer-chevron-4" aria-hidden="true">
-          <svg viewBox="0 0 34 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 34 16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M1 8h24M19 1l7 7-7 7"/>
           </svg>
         </div>
 
-        <div class="explainer-step">
+        <div class="explainer-step explainer-step-5">
           <span class="explainer-num">05</span>
           <div class="explainer-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -740,12 +759,12 @@
           <p>A logistics agent builds a single load from <span class="sap">multiple wines and multiple vineyards</span>, a highly complex, one-of-a-kind build, packed and scheduled through to port automatically.</p>
         </div>
         <div class="explainer-chevron explainer-chevron-5" aria-hidden="true">
-          <svg viewBox="0 0 34 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 34 16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M1 8h24M19 1l7 7-7 7"/>
           </svg>
         </div>
 
-        <div class="explainer-step">
+        <div class="explainer-step explainer-step-6">
           <span class="explainer-num">06</span>
           <div class="explainer-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -759,12 +778,12 @@
           <p>Our AI-driven agents handle every form, permit and compliance check across borders. Real complexity, <span class="sap">fully streamlined</span>, so you never touch a single document.</p>
         </div>
         <div class="explainer-chevron explainer-chevron-6" aria-hidden="true">
-          <svg viewBox="0 0 34 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 34 16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M1 8h24M19 1l7 7-7 7"/>
           </svg>
         </div>
 
-        <div class="explainer-step">
+        <div class="explainer-step explainer-step-7">
           <span class="explainer-num">07</span>
           <div class="explainer-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -777,9 +796,12 @@
           <h4>You receive it.</h4>
           <p>One consolidated pallet splits out automatically to every buyer on arrival, with <span class="sap">full complexity resolved before it ever reaches you</span>.</p>
         </div>
-        <div class="explainer-chevron explainer-chevron-7" aria-hidden="true">
-          <svg viewBox="0 0 34 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M1 8h24M19 1l7 7-7 7"/>
+        <div class="explainer-endmark" aria-hidden="true">
+          <svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3.5 9L13 4l9.5 5-9.5 5z"/>
+            <path d="M3.5 9v8L13 22l9.5-5V9"/>
+            <path d="M13 14v8"/>
+            <path d="M9 11.8l2.2 1.8 3.8-4" stroke-width="1.6"/>
           </svg>
         </div>
 
