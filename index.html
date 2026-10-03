@@ -92,8 +92,19 @@
     position:absolute; top:-10px; right:0; width:240px; height:240px;
     opacity:0.95; z-index:1; pointer-events:none;
     filter:drop-shadow(0 20px 50px rgba(58,110,222,0.45));
+    transition:opacity 0.3s ease;
   }
   @media (max-width: 1024px){ .hero-gem{display:none;} }
+  .hero-gem.is-hidden{opacity:0;}
+
+  .nav-gem{
+    width:0; height:30px; opacity:0; overflow:visible;
+    transition:width 0.3s ease, opacity 0.3s ease, margin-left 0.3s ease;
+    margin-left:0; flex-shrink:0;
+    filter:drop-shadow(0 4px 14px rgba(58,110,222,0.5));
+    pointer-events:none;
+  }
+  .nav-gem.is-visible{width:30px; opacity:1; margin-left:14px;}
 
   header{
     position:sticky; top:0; z-index:50;
@@ -101,7 +112,8 @@
     backdrop-filter:blur(14px);
     border-bottom:1px solid var(--border-soft);
   }
-  section[id], .wrap[id]{ scroll-margin-top:88px; }
+  section[id], .wrap[id]{ scroll-margin-top:79px; }
+  section[id]{ padding-top:40px; }
   .nav{display:flex; align-items:center; justify-content:space-between; padding:18px 0;}
   .brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink);}
   .brand-word{font-family:'Fraunces',serif; font-weight:400; font-size:16px; letter-spacing:0.02em;}
@@ -563,6 +575,18 @@
         <circle cx="27" cy="22" r="3" fill="#060810"/>
       </svg>
       <span class="brand-word">Sapphire Panda</span>
+      <svg class="nav-gem gem-mark" id="navGem" viewBox="0 0 200 200" fill="none">
+        <polygon class="f1" points="100,10 145,70 100,95"/>
+        <polygon class="f2" points="100,10 55,70 100,95"/>
+        <polygon class="f6" points="55,70 100,95 78,140"/>
+        <polygon class="f3" points="145,70 100,95 122,140"/>
+        <polygon class="f7" points="100,95 78,140 100,190"/>
+        <polygon class="f5" points="100,95 122,140 100,190"/>
+        <polygon class="f4" points="55,70 30,125 78,140"/>
+        <polygon class="f4" points="145,70 170,125 122,140"/>
+        <polygon class="f6" points="30,125 78,140 100,190"/>
+        <polygon class="f3" points="170,125 122,140 100,190"/>
+      </svg>
     </a>
     <div class="nav-links">
       <div class="links">
@@ -1177,6 +1201,18 @@
     }, { root: track, threshold: [0.6] });
 
     cards.forEach(function(c){ observer.observe(c); });
+  })();
+
+  (function(){
+    var navGem = document.getElementById('navGem');
+    var heroGem = document.querySelector('.hero-gem');
+    if(!navGem || !heroGem) return;
+    function onScroll(){
+      var pastHero = window.scrollY > (heroGem.closest('.hero').offsetHeight - 140);
+      navGem.classList.toggle('is-visible', pastHero);
+    }
+    window.addEventListener('scroll', onScroll, { passive:true });
+    onScroll();
   })();
 </script>
 
