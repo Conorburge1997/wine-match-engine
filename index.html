@@ -52,16 +52,16 @@
 
   /* A packed wall of sapphires running down both margins, fading into the page toward the content */
   .gem-wall{
-    position:fixed; top:0; right:0; width:460px; height:100vh;
+    position:fixed; top:0; right:0; width:260px; height:100vh;
     pointer-events:none; z-index:0; overflow:hidden;
   }
   .gem-wall.left{ right:auto; left:0; }
-  @media (max-width: 1400px){ .gem-wall{display:none;} }
+  @media (max-width: 1700px){ .gem-wall{display:none;} }
   .gem-wall-fill{
-    position:absolute; top:0; right:0; width:360px; height:100%;
+    position:absolute; top:0; right:0; width:220px; height:100%;
     background-image:url("assets/sapphire-wall.png");
     background-repeat:repeat-y;
-    background-size:360px 360px;
+    background-size:220px 220px;
     background-position:center top;
   }
   .gem-wall.left .gem-wall-fill{ right:auto; left:0; }
@@ -69,20 +69,20 @@
     content:'';
     position:absolute; inset:0;
     background:linear-gradient(90deg,
-      var(--bg) 0%, var(--bg) 30%,
-      rgba(6,8,16,0.96) 40%, rgba(6,8,16,0.88) 48%,
-      rgba(6,8,16,0.7) 56%, rgba(6,8,16,0.5) 64%,
-      rgba(6,8,16,0.32) 72%, rgba(6,8,16,0.16) 80%,
-      rgba(6,8,16,0.06) 88%, transparent 100%);
+      var(--bg) 0%, var(--bg) 8%,
+      rgba(6,8,16,0.96) 16%, rgba(6,8,16,0.85) 24%,
+      rgba(6,8,16,0.65) 34%, rgba(6,8,16,0.42) 44%,
+      rgba(6,8,16,0.24) 55%, rgba(6,8,16,0.1) 66%,
+      rgba(6,8,16,0.03) 78%, transparent 92%);
     z-index:1;
   }
   .gem-wall.left::before{
     background:linear-gradient(270deg,
-      var(--bg) 0%, var(--bg) 30%,
-      rgba(6,8,16,0.96) 40%, rgba(6,8,16,0.88) 48%,
-      rgba(6,8,16,0.7) 56%, rgba(6,8,16,0.5) 64%,
-      rgba(6,8,16,0.32) 72%, rgba(6,8,16,0.16) 80%,
-      rgba(6,8,16,0.06) 88%, transparent 100%);
+      var(--bg) 0%, var(--bg) 8%,
+      rgba(6,8,16,0.96) 16%, rgba(6,8,16,0.85) 24%,
+      rgba(6,8,16,0.65) 34%, rgba(6,8,16,0.42) 44%,
+      rgba(6,8,16,0.24) 55%, rgba(6,8,16,0.1) 66%,
+      rgba(6,8,16,0.03) 78%, transparent 92%);
   }
   .gem-wall::after{
     content:'';
