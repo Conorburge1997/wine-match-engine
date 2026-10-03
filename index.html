@@ -50,35 +50,29 @@
       radial-gradient(ellipse 600px 400px at 50% 100%, rgba(58,110,222,0.08), transparent 60%);
   }
 
-  /* A packed wall of faceted sapphires running down the right margin, outside the content column */
+  /* A packed wall of sapphires running down the right margin, fading into the page toward the content */
   .gem-wall{
-    position:fixed; top:0; right:0; width:220px; height:100vh;
+    position:fixed; top:0; right:0; width:360px; height:100vh;
     pointer-events:none; z-index:0; overflow:hidden;
   }
   @media (max-width: 1400px){ .gem-wall{display:none;} }
   .gem-wall-fill{
-    position:absolute; top:0; left:0; width:100%; height:300%;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='110' height='110' viewBox='0 0 110 110'%3E%3Cg%3E%3Cpolygon points='20,4 34,18 20,32 6,18' fill='%233a6ede'/%3E%3Cpolygon points='20,4 34,18 20,18' fill='%236f93e8'/%3E%3Cpolygon points='6,18 20,18 20,32' fill='%230f1a3d'/%3E%3Cpolygon points='34,18 20,18 20,32' fill='%231c3f8f'/%3E%3Cpolygon points='65,0 82,20 65,40 48,20' fill='%235fd4e0'/%3E%3Cpolygon points='65,0 82,20 65,20' fill='%23a6c4ff'/%3E%3Cpolygon points='48,20 65,20 65,40' fill='%230f1a3d'/%3E%3Cpolygon points='82,20 65,20 65,40' fill='%23274d9e'/%3E%3Cpolygon points='95,50 108,64 95,78 82,64' fill='%233a6ede'/%3E%3Cpolygon points='95,50 108,64 95,64' fill='%236f93e8'/%3E%3Cpolygon points='82,64 95,64 95,78' fill='%230f1a3d'/%3E%3Cpolygon points='15,55 32,74 15,93 -2,74' fill='%235fd4e0'/%3E%3Cpolygon points='15,55 32,74 15,74' fill='%23a6c4ff'/%3E%3Cpolygon points='-2,74 15,74 15,93' fill='%231c3f8f'/%3E%3Cpolygon points='60,65 76,83 60,101 44,83' fill='%233a6ede'/%3E%3Cpolygon points='60,65 76,83 60,83' fill='%236f93e8'/%3E%3Cpolygon points='44,83 60,83 60,101' fill='%230f1a3d'/%3E%3Cpolygon points='76,83 60,83 60,101' fill='%23274d9e'/%3E%3C/g%3E%3C/svg%3E");
-    background-repeat:repeat-y;
-    background-size:110px 110px;
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='104' viewBox='0 0 120 104'%3E%3Cg%3E%3Cpolygon points='30,2 54,16 54,44 30,58 6,44 6,16' fill='%231c3f8f'/%3E%3Cpolygon points='30,2 54,16 30,30 6,16' fill='%233a6ede'/%3E%3Cpolygon points='30,30 54,16 54,44 30,58' fill='%23152a63'/%3E%3Cpolygon points='30,30 6,16 6,44 30,58' fill='%23274d9e'/%3E%3Cpolygon points='22,14 30,2 30,30' fill='%236f93e8'/%3E%3Cpolygon points='38,14 30,2 30,30' fill='%238fb4ff'/%3E%3Cpolygon points='90,2 114,16 114,44 90,58 66,44 66,16' fill='%23152a63'/%3E%3Cpolygon points='90,2 114,16 90,30 66,16' fill='%235fd4e0'/%3E%3Cpolygon points='90,30 114,16 114,44 90,58' fill='%230f1a3d'/%3E%3Cpolygon points='90,30 66,16 66,44 90,58' fill='%231c3f8f'/%3E%3Cpolygon points='82,14 90,2 90,30' fill='%23a6c4ff'/%3E%3Cpolygon points='98,14 90,2 90,30' fill='%23c8ddff'/%3E%3Cpolygon points='60,30 84,44 84,72 60,86 36,72 36,44' fill='%230f1a3d'/%3E%3Cpolygon points='60,30 84,44 60,58 36,44' fill='%236f93e8'/%3E%3Cpolygon points='60,58 84,44 84,72 60,86' fill='%23152a63'/%3E%3Cpolygon points='60,58 36,44 36,72 60,86' fill='%231c3f8f'/%3E%3Cpolygon points='52,42 60,30 60,58' fill='%235fd4e0'/%3E%3Cpolygon points='68,42 60,30 60,58' fill='%23a6c4ff'/%3E%3Cpolygon points='0,30 24,44 24,72 0,86 -24,72 -24,44' fill='%231c3f8f'/%3E%3Cpolygon points='0,30 24,44 0,58 -24,44' fill='%233a6ede'/%3E%3Cpolygon points='0,58 24,44 24,72 0,86' fill='%230f1a3d'/%3E%3Cpolygon points='120,30 144,44 144,72 120,86 96,72 96,44' fill='%231c3f8f'/%3E%3Cpolygon points='120,30 144,44 120,58 96,44' fill='%233a6ede'/%3E%3Cpolygon points='120,58 144,44 144,72 120,86' fill='%230f1a3d'/%3E%3Cpolygon points='30,58 54,72 54,100 30,114 6,100 6,72' fill='%23152a63'/%3E%3Cpolygon points='30,58 54,72 30,86 6,72' fill='%235fd4e0'/%3E%3Cpolygon points='30,86 54,72 54,100 30,114' fill='%230f1a3d'/%3E%3Cpolygon points='30,86 6,72 6,100 30,114' fill='%231c3f8f'/%3E%3Cpolygon points='90,58 114,72 114,100 90,114 66,100 66,72' fill='%230f1a3d'/%3E%3Cpolygon points='90,58 114,72 90,86 66,72' fill='%233a6ede'/%3E%3Cpolygon points='90,86 114,72 114,100 90,114' fill='%23152a63'/%3E%3Cpolygon points='90,86 66,72 66,100 90,114' fill='%23274d9e'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat:repeat;
+    background-size:120px 104px;
     background-position:center top;
-    opacity:0.55;
-    animation:gemWallDrift 40s linear infinite;
-  }
-  @keyframes gemWallDrift{
-    0%{ transform:translateY(0); }
-    100%{ transform:translateY(-33.333%); }
   }
   .gem-wall::before{
     content:'';
     position:absolute; inset:0;
-    background:linear-gradient(90deg, var(--bg) 0%, transparent 35%, transparent 100%);
+    background:linear-gradient(90deg, var(--bg) 0%, var(--bg) 8%, transparent 55%);
     z-index:1;
   }
   .gem-wall::after{
     content:'';
     position:absolute; inset:0;
-    background:linear-gradient(180deg, var(--bg) 0%, transparent 8%, transparent 92%, var(--bg) 100%);
+    background:linear-gradient(180deg, var(--bg) 0%, transparent 10%, transparent 90%, var(--bg) 100%);
     z-index:1;
   }
 
