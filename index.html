@@ -1516,25 +1516,29 @@
   }
   function run(){
     reset(); btn.disabled=true;
+    // Stage 1: the buyer's requirements load in, one by one
+    var REQ_GAP=330, STEP_GAP=850;
+    state.textContent='Loading requirements…';
     reqs.forEach(function(r,i){
-      at(250+i*230,function(){r.classList.add('on','scan');});
-      at(250+i*230+260,function(){r.classList.remove('scan');});
+      at(300+i*REQ_GAP,function(){r.classList.add('on','scan');});
+      at(300+i*REQ_GAP+300,function(){r.classList.remove('scan');});
     });
-    var t0=450;
+    var t0=300+reqs.length*REQ_GAP+500;   // reasoning starts only once all requirements are loaded
+    // Stage 2: the engine reasons through them
+    var labels=['Reading brief…','Searching network…','Filtering…','Matching price…','Checking exclusivity…','Ranking…'];
     steps.forEach(function(st,i){
-      at(t0+i*620,function(){
-        st.classList.add('active');
-        state.textContent=['Reading brief…','Searching network…','Filtering…','Matching price…','Checking exclusivity…','Ranking…'][i];
-      });
-      at(t0+i*620+520,function(){st.classList.remove('active'); st.classList.add('done');});
+      at(t0+i*STEP_GAP,function(){st.classList.add('active'); state.textContent=labels[i];});
+      at(t0+i*STEP_GAP+700,function(){st.classList.remove('active'); st.classList.add('done');});
     });
-    var ts=t0+steps.length*620+100;
-    state.textContent='Reading brief…';
-    at(ts-80,function(){state.textContent='Scoring…';});
-    scores.forEach(function(sc,i){at(ts+i*260,function(){sc.classList.add('on');});});
-    var tg=ts+scores.length*260+500;
-    gems.forEach(function(g,i){at(tg+i*320,function(){g.classList.add('on');});});
-    at(tg+gems.length*320+100,finish);
+    // Stage 3: scores fill
+    var ts=t0+steps.length*STEP_GAP+150;
+    at(ts-100,function(){state.textContent='Scoring…';});
+    scores.forEach(function(sc,i){at(ts+i*380,function(){sc.classList.add('on');});});
+    // Stage 4: hidden gems surface last
+    var tg=ts+scores.length*380+700;
+    at(tg-100,function(){state.textContent='Surfacing matches…';});
+    gems.forEach(function(g,i){at(tg+i*450,function(){g.classList.add('on');});});
+    at(tg+gems.length*450+150,finish);
   }
   function show(){ // final state, no motion
     clear(); panel.classList.remove('js-run'); panel.classList.add('is-done');
