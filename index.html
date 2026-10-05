@@ -272,7 +272,9 @@
     position:absolute; top:-28px; left:0; white-space:nowrap;
     font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint); font-weight:600;
   }
-  .pallet-wrap .consol-col-label{left:0; right:0; text-align:center; letter-spacing:.03em; font-size:9.5px;}
+  .pallet-wrap .consol-col-label{left:0; right:0; text-align:center; letter-spacing:.08em;}
+  .consol-col-label.ready{color:var(--cyan); display:flex; align-items:center; justify-content:center; gap:7px; letter-spacing:.05em; font-size:9.5px;}
+  .consol-col-label.ready svg{flex:none; width:11px; height:11px;}
   .mapcol{position:relative;}
   .mapcol svg{display:block; width:100%; height:auto; overflow:visible;}
   .au{fill:rgba(58,110,222,0.10); stroke:rgba(111,147,232,0.45); stroke-width:1; stroke-linejoin:round;}
@@ -706,7 +708,7 @@
         <p>Small independent producers can't export on their own, so most of their wine never reaches you. We combine it into a single shipment and take care of everything it takes to get there.</p>
       </div>
 
-      <div class="consol" role="img" aria-label="Illustration: wines from nine Australian regions are combined by the matching engine into one mixed pallet of nine different wines for multiple buyers.">
+      <div class="consol" role="img" aria-label="Illustration: wines from nine Australian regions are combined by the matching engine into one export-ready mixed pallet of nine different wines for multiple buyers.">
         <div class="consol-top">
           <span class="engine-dot">Consolidating order</span>
           <span class="tot">9 regions, 14 vineyards &nbsp;→&nbsp; 1 pallet &nbsp;→&nbsp; multiple buyers</span>
@@ -740,7 +742,7 @@
             </svg></div>
           </div>
           <div class="pallet-wrap">
-            <div class="consol-col-label">One pallet, 9 regions, 14 vineyards</div>
+            <div class="consol-col-label ready"><svg viewBox="0 0 12 12" width="11" height="11" aria-hidden="true"><path d="M2 6.4 L5 9.2 L10.2 3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Export-ready. Paperwork handled.</div>
             <svg class="tray" viewBox="0 0 90 183" preserveAspectRatio="none" aria-hidden="true"><path class="ray" d="M0,92 C45,92 45,13.4 90,13.4" vector-effect="non-scaling-stroke"/><path class="ray" d="M0,92 C45,92 45,34.4 90,34.4" vector-effect="non-scaling-stroke"/><path class="ray" d="M0,92 C45,92 45,55.4 90,55.4" vector-effect="non-scaling-stroke"/><path class="ray" d="M0,92 C45,92 45,76.4 90,76.4" vector-effect="non-scaling-stroke"/><path class="ray" d="M0,92 C45,92 45,97.4 90,97.4" vector-effect="non-scaling-stroke"/><path class="ray" d="M0,92 C45,92 45,118.4 90,118.4" vector-effect="non-scaling-stroke"/><path class="ray" d="M0,92 C45,92 45,139.4 90,139.4" vector-effect="non-scaling-stroke"/></svg>
             <svg class="pallet-svg" viewBox="0 0 220 192" role="img" aria-label="A pallet stacked with nine different wines">
               <defs><clipPath id="boxclip"><rect x="7" y="4" width="206" height="152"/></clipPath></defs>
