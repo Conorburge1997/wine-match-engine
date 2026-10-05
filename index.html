@@ -120,6 +120,29 @@
     35%, 100%{transform:translateX(220%);}
   }
   .sheen::after{animation:sweep 6s ease-in-out infinite;}
+  /* The same glint on every panel and card, staggered so they never fire in unison */
+  .consol,.benefit,.explainer-step,.news-carousel{overflow:hidden;}
+  .consol::after,.benefit::after,.explainer-step::after,.news-carousel::after{
+    content:''; position:absolute; top:0; left:0; width:60%; height:100%; z-index:2;
+    background:linear-gradient(115deg, transparent 30%, rgba(166,196,255,0.16) 45%, rgba(255,255,255,0.30) 50%, rgba(166,196,255,0.16) 55%, transparent 70%);
+    transform:translateX(-120%); pointer-events:none;
+    animation:sweep 6s ease-in-out infinite;
+  }
+  .consol::after{animation-delay:1.5s;}
+  .benefit:nth-child(1)::after{animation-delay:.6s;}
+  .benefit:nth-child(2)::after{animation-delay:2.2s;}
+  .benefit:nth-child(3)::after{animation-delay:3.8s;}
+  .explainer-step-1::after{animation-delay:0s;}
+  .explainer-step-2::after{animation-delay:.5s;}
+  .explainer-step-3::after{animation-delay:1s;}
+  .explainer-step-4::after{animation-delay:1.5s;}
+  .explainer-step-5::after{animation-delay:2s;}
+  .explainer-step-6::after{animation-delay:2.5s;}
+  .explainer-step-7::after{animation-delay:3s;}
+  .news-carousel::after{animation-delay:3s;}
+  @media (prefers-reduced-motion: reduce){
+    .sheen::after,.consol::after,.benefit::after,.explainer-step::after,.news-carousel::after{animation:none; display:none;}
+  }
 
   /* Faceted gem mark */
   .gem-mark{display:block;}
