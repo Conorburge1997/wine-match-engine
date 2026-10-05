@@ -262,6 +262,51 @@
   .engine-line:last-child{border-bottom:none;}
   .engine-line .val{color:var(--sapphire-glint);}
   .engine-arrow{display:flex; align-items:center; justify-content:center; color:var(--sapphire-bright); font-size:18px;}
+  /* engine: staged "thinking" run */
+  .engine-status{display:inline-flex; align-items:center; gap:14px;}
+  .engine-state{color:var(--ink-faint); transition:color .3s;}
+  .engine-panel.is-done .engine-state{color:var(--cyan);}
+  .engine-rerun{font:inherit; font-size:10.5px; letter-spacing:0.04em; color:var(--sapphire-glint); background:transparent; border:1px solid var(--border); border-radius:var(--radius); padding:5px 10px; cursor:pointer; transition:border-color .2s, color .2s;}
+  .engine-rerun:hover,.engine-rerun:focus-visible{border-color:var(--sapphire-bright); color:var(--ink);}
+  .engine-rerun[disabled]{opacity:.4; cursor:default;}
+  .engine-line{position:relative;}
+  .engine-col-label .sub{display:block; margin-top:4px; font-weight:400; font-size:10.5px; letter-spacing:0.02em; text-transform:none; color:var(--ink-faint);}
+  /* requirements: lit as the engine reads them */
+  .engine-line.req .val{transition:color .3s, text-shadow .3s;}
+  .engine-line.req::before{content:''; position:absolute; left:-24px; top:0; bottom:0; width:2px; background:var(--cyan); box-shadow:0 0 10px var(--cyan); opacity:0; transition:opacity .25s;}
+  .engine-panel.js-run .engine-line.req{opacity:.28; transition:opacity .35s;}
+  .engine-panel.js-run .engine-line.req.on{opacity:1;}
+  .engine-panel.js-run .engine-line.req.scan::before{opacity:1;}
+  .engine-panel.js-run .engine-line.req.on .val{text-shadow:0 0 12px rgba(111,147,232,0.55);}
+  /* reasoning log */
+  .think{margin:0 0 18px; padding:0; list-style:none;}
+  .think li{display:grid; grid-template-columns:16px 1fr auto; align-items:center; gap:10px; font-size:12.5px; color:var(--ink-dim); padding:5px 0;}
+  .think .ic{width:10px; height:10px; border-radius:50%; border:1px solid var(--ink-faint); position:relative;}
+  .think .ct{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--sapphire-glint); white-space:nowrap;}
+  .think li.done .ic{border-color:var(--cyan); background:var(--cyan); box-shadow:0 0 8px rgba(95,212,224,0.6);}
+  .think li.active .ic{border-color:var(--cyan); border-top-color:transparent; animation:engspin .7s linear infinite;}
+  @keyframes engspin{to{transform:rotate(360deg);}}
+  .engine-panel.js-run .think li{opacity:.25; transition:opacity .3s;}
+  .engine-panel.js-run .think li.active,.engine-panel.js-run .think li.done{opacity:1;}
+  .engine-panel.js-run .think li .ct{opacity:0; transition:opacity .3s;}
+  .engine-panel.js-run .think li.done .ct{opacity:1;}
+  /* scores */
+  .engine-line.score{flex-wrap:wrap; row-gap:6px;}
+  .engine-line.score .bar{flex-basis:100%; height:3px; background:var(--border-soft); border-radius:2px; overflow:hidden;}
+  .engine-line.score .bar i{display:block; height:100%; width:var(--w); background:linear-gradient(90deg,var(--sapphire),var(--cyan)); transform-origin:left; transition:transform .9s cubic-bezier(.2,.7,.2,1);}
+  .engine-panel.js-run .engine-line.score{opacity:0; transition:opacity .3s;}
+  .engine-panel.js-run .engine-line.score.on{opacity:1;}
+  .engine-panel.js-run .engine-line.score .bar i{transform:scaleX(0);}
+  .engine-panel.js-run .engine-line.score.on .bar i{transform:scaleX(1);}
+  /* surfaced gem */
+  .engine-panel.js-run .engine-line.found{opacity:0; transform:translateY(6px); transition:opacity .4s, transform .4s;}
+  .engine-panel.js-run .engine-line.found.on{opacity:1; transform:none;}
+  .engine-col.gem-col{transition:box-shadow .8s;}
+  .engine-panel.is-done .engine-col.gem-col{box-shadow:inset 0 0 60px -20px rgba(95,212,224,0.22);}
+  @media (prefers-reduced-motion: reduce){
+    .think li.active .ic{animation:none;}
+    .engine-line.score .bar i,.engine-line.found,.engine-line.req{transition:none !important;}
+  }
   .stat-row{display:flex; gap:0; border-top:1px solid var(--border-soft);}
   .stat{flex:1; padding:22px 24px; border-right:1px solid var(--border-soft);}
   .stat:last-child{border-right:none;}
@@ -979,35 +1024,47 @@
   <section id="engine">
     <div class="wrap" style="padding-bottom:40px;">
       <div class="section-eyebrow" style="margin-bottom:18px;">The Engine</div>
-      <div class="engine-panel sheen">
+      <div class="engine-panel sheen" id="engine-panel">
         <div class="engine-top">
           <span class="engine-dot mono">MATCH ENGINE — LIVE SCORING</span>
-          <span class="mono">v1.0</span>
+          <span class="engine-status">
+            <span class="mono engine-state" id="engine-state" aria-live="polite">Match found</span>
+            <button class="engine-rerun mono" id="engine-rerun" type="button">Re-run</button>
+            <span class="mono">v1.0</span>
+          </span>
         </div>
         <div class="engine-body">
           <div class="engine-col">
             <div class="engine-col-label">Buyer Requirements</div>
-            <div class="engine-line"><span>Style</span><span class="val">Red</span></div>
-            <div class="engine-line"><span>Varietal</span><span class="val">Pinot Noir</span></div>
-            <div class="engine-line"><span>Body</span><span class="val">Medium</span></div>
-            <div class="engine-line"><span>Region</span><span class="val">Yarra Valley</span></div>
-            <div class="engine-line"><span>Price band</span><span class="val">$30–55 / bottle</span></div>
-            <div class="engine-line"><span>Volume</span><span class="val">20 bottles</span></div>
-            <div class="engine-line"><span>Exclusivity</span><span class="val">Never sold in my market</span></div>
+            <div class="engine-line req"><span>Style</span><span class="val">Red</span></div>
+            <div class="engine-line req"><span>Varietal</span><span class="val">Pinot Noir</span></div>
+            <div class="engine-line req"><span>Body</span><span class="val">Medium</span></div>
+            <div class="engine-line req"><span>Region</span><span class="val">Yarra Valley</span></div>
+            <div class="engine-line req"><span>Price band</span><span class="val">$30–55 / bottle</span></div>
+            <div class="engine-line req"><span>Volume</span><span class="val">20 bottles</span></div>
+            <div class="engine-line req"><span>Exclusivity</span><span class="val">Never sold in my market</span></div>
           </div>
           <div class="engine-col">
-            <div class="engine-col-label">AI Match Score</div>
-            <div class="engine-line"><span>Flavor fit</span><span class="val">94%</span></div>
-            <div class="engine-line"><span>Price fit</span><span class="val">88%</span></div>
-            <div class="engine-line"><span>Supply confidence</span><span class="val">Verified</span></div>
-            <div class="engine-line"><span>Overall</span><span class="val">Strong match</span></div>
+            <div class="engine-col-label">AI Reasoning<span class="sub">Illustrative run</span></div>
+            <ol class="think" id="think">
+              <li><span class="ic"></span><span>Reading the buyer brief</span><span class="ct">7 requirements</span></li>
+              <li><span class="ic"></span><span>Searching the vineyard network</span><span class="ct">3,412 wines</span></li>
+              <li><span class="ic"></span><span>Filtering by varietal, style, region</span><span class="ct">214</span></li>
+              <li><span class="ic"></span><span>Matching price band and volume</span><span class="ct">38</span></li>
+              <li><span class="ic"></span><span>Excluding wines already in your market</span><span class="ct">6</span></li>
+              <li><span class="ic"></span><span>Ranking by flavor fit</span><span class="ct">1 match</span></li>
+            </ol>
+            <div class="engine-line score"><span>Flavor fit</span><span class="val">94%</span><span class="bar" style="--w:94%"><i></i></span></div>
+            <div class="engine-line score"><span>Price fit</span><span class="val">88%</span><span class="bar" style="--w:88%"><i></i></span></div>
+            <div class="engine-line score"><span>Supply confidence</span><span class="val">Verified</span><span class="bar" style="--w:100%"><i></i></span></div>
+            <div class="engine-line score"><span>Overall</span><span class="val">Strong match</span><span class="bar" style="--w:92%"><i></i></span></div>
           </div>
-          <div class="engine-col">
+          <div class="engine-col gem-col">
             <div class="engine-col-label">Hidden Gem Surfaced</div>
-            <div class="engine-line"><span>Region</span><span class="val">McLaren Vale</span></div>
-            <div class="engine-line"><span>Vineyard</span><span class="val">Family-owned, 3rd gen</span></div>
-            <div class="engine-line"><span>Export history</span><span class="val">Never exported</span></div>
-            <div class="engine-line"><span>Quantity</span><span class="val">12 cases available</span></div>
+            <div class="engine-line found"><span>Region</span><span class="val">McLaren Vale</span></div>
+            <div class="engine-line found"><span>Vineyard</span><span class="val">Family-owned, 3rd gen</span></div>
+            <div class="engine-line found"><span>Export history</span><span class="val">Never exported</span></div>
+            <div class="engine-line found"><span>Quantity</span><span class="val">12 cases available</span></div>
           </div>
         </div>
         <div class="stat-row">
@@ -1340,6 +1397,63 @@
   Array.prototype.forEach.call(document.querySelectorAll('.nav-links a.navlink'), function(a){ a.addEventListener('click', function(){ setOpen(false); }); });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape') setOpen(false); });
   window.addEventListener('resize', function(){ if(window.innerWidth > 960) setOpen(false); });
+})();
+</script>
+<script>
+(function(){
+  var panel=document.getElementById('engine-panel'); if(!panel) return;
+  var state=document.getElementById('engine-state'), btn=document.getElementById('engine-rerun');
+  var reqs=[].slice.call(panel.querySelectorAll('.engine-line.req'));
+  var steps=[].slice.call(panel.querySelectorAll('#think li'));
+  var scores=[].slice.call(panel.querySelectorAll('.engine-line.score'));
+  var gems=[].slice.call(panel.querySelectorAll('.engine-line.found'));
+  var timers=[], started=false;
+  var reduce=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function at(ms,fn){timers.push(setTimeout(fn,ms));}
+  function clear(){timers.forEach(clearTimeout); timers=[];}
+  function reset(){
+    clear();
+    panel.classList.add('js-run'); panel.classList.remove('is-done');
+    [].concat(reqs,scores,gems).forEach(function(e){e.classList.remove('on','scan');});
+    steps.forEach(function(e){e.classList.remove('active','done');});
+    state.textContent='Reading brief…';
+  }
+  function finish(){
+    panel.classList.add('is-done'); state.textContent='Match found'; btn.disabled=false;
+  }
+  function run(){
+    reset(); btn.disabled=true;
+    reqs.forEach(function(r,i){
+      at(250+i*230,function(){r.classList.add('on','scan');});
+      at(250+i*230+260,function(){r.classList.remove('scan');});
+    });
+    var t0=450;
+    steps.forEach(function(st,i){
+      at(t0+i*620,function(){
+        st.classList.add('active');
+        state.textContent=['Reading brief…','Searching network…','Filtering…','Matching price…','Checking exclusivity…','Ranking…'][i];
+      });
+      at(t0+i*620+520,function(){st.classList.remove('active'); st.classList.add('done');});
+    });
+    var ts=t0+steps.length*620+100;
+    state.textContent='Reading brief…';
+    at(ts-80,function(){state.textContent='Scoring…';});
+    scores.forEach(function(sc,i){at(ts+i*260,function(){sc.classList.add('on');});});
+    var tg=ts+scores.length*260+500;
+    gems.forEach(function(g,i){at(tg+i*220,function(){g.classList.add('on');});});
+    at(tg+gems.length*220+100,finish);
+  }
+  function show(){ // final state, no motion
+    clear(); panel.classList.remove('js-run'); panel.classList.add('is-done');
+    steps.forEach(function(e){e.classList.add('done');}); state.textContent='Match found'; btn.disabled=false;
+  }
+  btn.addEventListener('click',function(){reduce?show():run();});
+  if(reduce || !('IntersectionObserver' in window)){ show(); return; }
+  panel.classList.add('js-run');
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting && !started){started=true; io.disconnect(); run();} });
+  },{threshold:0.35});
+  io.observe(panel);
 })();
 </script>
 </body>
