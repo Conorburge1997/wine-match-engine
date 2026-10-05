@@ -301,11 +301,25 @@
   /* surfaced gem */
   .engine-panel.js-run .engine-line.found{opacity:0; transform:translateY(6px); transition:opacity .4s, transform .4s;}
   .engine-panel.js-run .engine-line.found.on{opacity:1; transform:none;}
+  .mcards{display:flex; flex-direction:column; gap:10px;}
+  .mcard{all:unset; box-sizing:border-box; display:grid; grid-template-columns:26px 1fr auto; gap:12px; align-items:center; padding:12px 14px; border:1px solid var(--border-soft); background:var(--surface); cursor:pointer; transition:border-color .2s, background .2s, box-shadow .3s;}
+  .mcard:hover{border-color:var(--border);}
+  .mcard:focus-visible{outline:2px solid var(--sapphire-bright); outline-offset:2px;}
+  .mcard[aria-checked="true"]{border-color:var(--cyan); background:var(--surface-2); box-shadow:0 0 24px -8px rgba(95,212,224,0.5);}
+  .mrank{width:24px; height:24px; border:1px solid var(--border); border-radius:50%; display:grid; place-items:center; font-size:11px; color:var(--ink-dim);}
+  .mcard[aria-checked="true"] .mrank{border-color:var(--cyan); color:var(--cyan);}
+  .mmain{display:flex; flex-direction:column; gap:2px; min-width:0;}
+  .mmain b{font-weight:600; font-size:13.5px; color:var(--ink);}
+  .mmain i{font-style:normal; font-size:12px; color:var(--ink-dim);}
+  .mmain em{font-style:normal; font-size:11.5px; color:var(--sapphire-glint);}
+  .mpct{font-family:'JetBrains Mono',monospace; font-size:15px; color:var(--sapphire-glint);}
+  .engine-panel.js-run .mcard{opacity:0; transform:translateY(6px); transition:opacity .4s, transform .4s, border-color .2s, background .2s, box-shadow .3s;}
+  .engine-panel.js-run .mcard.on{opacity:1; transform:none;}
   .engine-col.gem-col{transition:box-shadow .8s;}
   .engine-panel.is-done .engine-col.gem-col{box-shadow:inset 0 0 60px -20px rgba(95,212,224,0.22);}
   @media (prefers-reduced-motion: reduce){
     .think li.active .ic{animation:none;}
-    .engine-line.score .bar i,.engine-line.found,.engine-line.req{transition:none !important;}
+    .engine-line.score .bar i,.engine-line.found,.engine-line.req,.mcard{transition:none !important;}
   }
   .stat-row{display:flex; gap:0; border-top:1px solid var(--border-soft);}
   .stat{flex:1; padding:22px 24px; border-right:1px solid var(--border-soft);}
@@ -1028,7 +1042,7 @@
         <div class="engine-top">
           <span class="engine-dot mono">MATCH ENGINE — LIVE SCORING</span>
           <span class="engine-status">
-            <span class="mono engine-state" id="engine-state" aria-live="polite">Match found</span>
+            <span class="mono engine-state" id="engine-state" aria-live="polite">3 matches found</span>
             <button class="engine-rerun mono" id="engine-rerun" type="button">Re-run</button>
             <span class="mono">v1.0</span>
           </span>
@@ -1039,7 +1053,7 @@
             <div class="engine-line req"><span>Style</span><span class="val">Red</span></div>
             <div class="engine-line req"><span>Varietal</span><span class="val">Pinot Noir</span></div>
             <div class="engine-line req"><span>Body</span><span class="val">Medium</span></div>
-            <div class="engine-line req"><span>Region</span><span class="val">Yarra Valley</span></div>
+            <div class="engine-line req"><span>Region</span><span class="val">Cool-climate regions</span></div>
             <div class="engine-line req"><span>Price band</span><span class="val">$30–55 / bottle</span></div>
             <div class="engine-line req"><span>Volume</span><span class="val">20 bottles</span></div>
             <div class="engine-line req"><span>Exclusivity</span><span class="val">Never sold in my market</span></div>
@@ -1052,19 +1066,32 @@
               <li><span class="ic"></span><span>Filtering by varietal, style, region</span><span class="ct">214</span></li>
               <li><span class="ic"></span><span>Matching price band and volume</span><span class="ct">38</span></li>
               <li><span class="ic"></span><span>Excluding wines already in your market</span><span class="ct">6</span></li>
-              <li><span class="ic"></span><span>Ranking by flavor fit</span><span class="ct">1 match</span></li>
+              <li><span class="ic"></span><span>Ranking by overall fit</span><span class="ct">3 matches</span></li>
             </ol>
-            <div class="engine-line score"><span>Flavor fit</span><span class="val">94%</span><span class="bar" style="--w:94%"><i></i></span></div>
-            <div class="engine-line score"><span>Price fit</span><span class="val">88%</span><span class="bar" style="--w:88%"><i></i></span></div>
-            <div class="engine-line score"><span>Supply confidence</span><span class="val">Verified</span><span class="bar" style="--w:100%"><i></i></span></div>
-            <div class="engine-line score"><span>Overall</span><span class="val">Strong match</span><span class="bar" style="--w:92%"><i></i></span></div>
+            <div class="engine-line score"><span>Flavor fit</span><span class="val" data-k="flavor">94%</span><span class="bar" style="--w:94%"><i></i></span></div>
+            <div class="engine-line score"><span>Price fit</span><span class="val" data-k="price">88%</span><span class="bar" style="--w:88%"><i></i></span></div>
+            <div class="engine-line score"><span>Supply confidence</span><span class="val" data-k="supply">Verified</span><span class="bar" style="--w:100%"><i></i></span></div>
+            <div class="engine-line score"><span>Overall</span><span class="val" data-k="overall">Strong match</span><span class="bar" style="--w:92%"><i></i></span></div>
           </div>
           <div class="engine-col gem-col">
-            <div class="engine-col-label">Hidden Gem Surfaced</div>
-            <div class="engine-line found"><span>Region</span><span class="val">McLaren Vale</span></div>
-            <div class="engine-line found"><span>Vineyard</span><span class="val">Family-owned, 3rd gen</span></div>
-            <div class="engine-line found"><span>Export history</span><span class="val">Never exported</span></div>
-            <div class="engine-line found"><span>Quantity</span><span class="val">12 cases available</span></div>
+            <div class="engine-col-label">Hidden Gems Surfaced<span class="sub">Select a match to compare</span></div>
+            <div class="mcards" role="radiogroup" aria-label="Matched wines">
+              <button type="button" class="mcard" role="radio" aria-checked="true" data-flavor="94" data-price="88" data-supply="Verified" data-supplyw="100" data-overall="Strong match" data-overallw="92">
+                <span class="mrank">1</span>
+                <span class="mmain"><b>Upper Yarra Valley</b><i>Family-owned, 3rd gen</i><em>Never exported · 12 cases</em></span>
+                <span class="mpct">94%</span>
+              </button>
+              <button type="button" class="mcard" role="radio" aria-checked="false" data-flavor="91" data-price="93" data-supply="Verified" data-supplyw="100" data-overall="Strong match" data-overallw="90">
+                <span class="mrank">2</span>
+                <span class="mmain"><b>Macedon Ranges</b><i>Boutique estate, 2nd gen</i><em>Never exported · 8 cases</em></span>
+                <span class="mpct">91%</span>
+              </button>
+              <button type="button" class="mcard" role="radio" aria-checked="false" data-flavor="88" data-price="84" data-supply="Confirmed" data-supplyw="85" data-overall="Good match" data-overallw="82">
+                <span class="mrank">3</span>
+                <span class="mmain"><b>Tamar Valley</b><i>Small estate, 1st gen</i><em>Never exported · 20 cases</em></span>
+                <span class="mpct">88%</span>
+              </button>
+            </div>
           </div>
         </div>
         <div class="stat-row">
@@ -1406,7 +1433,7 @@
   var reqs=[].slice.call(panel.querySelectorAll('.engine-line.req'));
   var steps=[].slice.call(panel.querySelectorAll('#think li'));
   var scores=[].slice.call(panel.querySelectorAll('.engine-line.score'));
-  var gems=[].slice.call(panel.querySelectorAll('.engine-line.found'));
+  var gems=[].slice.call(panel.querySelectorAll('.mcard'));
   var timers=[], started=false;
   var reduce=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   function at(ms,fn){timers.push(setTimeout(fn,ms));}
@@ -1419,7 +1446,7 @@
     state.textContent='Reading brief…';
   }
   function finish(){
-    panel.classList.add('is-done'); state.textContent='Match found'; btn.disabled=false;
+    panel.classList.add('is-done'); state.textContent='3 matches found'; btn.disabled=false;
   }
   function run(){
     reset(); btn.disabled=true;
@@ -1440,13 +1467,20 @@
     at(ts-80,function(){state.textContent='Scoring…';});
     scores.forEach(function(sc,i){at(ts+i*260,function(){sc.classList.add('on');});});
     var tg=ts+scores.length*260+500;
-    gems.forEach(function(g,i){at(tg+i*220,function(){g.classList.add('on');});});
-    at(tg+gems.length*220+100,finish);
+    gems.forEach(function(g,i){at(tg+i*320,function(){g.classList.add('on');});});
+    at(tg+gems.length*320+100,finish);
   }
   function show(){ // final state, no motion
     clear(); panel.classList.remove('js-run'); panel.classList.add('is-done');
-    steps.forEach(function(e){e.classList.add('done');}); state.textContent='Match found'; btn.disabled=false;
+    steps.forEach(function(e){e.classList.add('done');}); state.textContent='3 matches found'; btn.disabled=false;
   }
+  var cards=gems;
+  function pick(c){
+    cards.forEach(function(x){x.setAttribute('aria-checked',x===c?'true':'false');});
+    var d=c.dataset, set=function(k,t,w){var v=panel.querySelector('[data-k="'+k+'"]'); v.textContent=t; v.parentNode.querySelector('.bar').style.setProperty('--w',w+'%');};
+    set('flavor',d.flavor+'%',d.flavor); set('price',d.price+'%',d.price); set('supply',d.supply,d.supplyw); set('overall',d.overall,d.overallw);
+  }
+  cards.forEach(function(c){c.addEventListener('click',function(){pick(c);});});
   btn.addEventListener('click',function(){reduce?show():run();});
   if(reduce || !('IntersectionObserver' in window)){ show(); return; }
   panel.classList.add('js-run');
