@@ -676,19 +676,19 @@
 
   /* About */
   .about-card{order:-1;}
-  .about-grid{display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1.5fr); gap:56px; align-items:start;}
+  .about-grid{display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1.45fr); gap:56px; align-items:stretch;}
   .about-story p{color:var(--ink-dim); font-size:15.5px; line-height:1.75; margin:0 0 18px; max-width:640px;}
   .about-story p.about-close{color:var(--ink); font-family:'Fraunces',serif; font-size:19px; line-height:1.5; margin-top:26px; padding-left:18px; border-left:2px solid var(--cyan);}
-  .about-card{position:relative; border:1px solid var(--border); background:linear-gradient(160deg, var(--surface) 0%, var(--bg-2) 100%); padding:28px 26px 26px; box-shadow:inset 0 1px 0 rgba(166,196,255,0.12), 0 30px 60px -30px rgba(58,110,222,0.3);}
+  .about-card{position:relative; border:1px solid var(--border); background:linear-gradient(160deg, var(--surface) 0%, var(--bg-2) 100%); padding:22px 22px 20px; box-shadow:inset 0 1px 0 rgba(166,196,255,0.12), 0 30px 60px -30px rgba(58,110,222,0.3);}
   .about-photo{margin-bottom:16px;}
-  .about-photos{display:grid; grid-template-columns:1.55fr 1fr; grid-template-rows:1fr 1fr; gap:8px; margin-bottom:20px; aspect-ratio:1.28/1;}
-  .about-photos img{width:100%; height:100%; object-fit:cover; display:block; border:1px solid var(--border); min-height:0;}
-  .about-photos .ap-main{grid-row:1 / span 2; grid-column:1;}
-  .about-photos .ap-a{grid-column:2; grid-row:1;}
-  .about-photos .ap-b{grid-column:2; grid-row:2;}
+  .about-photos{display:grid; grid-template-columns:1.7fr 1fr 1fr; gap:6px; margin-bottom:14px; align-items:end;}
+  .about-photos img{width:100%; height:auto; aspect-ratio:1/1; object-fit:cover; display:block; border:1px solid var(--border);}
+  .about-photos .ap-main{grid-column:1; object-position:50% 25%;}
+  .about-photos .ap-a{grid-column:2;}
+  .about-photos .ap-b{grid-column:3;}
   .about-name{font-family:'Fraunces',serif; font-size:22px; color:var(--ink);}
   .about-role{font-size:11px; letter-spacing:0.08em; color:var(--cyan); margin:4px 0 18px;}
-  .about-bio{font-size:13.5px; line-height:1.65; color:var(--ink-dim); margin:0 0 12px;}
+  .about-bio{font-size:13px; line-height:1.6; color:var(--ink-dim); margin:0 0 12px;}
   .about-bio:first-of-type{padding-top:16px; border-top:1px solid var(--border-soft);}
   .about-roleline{display:flex; align-items:center; gap:10px; margin:4px 0 18px;}
   .about-roleline .about-role{margin:0;}
