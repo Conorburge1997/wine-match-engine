@@ -162,7 +162,8 @@
     backdrop-filter:blur(14px);
     border-bottom:1px solid var(--border-soft);
   }
-  section[id], .wrap[id]{ scroll-margin-top:79px; }
+  section[id], .wrap[id]{ scroll-margin-top:60px; }
+  @media (max-width:960px){ section[id], .wrap[id]{ scroll-margin-top:44px; } }
   section[id]{ padding-top:40px; }
   .nav{display:flex; align-items:center; justify-content:space-between; padding:18px 0;}
   .brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink);}
@@ -446,9 +447,9 @@
 
   /* compact the Difference section so it fits one screen */
   @media (min-width:961px){
-    #difference{padding:56px 0 48px;}
-    #difference .section-head{margin-bottom:24px;}
-    #difference .benefits{margin-bottom:18px;}
+    #difference{padding:40px 0 48px;}
+    #difference .section-head{margin-bottom:16px;}
+    #difference .benefits{margin-bottom:14px;}
     #difference .benefit{padding:18px 22px 20px;}
     #difference .consol{margin-bottom:0;}
     #difference .consol-top{padding:10px 24px;}
@@ -700,7 +701,7 @@
 
   /* About */
   .about-card{order:-1;}
-  #about{padding:56px 0;}
+  #about{padding:40px 0 56px;}
   #about .section-head{margin-bottom:30px;}
   .about-grid{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.6fr); gap:44px; align-items:stretch;}
   .about-story p{color:var(--ink-dim); font-size:15.5px; line-height:1.75; margin:0 0 18px; max-width:640px;}
