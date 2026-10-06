@@ -294,7 +294,7 @@
     .results-main .brief-recap{margin-bottom:12px;}
     .results-main .results-summary{margin-bottom:12px;}
     .results-layout{gap:28px;}
-    .group-track .result-card{padding:12px 16px; gap:5px; min-width:0; max-width:none; flex:1 1 0;}
+    .group-track .result-card{padding:12px 16px; gap:5px; min-width:0; max-width:none; flex:0 0 calc((100% - 28px) / 3);}
     .group-track .result-card .card-image{height:64px; margin:-2px 0 0;}
     .group-track .result-card h4{font-size:14px;}
     .group-track .result-card .card-meta{font-size:11.5px; gap:1px;}
@@ -1424,7 +1424,7 @@
       const section = document.createElement("div");
       section.className = "result-group";
       section.innerHTML =
-        '<div class="result-group-head"><h3>'+g.label+'</h3><span class="group-count">top '+g.results.length+'</span></div>' +
+        '<div class="result-group-head"><h3>'+g.label+'</h3><span class="group-count">top matches</span></div>' +
         '<div class="result-row"></div>';
       if(i < groups.length-1){
         const nb = document.createElement("button");
