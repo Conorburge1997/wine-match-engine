@@ -712,13 +712,7 @@
     .aw-slide p{color:var(--ink-dim); font-size:13px; line-height:1.55; margin:0 0 11px;}
     .aw-slide .aw-box{min-height:0; display:flex; flex-direction:column; justify-content:center;}
     .aw-inner{display:flow-root;}
-    .aw-big{font-family:'Fraunces',serif; font-size:1.5em; line-height:1.12; font-weight:500; color:var(--sapphire-glint); letter-spacing:-.01em;}
-    .aw-story p.aw-lead{font-family:'Fraunces',serif; font-size:26px; line-height:1.34; color:var(--ink); margin:0 0 20px;}
-    .aw-story p.aw-pull{margin:18px 0 0; font-family:'Fraunces',serif; font-style:italic; color:var(--sapphire-glint); font-size:25px; line-height:1.35;}
-    .aw-creds p.aw-lead{font-family:'Fraunces',serif; font-size:19px; line-height:1.45; color:var(--ink); margin-bottom:14px;}
-    .aw-creds p{font-size:15.5px; line-height:1.62; margin:0 0 14px;}
     .aw-story .aw-vy{height:112px; object-position:50% 68%; margin-bottom:18px;}
-    .aw-story .aw-vy + p.aw-lead{font-size:23px;}
     .aw-story .aw-port{height:112px; object-position:50% 60%;}
     .aw-creds .aw-banner{height:130px; object-position:50% 16%;}
     .aw-line{opacity:0; transform:translateY(10px); transition:opacity .7s ease, transform .7s ease;}
@@ -727,7 +721,10 @@
     .aw-sec:nth-of-type(1){border-top:0; padding-top:0;}
     .aw-sec:last-child{padding-bottom:0;}
     .aw-sec p{margin:0;}
-    .aw-story p{font-size:17px; line-height:1.65; margin:0 0 16px;}
+    .aw-story p,.aw-creds p{font-size:18px; line-height:1.62; margin:0 0 16px;}
+    .aw-story p:last-child,.aw-creds p:last-child{margin-bottom:0;}
+    .aw-key{font-size:1.18em; line-height:1.3;}
+    .aw-story p.aw-pull{font-size:21px; line-height:1.4; margin-top:6px;}
     .aw-story .aw-box{justify-content:center;}
     .aw-creds p{font-size:16px; line-height:1.65; margin-bottom:18px;}
     .aw-creds .about-name{font-size:24px;}
@@ -1689,20 +1686,20 @@
   var in1=el("div","aw-inner"); in1.appendChild(img); in1.appendChild(bq); in1.appendChild(el("div","aw-by","<b>CONOR</b> · Founder"+LI)); b1.appendChild(in1);
   s1.appendChild(b1);
   // 2: the story
-  function big(t,ws){ ws.forEach(function(w){ t=t.replace(w,'<span class="aw-big">'+w+'</span>'); }); return t; }
   function sentences(t){ return t.match(/[^.]+\.(?:\s|$)/g).map(function(x){ return x.trim(); }); }
   var storySlides=Array.prototype.map.call(ps,function(p,k){
     var sl=el("div","aw-slide aw-story"), bx=el("div","aw-box"), inn=el("div","aw-inner"), n=0;
     function line(cls,t){ var d=el("p","aw-line "+cls,t); d.style.transitionDelay=(n++*0.28)+"s"; inn.appendChild(d); }
     var ss=sentences(p.textContent);
-    if(k===1){ var ban=el("img","aw-banner"); ban.src="assets/cellar.jpg"; ban.alt="A restaurant wine cellar stocked with bottles"; ban.width=650; ban.height=385; inn.appendChild(ban); line("",big(ss.join(" "),["boutique, distinctive Australian wine","no reliable way to find it"])); }
-    else if(k===0){ var vy=el("img","aw-banner aw-vy"); vy.src="assets/vineyard.jpg"; vy.alt="Vineyard rows at sunset in an Australian wine region"; vy.width=1078; vy.height=720; inn.appendChild(vy); line("aw-lead",ss[0]); line("",big(ss.slice(1).join(" "),["barely represented"])); }
-    else { var pt=el("img","aw-banner aw-port"); pt.src="assets/port.jpg"; pt.alt="A container port with ships and stacked shipping containers"; pt.width=555; pt.height=312; inn.appendChild(pt); line("aw-lead aw-lead2",ss[0]); line("",big(ss.slice(1,-1).join(" "),["Minimum order quantities","licensing and paperwork","limited advertising spend"])); line("aw-pull",ss[ss.length-1]); }
+    function key(t,w){ return t.replace(w,'<span class="aw-key">'+w+'</span>'); }
+    if(k===1){ var ban=el("img","aw-banner"); ban.src="assets/cellar.jpg"; ban.alt="A restaurant wine cellar stocked with bottles"; ban.width=650; ban.height=385; inn.appendChild(ban); line("",key(ss.join(" "),"who wanted boutique, distinctive Australian wine but had no reliable way to find it")); }
+    else if(k===0){ var vy=el("img","aw-banner aw-vy"); vy.src="assets/vineyard.jpg"; vy.alt="Vineyard rows at sunset in an Australian wine region"; vy.width=1078; vy.height=720; inn.appendChild(vy); line("",key(ss.join(" "),"small and medium-sized Australian vineyards barely represented")); }
+    else { var pt=el("img","aw-banner aw-port"); pt.src="assets/port.jpg"; pt.alt="A container port with ships and stacked shipping containers"; pt.width=555; pt.height=312; inn.appendChild(pt); line("",ss.slice(0,-1).join(" ")); line("aw-pull",ss[ss.length-1]); }
     bx.appendChild(inn); sl.appendChild(bx); return sl; });
   // credentials: one flowing piece, photo on top
   var s3=el("div","aw-slide aw-creds"), b3=el("div","aw-box"), in3=el("div","aw-inner");
   var p3=el("img","aw-banner"); p3.src="assets/conference.jpg"; p3.alt="Conor at a business event in Hong Kong"; p3.width=720; p3.height=700; in3.appendChild(p3);
-  [0,1,2].forEach(function(i){ in3.appendChild(el("p",i===0?"aw-lead aw-lead3":"",i===0?big(bios[i].textContent,["go-to-market strategy and AI transformation"]):i===1?big(bios[i].textContent,["large-scale AI"]):bios[i].textContent)); });
+  [0,1,2].forEach(function(i){ in3.appendChild(el("p",null,bios[i].textContent)); });
   b3.appendChild(in3); s3.appendChild(b3);
 
   var slides=[s1,s3].concat(storySlides); slides.forEach(function(s){ track.appendChild(s); });
