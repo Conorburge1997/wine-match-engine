@@ -907,10 +907,14 @@
     @keyframes mray{to{background-position:0 7px;}}
     .consol-foot{border-top:0;}
   }
-  @media (min-width:861px){ .m-node,.m-tot,.m-mid{display:none;} }
+  @media (min-width:861px){ .m-node,.m-tot,.m-mid,svg.m-flow{display:none;} }
   @media (max-width:860px){
     .consol-body > .m-mid{flex:0 0 100%; box-sizing:border-box; position:relative; scroll-snap-align:start; scroll-snap-stop:always; min-height:340px;}
-    .m-mid svg.m-lines{position:absolute; inset:0; width:100%; height:100%; overflow:visible;}
+    .consol-body{position:relative;}
+    svg.m-flow{position:absolute; left:0; top:0; z-index:1; pointer-events:none; overflow:visible;}
+    svg.m-flow .mray{fill:none; stroke:var(--sapphire-bright); stroke-width:1.2; opacity:.6; stroke-dasharray:3 7; animation:flowdash 2.4s linear infinite;}
+    svg.m-flow .mray.out{stroke:var(--cyan); opacity:.85; animation-duration:1.8s;}
+    svg.m-flow .mray:nth-child(even){animation-duration:3s;}
     .m-mid .mray{fill:none; stroke:var(--sapphire-bright); stroke-width:1.2; opacity:.55; stroke-dasharray:3 7; animation:flowdash 2.4s linear infinite; vector-effect:non-scaling-stroke;}
     .m-mid .mray.out{stroke:var(--cyan); opacity:.85; animation-duration:1.8s;}
     .m-mid .mray:nth-child(even){animation-duration:3s;}
@@ -1859,7 +1863,7 @@
   function swipe(track, slides, labels, mount, tabOf, targets){
     if(!track||!slides.length) return;
     var dots=el("div","swipe-dots"+(labels?" has-labels":"")); dots.setAttribute("role","tablist");
-    var btns=(labels&&targets?labels:slides).map(function(s,i){
+    var btns=slides.map(function(s,i){
       var b=el("button",null,'<span class="dot"></span>'+(labels?'<span>'+labels[i]+'</span>':''));
       b.type="button"; b.setAttribute("aria-label","Show "+(labels?labels[i]:"item "+(i+1)));
       b.addEventListener("click",function(){ var t=slides[targets?targets[i]:i]; track.scrollTo({left:t.offsetLeft-track.offsetLeft,behavior:"smooth"}); });
@@ -1884,6 +1888,39 @@
       io.observe(track);
     }
   }
+  function flowLines(body){
+    var NS="http://www.w3.org/2000/svg", svg=document.createElementNS(NS,"svg");
+    svg.setAttribute("class","m-flow"); svg.setAttribute("aria-hidden","true");
+    body.appendChild(svg);
+    var mapSvg=body.querySelector(".mapcol svg"), core=body.querySelector(".m-core svg"), pal=body.querySelector(".pallet-svg");
+    function rel(r,b){ return {l:r.left-b.left+body.scrollLeft, t:r.top-b.top, w:r.width, h:r.height}; }
+    function draw(){
+      if(!mq.matches || !mapSvg || !core || !pal){ svg.innerHTML=""; return; }
+      var b=body.getBoundingClientRect(), W=body.clientWidth, H=body.clientHeight, total=body.scrollWidth;
+      svg.setAttribute("viewBox","0 0 "+total+" "+H); svg.style.width=total+"px"; svg.style.height=H+"px";
+      var c=rel(core.getBoundingClientRect(),b), px=c.l+c.w/2, py=c.t+c.h/2, out="";
+      // left: from each highlighted region on the map into the panda
+      var mr=mapSvg.getBoundingClientRect(), k=mr.width/376;
+      var dots=[].slice.call(mapSvg.querySelectorAll("circle[r='3.2']")).filter(function(d){ return !d.classList.contains("extra"); });
+      dots.forEach(function(d){
+        var x0=mr.left-b.left+body.scrollLeft+(+d.getAttribute("cx"))*k, y0=mr.top-b.top+(+d.getAttribute("cy"))*k;
+        var x1=px-c.w/2-2, y1=py+(y0-(mr.top-b.top+mr.height/2))*0.08, dx=x1-x0;
+        out+='<path class="mray" d="M'+x0+','+y0+' C'+(x0+dx*0.55)+','+y0+' '+(x1-dx*0.3)+','+y1+' '+x1+','+y1+'"/>';
+      });
+      // right: from the panda to each row of boxes on the pallet
+      var p=rel(pal.getBoundingClientRect(),b), kk=p.h/192, xr=px+c.w/2+2, xe=p.l+4*(p.w/220);
+      for(var r=0;r<7;r++){
+        var ye=p.t+(15+22*r)*kk, dx2=xe-xr;
+        out+='<path class="mray out" d="M'+xr+','+py+' C'+(xr+dx2*0.5)+','+py+' '+(xe-dx2*0.4)+','+ye+' '+xe+','+ye+'"/>';
+      }
+      svg.innerHTML=out;
+    }
+    draw();
+    window.addEventListener("resize",draw); window.addEventListener("load",draw);
+    if(window.ResizeObserver) new ResizeObserver(draw).observe(body);
+    if(document.fonts&&document.fonts.ready) document.fonts.ready.then(draw);
+    mq.addEventListener&&mq.addEventListener("change",draw);
+  }
   var ben=document.querySelector("#difference .benefits");
   if(ben) swipe(ben, [].slice.call(ben.children), null, function(d){ ben.parentNode.insertBefore(d, ben.nextSibling); });
   var body=document.querySelector("#difference .consol-body");
@@ -1892,17 +1929,15 @@
     var mid=null;
     if(pw && nodeSvg && !body.querySelector(".m-mid")){
       mid=el("div","m-mid"); mid.setAttribute("aria-hidden","true");
-      var NS="http://www.w3.org/2000/svg", px=50, py=46, paths="";
-      [8,16,24,32,40,50,58,66,74,82,90].forEach(function(y){ paths+='<path class="mray" d="M0,'+y+' C28,'+y+' 28,'+py+' '+(px-9)+','+py+'"/>'; });
-      [14,26,38,50,62,74,86].forEach(function(y){ paths+='<path class="mray out" d="M'+(px+9)+','+py+' C72,'+py+' 72,'+y+' 100,'+y+'"/>'; });
       var core=nodeSvg.outerHTML.replace(/gemg|scang|gemclip/g,function(m){return m+"-m";});
-      mid.innerHTML='<div class="consol-col-label">Matched by our engine</div><svg class="m-lines" viewBox="0 0 100 100" preserveAspectRatio="none">'+paths+'</svg><div class="m-core">'+core+'<span class="m-cap">Matched and consolidated</span><span class="m-sub">Best-fit wine from each vineyard, one pallet</span></div>';
+      mid.innerHTML='<div class="consol-col-label">Matched by our engine</div><div class="m-core">'+core+'<span class="m-cap">Matched and consolidated</span><span class="m-sub">Best-fit wine from each vineyard, one pallet</span></div>';
       body.insertBefore(mid, pw);
     }
     var mc=body.querySelector(".mapcol"), tot=document.querySelector("#difference .consol-top .tot");
     if(mc && tot && !mc.querySelector(".m-tot")){ var mt=el("div","m-tot", tot.textContent.replace(/\s*→\s*/g,"<br>→ ").replace(/\u00a0/g," ")); mc.appendChild(mt); }
     var slides=[mc, body.querySelector(".m-mid"), pw].filter(Boolean);
-    swipe(body, slides, ["1 Sourced","2 One pallet"], function(d){ var c=document.querySelector("#difference .consol"); var foot=c.querySelector(".consol-foot"); c.insertBefore(d, foot); }, [0,1,1], [0,2]);
+    swipe(body, slides, ["1 Sourced","2 Matched","3 Pallet"], function(d){ var c=document.querySelector("#difference .consol"); var foot=c.querySelector(".consol-foot"); c.insertBefore(d, foot); });
+    flowLines(body);
   }
 })();
 </script>
