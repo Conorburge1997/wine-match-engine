@@ -298,7 +298,9 @@
   /* requirements: lit as the engine reads them */
   .engine-line.req .val{transition:color .3s, text-shadow .3s;}
   .engine-line.req::before{content:''; position:absolute; left:-24px; top:0; bottom:0; width:2px; background:var(--cyan); box-shadow:0 0 10px var(--cyan); opacity:0; transition:opacity .25s;}
-  .engine-panel.js-run .engine-line.req{opacity:.28; transition:opacity .35s;}
+  .engine-panel.js-run .engine-line.req{opacity:0; transition:opacity .35s;}
+  .engine-line.req .val.typing::after{content:"\2502"; margin-left:1px; color:var(--cyan); animation:caret .7s steps(1) infinite;}
+  @keyframes caret{50%{opacity:0;}}
   .engine-panel.js-run .engine-line.req.on{opacity:1;}
   .engine-panel.js-run .engine-line.req.scan::before{opacity:1;}
   .engine-panel.js-run .engine-line.req.on .val{text-shadow:0 0 12px rgba(111,147,232,0.55);}
@@ -1192,7 +1194,7 @@
             <div class="engine-line req"><span>Style</span><span class="val">Red</span></div>
             <div class="engine-line req"><span>Varietal</span><span class="val">Pinot Noir</span></div>
             <div class="engine-line req"><span>Body</span><span class="val">Medium</span></div>
-            <div class="engine-line req"><span>Region</span><span class="val">Cool-climate regions</span></div>
+            <div class="engine-line req"><span>Region</span><span class="val">Yarra Valley, or similar</span></div>
             <div class="engine-line req"><span>Price band</span><span class="val">$30–55 / bottle</span></div>
             <div class="engine-line req"><span>Volume</span><span class="val">20 bottles</span></div>
             <div class="engine-line req"><span>Exclusivity</span><span class="val">Never sold in my market</span></div>
@@ -1661,11 +1663,21 @@
   var timers=[], started=false;
   var reduce=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   function at(ms,fn){timers.push(setTimeout(fn,ms));}
+  var vals=reqs.map(function(r){var v=r.querySelector('.val'); v.setAttribute('data-full',v.textContent); return v;});
+  function blank(){vals.forEach(function(v){v.textContent=''; v.classList.remove('typing');});}
+  function fill(){vals.forEach(function(v){v.textContent=v.getAttribute('data-full'); v.classList.remove('typing');});}
+  function typeIn(v,start){
+    var full=v.getAttribute('data-full'), CH=24;
+    at(start,function(){v.classList.add('typing');});
+    for(var c=1;c<=full.length;c++){(function(c){at(start+c*CH,function(){v.textContent=full.slice(0,c);});})(c);}
+    at(start+full.length*CH+120,function(){v.classList.remove('typing');});
+  }
   function clear(){timers.forEach(clearTimeout); timers=[];}
   function reset(){
     clear();
     panel.classList.add('js-run'); panel.classList.remove('is-done');
     [].concat(reqs,scores,gems).forEach(function(e){e.classList.remove('on','scan');});
+    blank();
     steps.forEach(function(e){e.classList.remove('active','done');});
     state.textContent='Reading brief…';
   }
@@ -1675,11 +1687,12 @@
   function run(){
     reset(); btn.disabled=true;
     // Stage 1: the buyer's requirements load in, one by one
-    var REQ_GAP=330, STEP_GAP=850;
+    var REQ_GAP=620, STEP_GAP=850;
     state.textContent='Loading requirements…';
     reqs.forEach(function(r,i){
       at(300+i*REQ_GAP,function(){r.classList.add('on','scan');});
-      at(300+i*REQ_GAP+300,function(){r.classList.remove('scan');});
+      typeIn(vals[i],300+i*REQ_GAP+200);
+      at(300+i*REQ_GAP+560,function(){r.classList.remove('scan');});
     });
     var t0=300+reqs.length*REQ_GAP+500;   // reasoning starts only once all requirements are loaded
     // Stage 2: the engine reasons through them
@@ -1699,7 +1712,7 @@
     at(tg+gems.length*450+150,finish);
   }
   function show(){ // final state, no motion
-    clear(); panel.classList.remove('js-run'); panel.classList.add('is-done');
+    clear(); fill(); panel.classList.remove('js-run'); panel.classList.add('is-done');
     steps.forEach(function(e){e.classList.add('done');}); state.textContent='3 matches found'; btn.disabled=false;
   }
   var cards=gems;
@@ -1711,7 +1724,7 @@
   cards.forEach(function(c){c.addEventListener('click',function(){pick(c);});});
   btn.addEventListener('click',function(){reduce?show():run();});
   if(reduce || !('IntersectionObserver' in window)){ show(); return; }
-  panel.classList.add('js-run');
+  panel.classList.add('js-run'); blank();
   var io=new IntersectionObserver(function(es){
     es.forEach(function(e){ if(e.isIntersecting && !started){started=true; io.disconnect(); run();} });
   },{threshold:0.35});
