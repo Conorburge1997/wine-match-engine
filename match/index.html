@@ -1080,6 +1080,7 @@
 
   // ---------- panel switching ----------
   function showPanel(n){
+    state.panel = n; if(window.briefSaveSoon) window.briefSaveSoon();
     document.querySelectorAll("[data-panel]").forEach(function(p){ p.classList.remove("active"); });
     document.querySelector("[data-panel='"+n+"']").classList.add("active");
     document.querySelectorAll(".progress-step").forEach(function(s){
@@ -1219,6 +1220,7 @@
       });
     }
     renderDesk();
+    window.briefUnlockAll=function(){ unlocked=LAST; renderDesk(); };
     next.addEventListener("click", advance);
     back.addEventListener("click", function(){ go(idx-1); });
     // swipe
@@ -1537,6 +1539,87 @@
     const body = encodeURIComponent(bodyLines.join("\n"));
     window.location.href = "mailto:hello@sapphirepanda.com?subject="+subject+"&body="+body;
   });
+
+
+  // ---------- Save progress so an accidental trip Home doesn't lose the pallet ----------
+  (function(){
+    const KEY="sp-match-progress-v1", MAX_AGE=24*3600*1000;
+    function read(){
+      try{ const d=JSON.parse(localStorage.getItem(KEY)||"null"); if(d && Date.now()-d.t<MAX_AGE) return d; }catch(e){}
+      return null;
+    }
+    function snapshot(){
+      return {
+        t:Date.now(), panel:state.panel||1,
+        form:{
+          name:$("f-name").value, market:singleValue("f-market"), otherCountry:$("f-other-country").value,
+          styles:multiValues("f-style"), bodies:multiValues("f-body"), novelty:singleValue("f-novelty"),
+          pricemin:$("f-pricemin").value, pricemax:$("f-pricemax").value, volume:$("f-volume").value, flavour:$("f-flavour").value
+        },
+        brief:state.brief, groups:state.groups,
+        quantities:Array.from(state.quantities.entries())
+      };
+    }
+    let timer=null;
+    let cleared=false;
+    function save(){
+      if(cleared) return;
+      try{
+        const f=snapshot().form;
+        if(!f.name && !f.market && !f.styles.length && !state.quantities.size){ localStorage.removeItem(KEY); return; }
+        localStorage.setItem(KEY, JSON.stringify(snapshot()));
+      }catch(e){}
+    }
+    window.briefSaveSoon=function(){ clearTimeout(timer); timer=setTimeout(save,250); };
+    ["input","click","change"].forEach(function(ev){ document.addEventListener(ev, window.briefSaveSoon, true); });
+    window.addEventListener("pagehide", save);
+    document.addEventListener("visibilitychange", function(){ if(document.hidden) save(); });
+
+    function clickPicks(id, values){
+      (values||[]).forEach(function(v){
+        const b=document.querySelector("#"+id+' .pick[data-value="'+String(v).replace(/"/g,'\\"')+'"]');
+        if(b && b.getAttribute("aria-pressed")!=="true") b.click();
+      });
+    }
+    function setVal(id,v){ if(v==null||v==="") return; const el=$(id); el.value=v; el.dispatchEvent(new Event("input",{bubbles:true})); }
+
+    function restore(){
+      const d=read(); if(!d) return;
+      const f=d.form||{};
+      setVal("f-name", f.name);
+      clickPicks("f-market", f.market ? [f.market] : []);
+      if(f.market==="Other") setVal("f-other-country", f.otherCountry);
+      clickPicks("f-style", f.styles); clickPicks("f-body", f.bodies); clickPicks("f-novelty", f.novelty ? [f.novelty] : []);
+      setVal("f-pricemin", f.pricemin); setVal("f-pricemax", f.pricemax); setVal("f-volume", f.volume); setVal("f-flavour", f.flavour);
+      if(f.name && f.market && f.styles && f.styles.length && f.pricemin && window.briefUnlockAll) window.briefUnlockAll();
+
+      let restoredPallet=false;
+      if(d.brief && d.groups && d.groups.length && d.panel>=2){
+        state.brief=d.brief;
+        state.quantities=new Map(d.quantities||[]);
+        $("scan-view").style.display="none"; $("results-view").style.display="";
+        renderResults(d.groups);
+        updatePalletBar();
+        if(d.panel>=3 && state.quantities.size){ renderCheckout(); showPanel(3); } else showPanel(2);
+        restoredPallet=state.quantities.size>0;
+      }
+      if(d.panel>=2 || (f.name && f.market)){
+        const bar=document.createElement("div");
+        bar.style.cssText="margin-top:20px;";
+        bar.innerHTML='<div style="display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;border:1px solid var(--border);background:var(--surface);padding:12px 16px;font-size:13.5px;color:var(--ink-dim);">'+
+          '<span>We\'ve restored your '+(restoredPallet?'pallet and selections':'progress')+' from your last visit.</span>'+
+          '<button type="button" class="btn btn-ghost" id="btn-start-over" style="padding:8px 16px;">Start over</button></div>';
+        const first=document.querySelector("section.step");
+        first.parentNode.insertBefore(bar, first);
+        $("btn-start-over").addEventListener("click", function(){
+          cleared=true; try{ localStorage.removeItem(KEY); }catch(e){}
+          location.reload();
+        });
+      }
+    }
+    restore();
+    $("btn-request").addEventListener("click", function(){ try{ localStorage.removeItem(KEY); }catch(e){} });
+  })();
 
   // Nav active-state (Home is never current on this page)
 })();
