@@ -932,7 +932,7 @@
   /* ---- Mobile engine: a self-driving stage with a live funnel ---- */
   .eng-funnel{display:none;}
   @media (max-width: 860px){
-    .engine-body{display:flex !important; gap:0; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; -webkit-overflow-scrolling:touch; overscroll-behavior-x:contain; background:none; align-items:stretch;}
+    .engine-body{display:flex !important; gap:0; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; -webkit-overflow-scrolling:touch; overscroll-behavior-x:contain; background:none; align-items:flex-start; transition:height .3s ease;}
     .engine-body::-webkit-scrollbar{display:none;}
     .engine-body > .engine-col{flex:0 0 100%; box-sizing:border-box; scroll-snap-align:start; scroll-snap-stop:always; padding:22px 24px 24px; min-width:0;}
     .engine-body > .engine-col .engine-col-label{text-align:center;}
@@ -941,7 +941,12 @@
     .engine-top{padding:14px 18px; gap:10px;}
     .engine-status .mono:last-child{display:none;}
     .engine-state{white-space:nowrap;}
-    .engine-dot{font-size:10px;}
+    .engine-dot{font-size:9.5px; white-space:nowrap; letter-spacing:0;}
+    .eng-sub{display:none;}
+    .engine-status{gap:8px; min-width:0;}
+    .engine-state{overflow:hidden; text-overflow:ellipsis; max-width:150px;}
+    .engine-state{font-size:10px;}
+    .engine-rerun{white-space:nowrap; padding:4px 8px; font-size:10px;}
     .eng-funnel{display:block; padding:14px 24px 16px; border-bottom:1px solid var(--border-soft); background:linear-gradient(180deg,rgba(58,110,222,.10),rgba(58,110,222,0));}
     .eng-funnel .ef-row{display:flex; align-items:baseline; justify-content:space-between; gap:12px;}
     .eng-funnel .ef-num{font-family:'Fraunces',serif; font-size:30px; line-height:1; color:var(--ink); transition:color .3s;}
@@ -949,7 +954,7 @@
     .eng-funnel .ef-bar{margin-top:10px; height:4px; background:var(--border-soft); border-radius:2px; overflow:hidden;}
     .eng-funnel .ef-bar i{display:block; height:100%; width:100%; background:linear-gradient(90deg,var(--sapphire),var(--cyan)); transform-origin:left; transition:transform .8s cubic-bezier(.2,.7,.2,1);}
     .engine-panel.is-done .eng-funnel .ef-num{color:var(--cyan);}
-    .stat-row{display:none;}
+    .stat-row{display:none !important;}
     .engine-body > .engine-col{padding:16px 22px 18px;}
     .engine-col-label{margin-bottom:8px;}
     .engine-line{padding:3px 0; font-size:12.5px;}
@@ -1278,7 +1283,7 @@
       <div class="section-eyebrow" style="margin-bottom:18px;">The Engine</div>
       <div class="engine-panel sheen" id="engine-panel">
         <div class="engine-top">
-          <span class="engine-dot mono">MATCH ENGINE — LIVE SCORING</span>
+          <span class="engine-dot mono">MATCH ENGINE<span class="eng-sub"> — LIVE SCORING</span></span>
           <span class="engine-status">
             <span class="mono engine-state" id="engine-state" aria-live="polite">3 matches found</span>
             <button class="engine-rerun mono" id="engine-rerun" type="button">Re-run</button>
@@ -1835,11 +1840,12 @@
     top.parentNode.insertBefore(dots,body); top.parentNode.insertBefore(fun,body);
     var manual=false;
     function go(i){ if(!mq.matches) return; body.scrollTo({left:cols[i].offsetLeft-body.offsetLeft,behavior:'smooth'}); }
-    function upd(){ var best=0,bd=1e9; cols.forEach(function(c,i){var d=Math.abs(c.offsetLeft-body.offsetLeft-body.scrollLeft); if(d<bd){bd=d;best=i;}});
+    function fit(i){ if(!mq.matches){ body.style.height=''; return; } body.style.height=cols[i].offsetHeight+'px'; }
+    function upd(){ var best=0,bd=1e9; cols.forEach(function(c,i){var d=Math.abs(c.offsetLeft-body.offsetLeft-body.scrollLeft); if(d<bd){bd=d;best=i;}}); fit(best);
       btns.forEach(function(b,i){ if(i===best) b.setAttribute('aria-current','true'); else b.removeAttribute('aria-current'); }); }
     body.addEventListener('scroll',function(){requestAnimationFrame(upd);},{passive:true});
     body.addEventListener('touchstart',function(){manual=true;},{passive:true});
-    window.addEventListener('resize',upd); upd();
+    window.addEventListener('resize',upd); upd(); if(window.ResizeObserver){ var ro=new ResizeObserver(upd); cols.forEach(function(c){ro.observe(c);}); }
     // funnel follows the reasoning steps
     var W=[1,.62,.36,.2,.1,.05], L=['wines in the network','wines in the network','match your style & region','fit price & volume','never sold in your market','top matches'];
     function setF(i,n){ num.textContent=n; lbl.textContent=L[i]; bar.style.transform='scaleX('+W[i]+')'; }
