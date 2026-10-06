@@ -719,8 +719,10 @@
     .aw-box::after{content:''; display:table; clear:both;}
     .aw-pic{float:left; width:148px; height:186px; object-fit:cover; object-position:50% 25%; border:1px solid var(--border); margin:2px 18px 10px 0; shape-outside:margin-box;}
     .aw-quote blockquote{margin:0; font-style:italic; font-family:'Fraunces',serif; font-size:20px; line-height:1.55; color:var(--ink);}
-    .aw-quote blockquote::after{content:'\201D'; color:var(--cyan);}
-    .aw-quote blockquote::before{content:'\201C'; display:block; font-size:54px; line-height:.6; color:var(--cyan); margin-bottom:6px;}
+    .aw-quote blockquote::before{content:'\201C'; color:var(--cyan); font-size:1.5em; line-height:0; vertical-align:-.28em; margin-right:2px;}
+    .aw-quote blockquote::after{content:'\201D'; color:var(--cyan); font-size:1.5em; line-height:0; vertical-align:-.28em; margin-left:2px;}
+    .aw-pic.sm{width:112px; height:150px; object-position:50% 12%; margin:2px 16px 8px 0;}
+    .aw-banner{float:right; width:128px; height:132px; object-fit:cover; object-position:32% 30%; border:1px solid var(--border); margin:2px 0 8px 14px;}
     .aw-by{clear:both; padding-top:14px; font-size:12.5px; color:var(--ink-faint);}
     .aw-by b{color:var(--cyan); font-weight:500; letter-spacing:.06em;}
     .aw-ctl{display:flex; align-items:center; justify-content:space-between; margin-top:18px;}
@@ -1670,10 +1672,11 @@
   // 3: credentials
   var s3=el("div","aw-slide aw-creds"), b3=el("div","aw-box"); b3.appendChild(head.cloneNode(true));
   Array.prototype.forEach.call(bios,function(p){ var c=p.cloneNode(true); c.className=""; b3.appendChild(c); });
-  var in3=el("div","aw-inner"); while(b3.firstChild) in3.appendChild(b3.firstChild); b3.appendChild(in3);
+  var in3=el("div","aw-inner"); while(b3.firstChild) in3.appendChild(b3.firstChild);
+  var p3=el("img","aw-pic sm"); p3.src="assets/conor-lounge.jpg"; p3.alt="Conor at a business event in Hong Kong"; p3.width=295; p3.height=510; in3.insertBefore(p3,in3.firstChild); b3.appendChild(in3);
   s3.appendChild(b3);
-  var s2b=el("div","aw-box"), in2=el("div","aw-inner"); while(s2.firstChild) in2.appendChild(s2.firstChild); s2b.appendChild(in2); s2.appendChild(s2b);
-  var slides=[s1,s2,s3]; slides.forEach(function(s){ track.appendChild(s); });
+  var s2b=el("div","aw-box"), in2=el("div","aw-inner"); var ban=el("img","aw-banner"); ban.src="assets/summit.jpg"; ban.alt="Conor with attendees at the Belt and Road Summit, Hong Kong"; ban.width=462; ban.height=387; while(s2.firstChild) in2.appendChild(s2.firstChild); in2.insertBefore(ban, in2.children[1]); s2b.appendChild(in2); s2.appendChild(s2b);
+  var slides=[s1,s3,s2]; slides.forEach(function(s){ track.appendChild(s); });
   pager.appendChild(track); wiz.appendChild(pager);
   var ctl=el("div","aw-ctl"), dots=el("div","aw-dots","<i class='on'></i><i></i><i></i>"), arrows=el("div","aw-arrows");
   var prev=el("button",null,'<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2.5L4 7l5 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'),
@@ -1702,7 +1705,7 @@
   track.addEventListener("keydown",function(e){ if(e.key==="ArrowRight") go(idx+1); if(e.key==="ArrowLeft") go(idx-1); });
   if(window.ResizeObserver){ var ro=new ResizeObserver(size); slides.forEach(function(s){ ro.observe(s); }); }
   window.addEventListener("resize",function(){ equalise(); track.scrollLeft=idx*track.clientWidth; });
-  img.addEventListener("load",equalise); window.addEventListener("load",equalise);
+  [img,p3,ban].forEach(function(i){ i.addEventListener("load",equalise); }); window.addEventListener("load",equalise);
   if(document.fonts&&document.fonts.ready) document.fonts.ready.then(equalise);
   equalise(); update();
 })();
