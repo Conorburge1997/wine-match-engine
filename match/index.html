@@ -53,6 +53,40 @@
     background:linear-gradient(90deg, var(--sapphire-bright), var(--cyan));
   }
 
+  /* Mobile header: compact row + hamburger menu (mirrors the home page) */
+  .nav-links .btn{padding:10px 20px;}
+  .nav-toggle{display:none;}
+  @media (max-width: 960px){
+    .nav{position:static; padding:12px 18px; gap:10px;}
+    .nav-links{display:contents;}
+    .brand{flex:none;}
+    .brand-word{white-space:nowrap; font-size:15px;}
+    .nav-links .btn{margin-left:auto; padding:9px 12px; font-size:10.5px; white-space:nowrap;}
+    .nav-toggle{
+      display:inline-flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+      width:38px; height:38px; flex:none; padding:0; cursor:pointer;
+      background:transparent; border:1px solid var(--border); border-radius:var(--radius); color:var(--ink);
+    }
+    .nav-toggle span{display:block; width:16px; height:1.5px; background:currentColor; transition:transform .2s, opacity .2s;}
+    header.open .nav-toggle span:nth-child(1){transform:translateY(5.5px) rotate(45deg);}
+    header.open .nav-toggle span:nth-child(2){opacity:0;}
+    header.open .nav-toggle span:nth-child(3){transform:translateY(-5.5px) rotate(-45deg);}
+    .nav-links .links{
+      display:none; position:absolute; top:100%; left:0; right:0; flex-direction:column; gap:0;
+      background:#060810; border-bottom:1px solid var(--border-soft);
+      padding:4px 18px 10px; font-size:13px; box-shadow:0 24px 40px -24px rgba(0,0,0,0.7);
+    }
+    header.open .nav-links .links{display:flex;}
+    .nav-links a.navlink{padding:15px 2px; border-bottom:1px solid var(--border-soft);}
+    .nav-links a.navlink:last-child{border-bottom:none;}
+    .nav-links a.navlink.active::after{display:none;}
+  }
+  @media (max-width: 360px){
+    .nav{padding:12px 12px; gap:8px;}
+    .brand-word{font-size:13px;}
+    .nav-links .btn{padding:8px 9px; font-size:9.5px; letter-spacing:0;}
+  }
+
   .btn{
     display:inline-flex; align-items:center; justify-content:center; gap:8px;
     background:transparent; color:var(--ink);
@@ -355,14 +389,17 @@
       <span class="brand-word">Sapphire Panda</span>
     </a>
     <div class="nav-links">
-      <div class="links">
+      <div class="links" id="nav-menu">
         <a href="/" class="navlink">Home</a>
-        <a href="/#engine" class="navlink">The Engine</a>
         <a href="/#difference" class="navlink">The Difference</a>
         <a href="/#how" class="navlink">How It Works</a>
+        <a href="/#engine" class="navlink">The Engine</a>
+        <a href="/#about" class="navlink">About</a>
+        <a href="/#news" class="navlink">News</a>
       </div>
-      <a href="/match" class="btn btn-solid" style="padding:10px 20px;">Find Your Match</a>
+      <a href="/match" class="btn btn-solid">Find Your Match</a>
     </div>
+    <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu"><span></span><span></span><span></span></button>
   </div>
 </header>
 
@@ -1339,5 +1376,16 @@
 })();
 </script>
 
+<script>
+(function(){
+  var header = document.querySelector('header.site-header'), btn = document.querySelector('.nav-toggle');
+  if(!header || !btn) return;
+  function setOpen(o){ header.classList.toggle('open', o); btn.setAttribute('aria-expanded', o ? 'true' : 'false'); btn.setAttribute('aria-label', o ? 'Close menu' : 'Open menu'); }
+  btn.addEventListener('click', function(){ setOpen(!header.classList.contains('open')); });
+  Array.prototype.forEach.call(document.querySelectorAll('.nav-links a.navlink'), function(a){ a.addEventListener('click', function(){ setOpen(false); }); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') setOpen(false); });
+  window.addEventListener('resize', function(){ if(window.innerWidth > 960) setOpen(false); });
+})();
+</script>
 </body>
 </html>
