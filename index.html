@@ -749,7 +749,7 @@
     .aw-sec p{margin:0;}
     .aw-story p,.aw-creds p{font-size:18px; line-height:1.62; margin:0 0 16px;}
     .aw-story p:last-child,.aw-creds p:last-child{margin-bottom:0;}
-    .aw-key{color:var(--cyan);}
+    .aw-key{color:inherit; font-weight:inherit;}
     .aw-story p.aw-pull{margin-top:6px;}
     .aw-story .aw-box{justify-content:flex-start;}
     .aw-creds p{font-size:16px; line-height:1.65; margin-bottom:18px;}
@@ -1887,7 +1887,7 @@
   // 1: the quote, with Conor's photo alongside
   var s1=el("div","aw-slide aw-quote"), b1=el("div","aw-box");
   var img=pic.cloneNode(true); img.className="aw-pic"; img.removeAttribute("loading");
-  var qh=close.innerHTML, qi=qh.indexOf("Thousands"); var bq=el("blockquote",null, qi>0 ? "<p>"+qh.slice(0,qi).trim()+"</p><p>"+qh.slice(qi)+"</p>" : qh);
+  var qh=close.innerHTML, qi=qh.indexOf("Thousands"); var bq=el("blockquote",null, qi>0 ? (function(){ var a=qh.slice(0,qi).trim(), r=qh.slice(qi), si=r.indexOf("Sapphire Panda exists"); return "<p>"+a+"</p>"+(si>0 ? "<p>"+r.slice(0,si).trim()+"</p><p>"+r.slice(si)+"</p>" : "<p>"+r+"</p>"); })() : qh);
   var in1=el("div","aw-inner"); in1.appendChild(img); in1.appendChild(bq); in1.appendChild(el("div","aw-by","<b>CONOR</b> · Founder"+LI)); b1.appendChild(in1);
   s1.appendChild(b1);
   // 2: the story
