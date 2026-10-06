@@ -716,8 +716,10 @@
     .aw-sec:nth-of-type(1){border-top:0; padding-top:0;}
     .aw-sec:last-child{padding-bottom:0;}
     .aw-sec p{margin:0;}
-    .aw-creds p{font-size:17.5px; line-height:1.65; margin-bottom:22px;}
-    .aw-creds .about-name{font-size:26px;}
+    .aw-story p{font-size:20px; line-height:1.65; margin:0;}
+    .aw-story .aw-box{justify-content:center;}
+    .aw-creds p{font-size:16px; line-height:1.65; margin-bottom:18px;}
+    .aw-creds .about-name{font-size:24px;}
     .aw-inner > :last-child{margin-bottom:0;}
     .aw-slide .aw-box > :last-child{margin-bottom:0;}
     .aw-box{border:1px solid var(--border); background:linear-gradient(160deg, var(--surface) 0%, var(--bg-2) 100%); padding:22px 16px; box-shadow:inset 0 1px 0 rgba(166,196,255,0.12), 0 30px 60px -30px rgba(58,110,222,0.3);}
@@ -727,7 +729,7 @@
     .aw-quote blockquote::before{content:'\201C'; color:var(--cyan); font-size:1.5em; line-height:0; vertical-align:-.28em; margin-right:.28em;}
     .aw-quote blockquote::after{content:'\201D'; color:var(--cyan); font-size:1.5em; line-height:0; vertical-align:-.28em; margin-left:.12em;}
     .aw-pic.sm{width:150px; height:148px; object-position:50% 30%; margin:2px 16px 8px 0;}
-    .aw-banner{display:block; width:100%; height:120px; object-fit:cover; object-position:50% 70%; border:1px solid var(--border); margin:0 0 16px;}
+    .aw-banner{display:block; width:100%; height:150px; object-fit:cover; object-position:50% 70%; border:1px solid var(--border); margin:0 0 16px;}
     .aw-by{clear:both; padding-top:14px; font-size:12.5px; color:var(--ink-faint);}
     .aw-by{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
     .aw-by .about-li{margin-left:2px;}
@@ -1676,17 +1678,17 @@
   var in1=el("div","aw-inner"); in1.appendChild(img); in1.appendChild(bq); in1.appendChild(el("div","aw-by","<b>CONOR</b> · Founder"+LI)); b1.appendChild(in1);
   s1.appendChild(b1);
   // 2: the story
-  var s2=el("div","aw-slide"); Array.prototype.forEach.call(ps,function(p){ s2.appendChild(p.cloneNode(true)); });
+  var storySlides=Array.prototype.map.call(ps,function(p,k){ var sl=el("div","aw-slide aw-story"), bx=el("div","aw-box"), inn=el("div","aw-inner"); if(k===1){ var ban=el("img","aw-banner"); ban.src="assets/summit-banner.jpg"; ban.alt="Conor at the Belt and Road Summit, Hong Kong"; ban.width=760; ban.height=325; inn.appendChild(ban); } inn.appendChild(p.cloneNode(true)); bx.appendChild(inn); sl.appendChild(bx); return sl; });
   // 3: credentials
   var s3=el("div","aw-slide aw-creds"), b3=el("div","aw-box"); b3.appendChild(head.cloneNode(true));
   Array.prototype.forEach.call(Array.prototype.slice.call(bios,0,3),function(p){ var c=p.cloneNode(true); c.className=""; b3.appendChild(c); });
   var in3=el("div","aw-inner"); while(b3.firstChild) in3.appendChild(b3.firstChild);
   var p3=el("img","aw-pic sm"); p3.src="assets/conference.jpg"; p3.alt="Conor at a business event in Hong Kong"; p3.width=720; p3.height=700; in3.insertBefore(p3,in3.firstChild); b3.appendChild(in3);
   s3.appendChild(b3);
-  var s2b=el("div","aw-box"), in2=el("div","aw-inner"); var ban=el("img","aw-banner"); ban.src="assets/summit-banner.jpg"; ban.alt="Conor at the Belt and Road Summit, Hong Kong"; ban.width=760; ban.height=325; in2.appendChild(ban); while(s2.firstChild){ var sec=el("div","aw-sec"); sec.appendChild(s2.firstChild); in2.appendChild(sec); } s2b.appendChild(in2); s2.appendChild(s2b);
-  var slides=[s1,s3,s2]; slides.forEach(function(s){ track.appendChild(s); });
+
+  var slides=[s1,s3].concat(storySlides); slides.forEach(function(s){ track.appendChild(s); });
   pager.appendChild(track); wiz.appendChild(pager);
-  var ctl=el("div","aw-ctl"), dots=el("div","aw-dots","<i class='on'></i><i></i><i></i>"), arrows=el("div","aw-arrows");
+  var ctl=el("div","aw-ctl"), dots=el("div","aw-dots","<i class='on'></i><i></i><i></i><i></i><i></i>"), arrows=el("div","aw-arrows");
   var prev=el("button",null,'<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2.5L4 7l5 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'),
       next=el("button",null,'<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2.5L10 7l-5 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>');
   prev.type=next.type="button"; prev.setAttribute("aria-label","Previous"); next.setAttribute("aria-label","Next");
@@ -1702,9 +1704,9 @@
   }
   function size(){ pager.style.height = slides[idx].offsetHeight + "px"; }
   function update(){
-    var w=track.clientWidth||1; idx=Math.max(0,Math.min(2,Math.round(track.scrollLeft/w)));
+    var w=track.clientWidth||1; idx=Math.max(0,Math.min(slides.length-1,Math.round(track.scrollLeft/w)));
     Array.prototype.forEach.call(dots.children,function(d,i){ d.classList.toggle("on",i===idx); });
-    prev.disabled=idx===0; next.disabled=idx===2; size();
+    prev.disabled=idx===0; next.disabled=idx===slides.length-1; size();
   }
   var t; track.addEventListener("scroll",function(){ clearTimeout(t); t=setTimeout(update,60); },{passive:true});
   function go(i){ track.scrollTo({left:i*track.clientWidth, behavior:"smooth"}); }
@@ -1713,7 +1715,7 @@
   track.addEventListener("keydown",function(e){ if(e.key==="ArrowRight") go(idx+1); if(e.key==="ArrowLeft") go(idx-1); });
   if(window.ResizeObserver){ var ro=new ResizeObserver(size); slides.forEach(function(s){ ro.observe(s); }); }
   window.addEventListener("resize",function(){ equalise(); track.scrollLeft=idx*track.clientWidth; });
-  [img,p3,ban].forEach(function(i){ i.addEventListener("load",equalise); }); window.addEventListener("load",equalise);
+  [img,p3].concat(Array.prototype.slice.call(wiz.querySelectorAll('.aw-banner'))).forEach(function(i){ i.addEventListener("load",equalise); }); window.addEventListener("load",equalise);
   if(document.fonts&&document.fonts.ready) document.fonts.ready.then(equalise);
   equalise(); update();
 })();
