@@ -758,10 +758,12 @@
     .aw-slide .aw-box > :last-child{margin-bottom:0;}
     .aw-box{border:1px solid var(--border); background:linear-gradient(160deg, var(--surface) 0%, var(--bg-2) 100%); padding:22px 16px; box-shadow:inset 0 1px 0 rgba(166,196,255,0.12), 0 30px 60px -30px rgba(58,110,222,0.3);}
     .aw-box::after{content:''; display:table; clear:both;}
-    .aw-pic{float:left; width:134px; height:168px; object-fit:cover; object-position:50% 25%; border:1px solid var(--border); margin:2px 18px 10px 0; shape-outside:margin-box;}
+    .aw-pic{float:left; width:104px; height:132px; object-fit:cover; object-position:50% 25%; border:1px solid var(--border); margin:2px 14px 8px 0; shape-outside:margin-box;}
     .aw-quote blockquote{margin:0; font-style:italic; font-family:'Fraunces',serif; font-size:18px; line-height:1.5; color:var(--ink);}
-    .aw-quote blockquote::before{content:'\201C'; color:var(--cyan); font-size:1.5em; line-height:0; vertical-align:-.28em; margin-right:.28em;}
-    .aw-quote blockquote::after{content:'\201D'; color:var(--cyan); font-size:1.5em; line-height:0; vertical-align:-.28em; margin-left:.12em;}
+    .aw-quote blockquote p{margin:0 0 .85em; color:inherit; font-size:inherit; line-height:inherit;}
+    .aw-quote blockquote p:last-child{margin-bottom:0;}
+    .aw-quote blockquote p:first-child::before{content:'\201C'; color:var(--cyan); font-size:1.5em; line-height:0; vertical-align:-.28em; margin-right:.28em;}
+    .aw-quote blockquote p:last-child::after{content:'\201D'; color:var(--cyan); font-size:1.5em; line-height:0; vertical-align:-.28em; margin-left:.12em;}
     .aw-pic.sm{width:150px; height:148px; object-position:50% 30%; margin:2px 16px 8px 0;}
     .aw-banner{display:block; width:100%; height:120px; flex:none; object-fit:cover; object-position:50% 50%; border:1px solid var(--border); margin:0 0 16px;}
     .aw-by{clear:both; padding-top:14px; font-size:12.5px; color:var(--ink-faint);}
@@ -1885,7 +1887,7 @@
   // 1: the quote, with Conor's photo alongside
   var s1=el("div","aw-slide aw-quote"), b1=el("div","aw-box");
   var img=pic.cloneNode(true); img.className="aw-pic"; img.removeAttribute("loading");
-  var bq=el("blockquote",null,close.innerHTML);
+  var qh=close.innerHTML, qi=qh.indexOf("Thousands"); var bq=el("blockquote",null, qi>0 ? "<p>"+qh.slice(0,qi).trim()+"</p><p>"+qh.slice(qi)+"</p>" : qh);
   var in1=el("div","aw-inner"); in1.appendChild(img); in1.appendChild(bq); in1.appendChild(el("div","aw-by","<b>CONOR</b> · Founder"+LI)); b1.appendChild(in1);
   s1.appendChild(b1);
   // 2: the story
