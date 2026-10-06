@@ -283,6 +283,12 @@
   .brief-recap{align-items:center;}
   .brief-recap .recap-toggle{font:inherit; font-size:12px; color:var(--sapphire-glint); background:transparent; border:1px solid var(--border); border-radius:20px; padding:6px 13px; cursor:pointer;}
   .brief-recap .recap-toggle:hover{border-color:var(--sapphire-bright); color:var(--ink);}
+
+  .brief-recap .chip-x{font:inherit; font-size:15px; line-height:1; margin-left:8px; padding:0 2px; color:var(--ink-faint); background:transparent; border:0; cursor:pointer;}
+  .brief-recap .chip-x:hover,.brief-recap .chip-x:focus-visible{color:var(--cyan);}
+  .brief-recap .recap-note{flex-basis:100%; font-size:12px; color:var(--cyan); min-height:0;}
+  .brief-recap .recap-note:empty{display:none;}
+  #results-groups.is-updating{opacity:.45; transition:opacity .2s; pointer-events:none;}
   .brief-recap .recap-chips{display:none; flex-basis:100%; flex-wrap:wrap; gap:8px;}
   .brief-recap.open .recap-chips{display:flex;}
   .gnext{margin-left:auto; font:inherit; font-size:12px; letter-spacing:.04em; color:var(--sapphire-glint); background:transparent; border:1px solid var(--border); border-radius:var(--radius); padding:7px 14px; cursor:pointer;}
@@ -1359,43 +1365,96 @@
     const b = state.brief;
     const recap = $("brief-recap");
     if(!b){ recap.innerHTML = ""; return; }
+    // Each entry: {html, kind, value}. Entries with a kind can be removed
+    // with the little x; the rest (where it ships, minimum price) are fixed.
     const chips = [];
     const locationLabel = briefLocationLabel(b);
-    if(locationLabel) chips.push("Shipping to <b>"+locationLabel+"</b>");
-    // Show varietals when picked (they're more specific than the style).
-    // A style with at least one of its own varietals picked ("Red" with
-    // Shiraz selected) is "specific" and doesn't also get its own bare
-    // chip — avoids a redundant "Red" sitting next to "Shiraz, Grenache".
-    // A style with no varietal picked for it (e.g. "White" alongside
-    // Red+Shiraz) still shows as its own chip.
-    if(b.varieties && b.varieties.length) chips.push("<b>"+b.varieties.join(", ")+"</b>");
+    if(locationLabel) chips.push({html:"Shipping to <b>"+locationLabel+"</b>"});
+    (b.varieties||[]).forEach(function(v){ chips.push({html:"<b>"+v+"</b>", kind:"variety", value:v}); });
     const specificStyles = new Set();
     (b.styles||[]).forEach(function(style){
       const available = (VARIETY_BY_STYLE[style] || []);
       if((b.varieties||[]).some(function(v){ return available.indexOf(v) > -1; })) specificStyles.add(style);
     });
-    const bareStyles = (b.styles||[]).filter(function(s){ return !specificStyles.has(s); });
-    if(bareStyles.length) chips.push("<b>"+bareStyles.join(", ")+"</b>");
-    if(b.bodies && b.bodies.length) chips.push(b.bodies.join("/")+"-bodied");
-    if(b.regions && b.regions.length) chips.push("Region: <b>"+b.regions.join(", ")+"</b>");
-    if(b.priceMin != null || b.priceMax != null){
-      const lo = b.priceMin != null ? formatPrice(b.priceMin) : null;
-      const hi = b.priceMax != null ? formatPrice(b.priceMax) : null;
-      chips.push("Price: <b>"+(lo && hi ? lo+' – '+hi : lo ? 'from '+lo : 'up to '+hi)+"</b> /bottle");
+    (b.styles||[]).filter(function(st){ return !specificStyles.has(st); }).forEach(function(st){
+      chips.push({html:"<b>"+st+"</b>", kind:"style", value:st});
+    });
+    (b.bodies||[]).forEach(function(x){ chips.push({html:x+"-bodied", kind:"body", value:x}); });
+    (b.regions||[]).forEach(function(r){ chips.push({html:"Region: <b>"+r+"</b>", kind:"region", value:r}); });
+    if(b.priceMin != null) chips.push({html:"Min price: <b>"+formatPrice(b.priceMin)+"</b> /bottle"});
+    if(b.priceMax != null) chips.push({html:"Max price: <b>"+formatPrice(b.priceMax)+"</b> /bottle", kind:"pricemax"});
+    if(b.volume) chips.push({html:"Volume: <b>"+b.volume+"</b> bottles", kind:"volume"});
+    if(b.novelty === "market") chips.push({html:"Never sold in my market", kind:"novelty"});
+    (b.flavour||[]).forEach(function(f){ chips.push({html:"Flavour: <b>"+f+"</b>", kind:"flavour", value:f}); });
+    function chipHtml(c){
+      return '<span class="chip">'+c.html+(c.kind ? '<button type="button" class="chip-x" data-kind="'+c.kind+'" data-value="'+String(c.value==null?"":c.value).replace(/"/g,"&quot;")+'" aria-label="Remove filter">&times;</button>' : '')+'</span>';
     }
-    if(b.volume) chips.push("Volume: <b>"+b.volume+"</b> bottles");
-    if(b.novelty === "market") chips.push("Never sold in my market");
-    if(b.flavour && b.flavour.length) chips.push("Flavour: <b>"+b.flavour.join(", ")+"</b>");
     const wasOpen = recap.classList.contains("open");
-    recap.innerHTML = '<span class="chip">'+chips[0]+'</span>' +
-      (chips.length>1 ? '<button type="button" class="recap-toggle" aria-expanded="'+wasOpen+'">Your brief <i>'+(wasOpen?'▴':'▾')+'</i></button>' : '') +
-      '<div class="recap-chips">'+chips.slice(1).map(function(c){ return '<span class="chip">'+c+'</span>'; }).join("")+'</div>';
+    const rest = chips.slice(1);
+    recap.innerHTML = chipHtml(chips[0]) +
+      (rest.length ? '<button type="button" class="recap-toggle" aria-expanded="'+wasOpen+'">Your brief &middot; '+rest.length+' filters <i>'+(wasOpen?'▴':'▾')+'</i></button>' : '') +
+      '<div class="recap-chips">'+rest.map(chipHtml).join("")+'</div><div class="recap-note" id="recap-note" role="status"></div>';
     const tg = recap.querySelector(".recap-toggle");
     if(tg) tg.addEventListener("click", function(){
       const o = recap.classList.toggle("open");
       tg.setAttribute("aria-expanded", o);
       tg.querySelector("i").textContent = o ? "▴" : "▾";
     });
+    recap.querySelectorAll(".chip-x").forEach(function(x){
+      x.addEventListener("click", function(){ removeBriefFilter(x.dataset.kind, x.dataset.value); });
+    });
+  }
+
+  // Remove one filter from the brief, from the matches screen. We flip the
+  // matching control in step 1 (so Edit Brief and saved progress agree),
+  // then re-run the search with the updated brief.
+  let refilterTimer = 0, refilterSeq = 0;
+  function pickBtn(groupId, value){
+    return Array.prototype.find.call(document.querySelectorAll("#"+groupId+" .pick"), function(b){ return b.dataset.value === value; });
+  }
+  function recapNote(msg){
+    const n = $("recap-note"); if(!n) return;
+    n.textContent = msg || "";
+    if(msg) setTimeout(function(){ if(n.textContent === msg) n.textContent = ""; }, 3500);
+  }
+  function removeBriefFilter(kind, value){
+    if(kind === "style" && multiValues("f-style").length <= 1){
+      recapNote("Keep at least one wine style so we can match you."); return;
+    }
+    if(kind === "variety" || kind === "style" || kind === "body" || kind === "region"){
+      const g = {variety:"f-variety", style:"f-style", body:"f-body", region:"f-region"}[kind];
+      const b = pickBtn(g, value);
+      if(b && b.getAttribute("aria-pressed") === "true") b.click();
+    } else if(kind === "pricemax"){ $("f-pricemax").value = "";
+    } else if(kind === "volume"){ $("f-volume").value = "";
+    } else if(kind === "novelty"){
+      document.querySelectorAll("#f-novelty .pick").forEach(function(b){ b.setAttribute("aria-pressed","false"); });
+    } else if(kind === "flavour"){
+      $("f-flavour").value = tokenize($("f-flavour").value).filter(function(t){ return t !== value; }).join(", ");
+    }
+    state.brief = readBrief();
+    if(window.briefSaveSoon) window.briefSaveSoon();
+    renderBriefRecap();
+    const rc = $("brief-recap"); rc.classList.add("open");
+    const tg = rc.querySelector(".recap-toggle"); if(tg){ tg.setAttribute("aria-expanded","true"); tg.querySelector("i").textContent = "▴"; }
+    $("results-groups").classList.add("is-updating");
+    clearTimeout(refilterTimer);
+    const seq = ++refilterSeq;
+    refilterTimer = setTimeout(function(){
+      callMatchApi({action:"search", brief:state.brief}).then(function(data){
+        if(seq !== refilterSeq) return;
+        $("results-groups").classList.remove("is-updating");
+        const keepWasOpen = true;
+        renderResults(data.groups || []);
+        $("brief-recap").classList.add("open");
+        const t2 = $("brief-recap").querySelector(".recap-toggle"); if(t2){ t2.setAttribute("aria-expanded","true"); t2.querySelector("i").textContent = "▴"; }
+        recapNote("Matches updated.");
+      }).catch(function(err){
+        console.error("Re-run failed", err);
+        $("results-groups").classList.remove("is-updating");
+        recapNote("Couldn't update matches — please try again.");
+      });
+    }, 450);
   }
 
   function renderResults(groups){
