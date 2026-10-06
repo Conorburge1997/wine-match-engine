@@ -324,9 +324,28 @@
   .group-track::-webkit-scrollbar{display:none;}
   .group-track .result-group{flex:0 0 100%; min-width:0; margin-bottom:0; scroll-snap-align:start; scroll-snap-stop:always; box-sizing:border-box; padding-right:2px;}
   .group-track .result-row{flex-wrap:wrap; overflow:visible; scroll-snap-type:none;}
+  .rdots{display:none;}
+  @media (max-width:980px){
+    .results-main .step-intro{margin-bottom:10px;}
+    .results-main .step-intro .step-eyebrow,.results-main .step-intro p{display:none;}
+    .results-main .step-intro h1{margin-bottom:0; font-size:26px;}
+    .results-main .brief-recap{margin-bottom:10px;}
+    .results-main .results-summary{margin-bottom:10px;}
+    .gslider-bar{margin-bottom:12px;}
+  }
   @media (max-width:640px){
-    .group-track .result-card{min-width:0; max-width:none; width:100%;}
     .gnav{display:none;}
+    /* wine types switch via the tabs / Next button; the 3 matches swipe across within a type */
+    .group-track{overflow-x:hidden; touch-action:pan-y;}
+    .group-track .result-row{flex-wrap:nowrap; overflow-x:auto; scroll-snap-type:x mandatory; gap:12px; padding-bottom:4px; scrollbar-width:none; -webkit-overflow-scrolling:touch; overscroll-behavior-x:contain; touch-action:pan-x pan-y;}
+    .group-track .result-row::-webkit-scrollbar{display:none;}
+    .group-track .result-card{flex:0 0 84%; min-width:0; max-width:none; width:auto; box-sizing:border-box; scroll-snap-align:start; scroll-snap-stop:always; padding:14px 16px; gap:6px;}
+    .group-track .result-card .card-image{height:84px; margin:0;}
+    .group-track .result-card h4{font-size:15px;}
+    .rdots{display:flex; justify-content:center; gap:8px; margin-top:12px;}
+    .rdots i{width:7px; height:7px; border-radius:50%; background:var(--border); transition:background .25s, transform .25s;}
+    .rdots i.on{background:var(--cyan); transform:scale(1.25); box-shadow:0 0 8px rgba(95,212,224,.7);}
+    .result-group-head{flex-wrap:wrap;}
   }
   .result-row{
     display:flex; gap:14px; overflow-x:auto; padding-bottom:6px;
@@ -1496,6 +1515,14 @@
       g.results.forEach(function(r){
         row.appendChild(buildResultCard(r));
       });
+      const rd = document.createElement("div"); rd.className = "rdots";
+      g.results.forEach(function(_, k){ const d = document.createElement("i"); if(k===0) d.className = "on"; rd.appendChild(d); });
+      section.appendChild(rd);
+      row.addEventListener("scroll", function(){
+        const c = row.firstElementChild; if(!c) return;
+        const idx = Math.round(row.scrollLeft / (c.offsetWidth + 12));
+        Array.prototype.forEach.call(rd.children, function(d, k){ d.classList.toggle("on", k===idx); });
+      }, {passive:true});
       track.appendChild(section);
       const tab = document.createElement("button");
       tab.type = "button"; tab.className = "gtab"; tab.setAttribute("role","tab");
