@@ -181,6 +181,30 @@
   }
   .pick-state[aria-pressed="true"] .pick-state-count{color:rgba(255,255,255,0.75);}
 
+
+  /* ---- Mobile swipe wizard for step 1 ---- */
+  .wiz-nav{display:none;}
+  .brief-col{display:contents;}
+  @media (min-width:821px){
+    .brief-track{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.25fr); column-gap:20px; align-items:start;}
+    .brief-col{display:block; min-width:0;}
+    .brief-track .grid2{grid-template-columns:1fr;}
+  }
+  @media (max-width:820px){
+    .brief-pager{scroll-margin-top:90px; overflow:hidden; margin:0 -2px; padding:0 2px; transition:height .35s ease;}
+    .brief-track{display:flex; align-items:flex-start; transition:transform .38s cubic-bezier(.4,.1,.2,1);}
+    .brief-track .card{flex:0 0 100%; min-width:0; margin-bottom:0; padding:22px 18px; box-sizing:border-box;}
+    .brief-track .c1{order:1;} .brief-track .c2{order:2;} .brief-track .c3{order:3;} .brief-track .c4{order:4;}
+    .wiz-nav{display:flex; flex-direction:column; gap:16px; margin-top:18px;}
+    .wiz-dots{display:flex; gap:8px; justify-content:center;}
+    .wiz-dots i{width:22px; height:3px; background:var(--border); transition:background .3s;}
+    .wiz-dots i.on{background:var(--sapphire-bright);}
+    .wiz-btns{display:flex; gap:12px;}
+    .wiz-btns .btn{flex:1; padding:14px 16px; justify-content:center;}
+    #wiz-back{flex:0 0 32%;}
+    #brief-submit-row{display:none;}
+  }
+  @media (prefers-reduced-motion:reduce){ .brief-track,.brief-pager{transition:none;} }
   .btnrow{display:flex; gap:12px; flex-wrap:wrap; margin-top:12px; align-items:center;}
 
   /* ---- Loading / scanning state ---- */
@@ -420,7 +444,10 @@
       <p>No wine jargon required — just what matters to you. Our matching engine will score it against independent Australian vineyards to find your fit.</p>
     </div>
 
-    <div class="card">
+    <div class="brief-pager" id="brief-pager">
+    <div class="brief-track" id="brief-track">
+    <div class="brief-col">
+    <div class="card c1">
       <h2>Who's asking</h2>
       <p class="sub">So we know who to prepare the match for.</p>
       <div class="field">
@@ -445,53 +472,7 @@
       </div>
     </div>
 
-    <div class="card">
-      <h2>What you're looking for</h2>
-      <p class="sub">Tap everything that would work — there's no wrong answer.</p>
-
-      <div class="field">
-        <label>Wine style</label>
-        <div class="pickrow" id="f-style" data-picker="multi">
-          <button class="pick" type="button" data-value="Red">Red</button>
-          <button class="pick" type="button" data-value="White">White</button>
-          <button class="pick" type="button" data-value="Rosé">Rosé</button>
-          <button class="pick" type="button" data-value="Sparkling">Sparkling</button>
-          <button class="pick" type="button" data-value="Dessert">Dessert / fortified</button>
-        </div>
-      </div>
-
-      <div class="field" id="f-variety-wrap" style="display:none;">
-        <label>Varietal <span class="opt">(optional)</span></label>
-        <div class="pickrow" id="f-variety" data-picker="multi"></div>
-      </div>
-
-      <div class="field">
-        <label>Body <span class="opt">(optional)</span></label>
-        <div class="pickrow" id="f-body" data-picker="multi">
-          <button class="pick" type="button" data-value="Light">Light</button>
-          <button class="pick" type="button" data-value="Medium">Medium</button>
-          <button class="pick" type="button" data-value="Full">Full</button>
-        </div>
-      </div>
-
-      <div class="field">
-        <label>State <span class="opt">(optional)</span></label>
-        <p class="sub" style="margin-top:-4px; margin-bottom:12px;">Each state shows how many wine regions it covers — tap one to see them.</p>
-        <div class="pickrow pickrow-state" id="f-state" data-picker="multi"></div>
-      </div>
-
-      <div class="field" id="f-region-wrap" style="display:none;">
-        <label>Region preference <span class="opt">(optional)</span></label>
-        <div class="pickrow" id="f-region" data-picker="multi"></div>
-      </div>
-
-      <div class="field">
-        <label>Flavour notes <span class="opt">(optional, comma-separated)</span></label>
-        <input type="text" id="f-flavour" placeholder="e.g. blackberry, white pepper, cedar">
-      </div>
-    </div>
-
-    <div class="card">
+    <div class="card c4">
       <h2>Budget &amp; volume</h2>
       <p class="sub">Helps us prioritise what's realistic for your order.</p>
       <div class="grid2">
@@ -523,8 +504,72 @@
         </div>
       </div>
     </div>
+    </div>
+    <div class="brief-col">
+    <div class="card c2">
+      <h2>What you're looking for</h2>
+      <p class="sub">Tap everything that would work — there's no wrong answer.</p>
 
-    <div class="btnrow">
+      <div class="field">
+        <label>Wine style</label>
+        <div class="pickrow" id="f-style" data-picker="multi">
+          <button class="pick" type="button" data-value="Red">Red</button>
+          <button class="pick" type="button" data-value="White">White</button>
+          <button class="pick" type="button" data-value="Rosé">Rosé</button>
+          <button class="pick" type="button" data-value="Sparkling">Sparkling</button>
+          <button class="pick" type="button" data-value="Dessert">Dessert / fortified</button>
+        </div>
+      </div>
+
+      <div class="field" id="f-variety-wrap" style="display:none;">
+        <label>Varietal <span class="opt">(optional)</span></label>
+        <div class="pickrow" id="f-variety" data-picker="multi"></div>
+      </div>
+
+      <div class="field">
+        <label>Body <span class="opt">(optional)</span></label>
+        <div class="pickrow" id="f-body" data-picker="multi">
+          <button class="pick" type="button" data-value="Light">Light</button>
+          <button class="pick" type="button" data-value="Medium">Medium</button>
+          <button class="pick" type="button" data-value="Full">Full</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Flavour notes <span class="opt">(optional, comma-separated)</span></label>
+        <input type="text" id="f-flavour" placeholder="e.g. blackberry, white pepper, cedar">
+      </div>
+    </div>
+
+    <div class="card c3">
+      <h2>Where it's from</h2>
+      <p class="sub">Narrow it down by state and region, or skip to see everything.</p>
+
+      <div class="field">
+        <label>State <span class="opt">(optional)</span></label>
+        <p class="sub" style="margin-top:-4px; margin-bottom:12px;">Each state shows how many wine regions it covers — tap one to see them.</p>
+        <div class="pickrow pickrow-state" id="f-state" data-picker="multi"></div>
+      </div>
+
+      <div class="field" id="f-region-wrap" style="display:none;">
+        <label>Region preference <span class="opt">(optional)</span></label>
+        <div class="pickrow" id="f-region" data-picker="multi"></div>
+      </div>
+    </div>
+
+    </div>
+    </div>
+    </div>
+
+    <div class="wiz-nav" id="wiz-nav">
+      <div class="wiz-dots" id="wiz-dots" aria-label="Progress"><i class="on"></i><i></i><i></i><i></i></div>
+      <div class="wiz-btns">
+        <button class="btn btn-ghost" type="button" id="wiz-back" style="visibility:hidden">Back</button>
+        <button class="btn btn-solid" type="button" id="wiz-next">Next →</button>
+      </div>
+    </div>
+
+    <div class="btnrow" id="brief-submit-row">
       <button class="btn btn-solid" id="btn-submit-brief" style="padding:14px 32px;">Find My Match →</button>
     </div>
   </section>
@@ -1077,6 +1122,77 @@
     state.searchPromise = callMatchApi({action: "search", brief: state.brief});
     runScan();
   });
+
+  /* ---- Mobile 3-slide wizard (step 1) ---- */
+  (function(){
+    const mq = window.matchMedia("(max-width:820px)");
+    const pager=$("brief-pager"), track=$("brief-track"), slides=[1,2,3,4].map(function(n){ return track.querySelector(".c"+n); });
+    const next=$("wiz-next"), back=$("wiz-back"), dots=$("wiz-dots").children;
+    const LAST=slides.length-1;
+    const labels=["Next →","Next →","Next →","Find My Match →"];
+    let idx=0;
+    function sizePager(){
+      if(!mq.matches){ pager.style.height=""; return; }
+      pager.style.height = slides[idx].offsetHeight + "px";
+    }
+    function go(n, quiet){
+      idx=Math.max(0,Math.min(LAST,n));
+      track.style.transform = mq.matches ? "translateX(" + (-idx*100) + "%)" : "";
+      Array.prototype.forEach.call(dots,function(d,i){ d.classList.toggle("on", i===idx); });
+      back.style.visibility = idx===0 ? "hidden" : "visible";
+      next.textContent = labels[idx];
+      sizePager();
+      if(mq.matches && !quiet) pager.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+    function slide1Valid(){
+      const missing=[];
+      if(!$("f-name").value.trim()) missing.push($("f-name"));
+      const m=singleValue("f-market");
+      if(!m) missing.push($("f-market"));
+      if(m==="Other" && !$("f-other-country").value) missing.push($("f-other-country"));
+      if(missing.length){
+        missing.forEach(function(el){ el.classList.add("field-error"); });
+        if(!$("f-required-note")){
+          const note=document.createElement("div");
+          note.id="f-required-note"; note.className="field-error-note";
+          note.textContent="Please fill in your business name and location before continuing.";
+          slides[0].appendChild(note);
+        }
+        sizePager();
+        return false;
+      }
+      return true;
+    }
+    function advance(){
+      if(idx===0 && !slide1Valid()) return;
+      if(idx===LAST){ $("btn-submit-brief").click(); return; }
+      go(idx+1);
+    }
+    next.addEventListener("click", advance);
+    back.addEventListener("click", function(){ go(idx-1); });
+    // swipe
+    let sx=0, sy=0, tracking=false;
+    pager.addEventListener("touchstart",function(e){
+      if(!mq.matches) return;
+      sx=e.touches[0].clientX; sy=e.touches[0].clientY; tracking=true;
+    },{passive:true});
+    pager.addEventListener("touchend",function(e){
+      if(!tracking) return; tracking=false;
+      const dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
+      if(Math.abs(dx)<50 || Math.abs(dx)<Math.abs(dy)*1.5) return;
+      if(dx<0){ if(idx<LAST) advance(); } else go(idx-1);
+    },{passive:true});
+    // keep height in sync when content changes (pickers reveal fields) or viewport changes
+    if(window.ResizeObserver){
+      const ro=new ResizeObserver(sizePager);
+      Array.prototype.forEach.call(slides,function(s){ ro.observe(s); });
+    }
+    function onMq(){ go(idx, true); }
+    if(mq.addEventListener) mq.addEventListener("change", onMq);
+    window.addEventListener("resize", sizePager);
+    window.addEventListener("load", sizePager);
+    go(0, true);
+  })();
 
   function runScan(){
     let i = 0;
