@@ -277,6 +277,51 @@
   .result-group-head{display:flex; align-items:baseline; gap:10px; margin-bottom:14px;}
   .result-group-head h3{font-family:'Fraunces',serif; font-style:italic; font-size:19px; color:var(--sapphire-glint);}
   .result-group-head .group-count{font-size:12px; color:var(--ink-faint);}
+
+
+  /* ---- Compact results: whole slider + pallet visible without scrolling ---- */
+  .brief-recap{align-items:center;}
+  .brief-recap .recap-toggle{font:inherit; font-size:12px; color:var(--sapphire-glint); background:transparent; border:1px solid var(--border); border-radius:20px; padding:6px 13px; cursor:pointer;}
+  .brief-recap .recap-toggle:hover{border-color:var(--sapphire-bright); color:var(--ink);}
+  .brief-recap .recap-chips{display:none; flex-basis:100%; flex-wrap:wrap; gap:8px;}
+  .brief-recap.open .recap-chips{display:flex;}
+  .gnext{margin-left:auto; font:inherit; font-size:12px; letter-spacing:.04em; color:var(--sapphire-glint); background:transparent; border:1px solid var(--border); border-radius:var(--radius); padding:7px 14px; cursor:pointer;}
+  .gnext:hover{border-color:var(--sapphire-bright); color:var(--ink);}
+  @media (min-width:981px){
+    .results-main .step-intro{margin-bottom:10px;}
+    .results-main .step-intro .step-eyebrow,.results-main .step-intro p{display:none;}
+    .results-main .step-intro h1{margin-bottom:0; font-size:28px;}
+    .results-main .brief-recap{margin-bottom:12px;}
+    .results-main .results-summary{margin-bottom:12px;}
+    .results-layout{gap:28px;}
+    .group-track .result-card{padding:12px 16px; gap:5px; min-width:0; max-width:none; flex:1 1 0;}
+    .group-track .result-card .card-image{height:64px; margin:-2px 0 0;}
+    .group-track .result-card h4{font-size:14px;}
+    .group-track .result-card .card-meta{font-size:11.5px; gap:1px;}
+    .group-track .result-card .card-qty{padding-top:6px;}
+    .group-track .result-row{flex-wrap:nowrap;}
+    .result-group-head{margin-bottom:10px;}
+  }
+  /* ---- Varietal slider: one style/varietal group at a time, swipe or tap across ---- */
+  .gslider-bar{display:flex; align-items:center; gap:8px; margin-bottom:18px;}
+  .group-tabs{display:flex; gap:8px; overflow-x:auto; flex:1; min-width:0; scrollbar-width:none; padding:2px 0;}
+  .group-tabs::-webkit-scrollbar{display:none;}
+  .gtab{flex:none; font:inherit; font-size:13px; color:var(--ink-dim); background:var(--surface); border:1px solid var(--border-soft); border-radius:20px; padding:7px 14px; cursor:pointer; white-space:nowrap; display:inline-flex; align-items:center; gap:7px; transition:border-color .2s,color .2s,background .2s;}
+  .gtab:hover{border-color:var(--sapphire-bright); color:var(--ink);}
+  .gtab[aria-selected="true"]{color:var(--ink); border-color:var(--sapphire-bright); background:linear-gradient(160deg,rgba(58,110,222,.28),rgba(58,110,222,.10));}
+  .gtab .gbadge{display:none; min-width:18px; height:18px; padding:0 5px; border-radius:9px; background:var(--cyan); color:#06101a; font-size:11px; font-weight:600; line-height:18px; text-align:center;}
+  .gtab .gbadge.on{display:inline-block;}
+  .gnav{flex:none; width:34px; height:34px; border:1px solid var(--border); background:var(--surface); color:var(--sapphire-glint); border-radius:50%; font-size:16px; cursor:pointer; line-height:1;}
+  .gnav:hover:not([disabled]){border-color:var(--sapphire-bright); color:var(--ink);}
+  .gnav[disabled]{opacity:.3; cursor:default;}
+  .group-track{display:flex; align-items:flex-start; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; -webkit-overflow-scrolling:touch; overscroll-behavior-x:contain;}
+  .group-track::-webkit-scrollbar{display:none;}
+  .group-track .result-group{flex:0 0 100%; min-width:0; margin-bottom:0; scroll-snap-align:start; scroll-snap-stop:always; box-sizing:border-box; padding-right:2px;}
+  .group-track .result-row{flex-wrap:wrap; overflow:visible; scroll-snap-type:none;}
+  @media (max-width:640px){
+    .group-track .result-card{min-width:0; max-width:none; width:100%;}
+    .gnav{display:none;}
+  }
   .result-row{
     display:flex; gap:14px; overflow-x:auto; padding-bottom:6px;
     scroll-snap-type:x proximity;
@@ -317,8 +362,8 @@
   .card-qty-error{font-size:11px; color:var(--bad, #e58a8a); margin-top:-4px;}
 
   /* ---- Results layout: wine groups on the left, pallet pinned on the right ---- */
-  .results-layout{display:grid; grid-template-columns:1fr 320px; gap:36px; align-items:start;}
-  @media (max-width:980px){ .results-layout{grid-template-columns:1fr;} }
+  .results-layout{display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:36px; align-items:start;}
+  @media (max-width:980px){ .results-layout{grid-template-columns:minmax(0,1fr);} }
 
   /* The sidebar sticks to the viewport as the page scrolls, so the pallet
      stays visible the whole time a buyer is browsing result groups below. */
@@ -634,6 +679,8 @@
     </div>
 
     <div id="results-view" style="display:none;">
+      <div class="results-layout">
+        <div class="results-main">
       <div class="step-intro">
         <div class="step-eyebrow">Step 2 of 3</div>
         <h1>Your matches.</h1>
@@ -645,8 +692,8 @@
         <button class="btn btn-ghost" id="btn-edit-brief" style="padding:8px 16px; font-size:11px;">← Edit Brief</button>
       </div>
 
-      <div class="results-layout">
         <div id="results-groups"></div>
+        </div>
 
         <aside class="pallet-side" id="pallet-side">
           <div class="pallet-side-inner">
@@ -1339,7 +1386,16 @@
     if(b.volume) chips.push("Volume: <b>"+b.volume+"</b> bottles");
     if(b.novelty === "market") chips.push("Never sold in my market");
     if(b.flavour && b.flavour.length) chips.push("Flavour: <b>"+b.flavour.join(", ")+"</b>");
-    recap.innerHTML = chips.map(function(c){ return '<span class="chip">'+c+'</span>'; }).join("");
+    const wasOpen = recap.classList.contains("open");
+    recap.innerHTML = '<span class="chip">'+chips[0]+'</span>' +
+      (chips.length>1 ? '<button type="button" class="recap-toggle" aria-expanded="'+wasOpen+'">Your brief <i>'+(wasOpen?'▴':'▾')+'</i></button>' : '') +
+      '<div class="recap-chips">'+chips.slice(1).map(function(c){ return '<span class="chip">'+c+'</span>'; }).join("")+'</div>';
+    const tg = recap.querySelector(".recap-toggle");
+    if(tg) tg.addEventListener("click", function(){
+      const o = recap.classList.toggle("open");
+      tg.setAttribute("aria-expanded", o);
+      tg.querySelector("i").textContent = o ? "▴" : "▾";
+    });
   }
 
   function renderResults(groups){
@@ -1358,18 +1414,71 @@
 
     const container = $("results-groups");
     container.innerHTML = "";
-    groups.forEach(function(g){
+    const bar = document.createElement("div"); bar.className = "gslider-bar";
+    const prev = document.createElement("button"); prev.type = "button"; prev.className = "gnav"; prev.setAttribute("aria-label","Previous wine type"); prev.innerHTML = "&#8249;";
+    const next = document.createElement("button"); next.type = "button"; next.className = "gnav"; next.setAttribute("aria-label","Next wine type"); next.innerHTML = "&#8250;";
+    const tabs = document.createElement("div"); tabs.className = "group-tabs"; tabs.setAttribute("role","tablist");
+    const track = document.createElement("div"); track.className = "group-track";
+    const tabEls = [];
+    groups.forEach(function(g, i){
       const section = document.createElement("div");
       section.className = "result-group";
       section.innerHTML =
         '<div class="result-group-head"><h3>'+g.label+'</h3><span class="group-count">top '+g.results.length+'</span></div>' +
         '<div class="result-row"></div>';
+      if(i < groups.length-1){
+        const nb = document.createElement("button");
+        nb.type = "button"; nb.className = "gnext";
+        nb.innerHTML = 'Next: '+groups[i+1].label.replace(/^[^·]*·\s*/,"")+' &#8250;';
+        nb.addEventListener("click", function(){ goTo(i+1); });
+        section.querySelector(".result-group-head").appendChild(nb);
+      }
       const row = section.querySelector(".result-row");
       g.results.forEach(function(r){
         row.appendChild(buildResultCard(r));
       });
-      container.appendChild(section);
+      track.appendChild(section);
+      const tab = document.createElement("button");
+      tab.type = "button"; tab.className = "gtab"; tab.setAttribute("role","tab");
+      tab.setAttribute("aria-selected", i===0 ? "true" : "false");
+      tab.innerHTML = '<span>'+g.label+'</span><span class="gbadge"></span>';
+      tab.addEventListener("click", function(){ goTo(i); });
+      tabs.appendChild(tab); tabEls.push(tab);
     });
+    bar.appendChild(prev); bar.appendChild(tabs); bar.appendChild(next);
+    container.appendChild(bar); container.appendChild(track);
+
+    let cur = 0, raf = 0;
+    function goTo(i){
+      i = Math.max(0, Math.min(groups.length-1, i));
+      track.scrollTo({left:i*track.clientWidth, behavior:"smooth"});
+    }
+    function setActive(i){
+      cur = i;
+      tabEls.forEach(function(t, k){ t.setAttribute("aria-selected", k===i ? "true" : "false"); });
+      prev.disabled = i<=0; next.disabled = i>=groups.length-1;
+      const t = tabEls[i];
+      if(t) tabs.scrollTo({left:t.offsetLeft - (tabs.clientWidth - t.offsetWidth)/2, behavior:"smooth"});
+    }
+    prev.addEventListener("click", function(){ goTo(cur-1); });
+    next.addEventListener("click", function(){ goTo(cur+1); });
+    track.addEventListener("scroll", function(){
+      if(raf) return;
+      raf = requestAnimationFrame(function(){
+        raf = 0;
+        if(!track.clientWidth) return;
+        const i = Math.round(track.scrollLeft / track.clientWidth);
+        if(i !== cur) setActive(i);
+      });
+    }, {passive:true});
+    setActive(0);
+    state.refreshGroupBadges = function(){
+      groups.forEach(function(g, i){
+        const n = g.results.reduce(function(c, r){ return c + ((state.quantities.get(r.id)||0) > 0 ? 1 : 0); }, 0);
+        const b = tabEls[i] && tabEls[i].querySelector(".gbadge");
+        if(b){ b.textContent = n; b.classList.toggle("on", n>0); }
+      });
+    };
 
     updatePalletBar();
   }
@@ -1447,6 +1556,7 @@
   }
 
   function updatePalletBar(){
+    if(state.refreshGroupBadges) state.refreshGroupBadges();
     const lines = pickedLines();
 
     if(lines.length === 0){
