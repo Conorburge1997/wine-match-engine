@@ -722,7 +722,10 @@
     .aw-quote blockquote::before{content:'\201C'; color:var(--cyan); font-size:1.5em; line-height:0; vertical-align:-.28em; margin-right:2px;}
     .aw-quote blockquote::after{content:'\201D'; color:var(--cyan); font-size:1.5em; line-height:0; vertical-align:-.28em; margin-left:2px;}
     .aw-pic.sm{width:112px; height:150px; object-position:50% 12%; margin:2px 16px 8px 0;}
-    .aw-banner{float:right; width:128px; height:132px; object-fit:cover; object-position:32% 30%; border:1px solid var(--border); margin:2px 0 8px 14px;}
+    .aw-tile{float:left; width:148px; height:186px; margin:2px 18px 10px 0; border:1px solid var(--border); overflow:hidden;}
+    .aw-tile svg{display:block; width:100%; height:100%;}
+    .aw-strip{height:56px; margin:0 0 16px; border:1px solid var(--border); overflow:hidden;}
+    .aw-strip svg{display:block; width:100%; height:100%;}
     .aw-by{clear:both; padding-top:14px; font-size:12.5px; color:var(--ink-faint);}
     .aw-by b{color:var(--cyan); font-weight:500; letter-spacing:.06em;}
     .aw-ctl{display:flex; align-items:center; justify-content:space-between; margin-top:18px;}
@@ -1659,13 +1662,43 @@
       pic=grid.querySelector(".about-pic"), head=grid.querySelector(".about-head"), bios=grid.querySelectorAll(".about-bio");
   if(!close||!pic||!head) return;
   function el(tag,cls,html){ var e=document.createElement(tag); if(cls) e.className=cls; if(html!=null) e.innerHTML=html; return e; }
+  // Abstract faceted-sapphire artwork (drawn here, no external image)
+  function facets(w,h,seed,cols,rows){
+    var r=seed; function rnd(){ r=(r*9301+49297)%233280; return r/233280; }
+    var pts=[], i, j, out="";
+    for(j=0;j<=rows;j++){ pts[j]=[]; for(i=0;i<=cols;i++){
+      var x=i*w/cols+(i>0&&i<cols?(rnd()-.5)*w/cols*.7:0), y=j*h/rows+(j>0&&j<rows?(rnd()-.5)*h/rows*.7:0);
+      pts[j][i]=[x,y]; } }
+    function tri(a,b,c){
+      var t=rnd(), L=Math.round(14+t*34), S=Math.round(48+rnd()*22);
+      out+='<polygon points="'+a+' '+b+' '+c+'" fill="hsl(222 '+S+'% '+L+'%)" fill-opacity="'+(.35+rnd()*.5).toFixed(2)+'" stroke="rgba(166,196,255,.16)" stroke-width=".6"/>';
+    }
+    for(j=0;j<rows;j++) for(i=0;i<cols;i++){
+      var a=pts[j][i],b=pts[j][i+1],c=pts[j+1][i],d=pts[j+1][i+1];
+      if((i+j)%2){ tri(a,b,c); tri(b,d,c); } else { tri(a,b,d); tri(a,d,c); }
+    }
+    return out;
+  }
+  function brandTile(){
+    var wrap=el("div","aw-tile");
+    wrap.setAttribute("role","img"); wrap.setAttribute("aria-label","Sapphire Panda");
+    wrap.innerHTML='<svg viewBox="0 0 148 186" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'+
+      '<rect width="148" height="186" fill="#0a0e1c"/>'+facets(148,186,7,4,5)+
+      '<g transform="translate(34 55) scale(2.1)"><circle cx="14" cy="15" r="4" fill="#cfd8f5"/><circle cx="30" cy="15" r="4" fill="#cfd8f5"/><ellipse cx="22" cy="24" rx="11" ry="9.5" fill="#cfd8f5"/><circle cx="17" cy="22" r="3" fill="#0a0e1c"/><circle cx="27" cy="22" r="3" fill="#0a0e1c"/></g></svg>';
+    return wrap;
+  }
+  function facetBanner(){
+    var wrap=el("div","aw-strip"); wrap.setAttribute("aria-hidden","true");
+    wrap.innerHTML='<svg viewBox="0 0 320 56" preserveAspectRatio="xMidYMid slice"><rect width="320" height="56" fill="#0a0e1c"/>'+facets(320,56,19,10,2)+'</svg>';
+    return wrap;
+  }
   var wiz=el("div","about-wiz"), pager=el("div","aw-pager"), track=el("div","aw-track");
   track.setAttribute("aria-label","About Sapphire Panda, swipe for more"); track.tabIndex=0;
   // 1: the quote, with Conor's photo alongside
   var s1=el("div","aw-slide aw-quote"), b1=el("div","aw-box");
   var img=pic.cloneNode(true); img.className="aw-pic"; img.removeAttribute("loading");
   var bq=el("blockquote",null,close.innerHTML);
-  var in1=el("div","aw-inner"); in1.appendChild(img); in1.appendChild(bq); in1.appendChild(el("div","aw-by","<b>CONOR</b> · Founder")); b1.appendChild(in1);
+  var in1=el("div","aw-inner"); in1.appendChild(brandTile()); in1.appendChild(bq); in1.appendChild(el("div","aw-by","<b>SAPPHIRE PANDA</b> · AI wine matching")); b1.appendChild(in1);
   s1.appendChild(b1);
   // 2: the story
   var s2=el("div","aw-slide"); Array.prototype.forEach.call(ps,function(p){ s2.appendChild(p.cloneNode(true)); });
@@ -1675,7 +1708,7 @@
   var in3=el("div","aw-inner"); while(b3.firstChild) in3.appendChild(b3.firstChild);
   var p3=el("img","aw-pic sm"); p3.src="assets/conor-lounge.jpg"; p3.alt="Conor at a business event in Hong Kong"; p3.width=295; p3.height=510; in3.insertBefore(p3,in3.firstChild); b3.appendChild(in3);
   s3.appendChild(b3);
-  var s2b=el("div","aw-box"), in2=el("div","aw-inner"); var ban=el("img","aw-banner"); ban.src="assets/summit.jpg"; ban.alt="Conor with attendees at the Belt and Road Summit, Hong Kong"; ban.width=462; ban.height=387; while(s2.firstChild) in2.appendChild(s2.firstChild); in2.insertBefore(ban, in2.children[1]); s2b.appendChild(in2); s2.appendChild(s2b);
+  var s2b=el("div","aw-box"), in2=el("div","aw-inner"); in2.appendChild(facetBanner()); while(s2.firstChild) in2.appendChild(s2.firstChild); s2b.appendChild(in2); s2.appendChild(s2b);
   var slides=[s1,s3,s2]; slides.forEach(function(s){ track.appendChild(s); });
   pager.appendChild(track); wiz.appendChild(pager);
   var ctl=el("div","aw-ctl"), dots=el("div","aw-dots","<i class='on'></i><i></i><i></i>"), arrows=el("div","aw-arrows");
@@ -1705,7 +1738,7 @@
   track.addEventListener("keydown",function(e){ if(e.key==="ArrowRight") go(idx+1); if(e.key==="ArrowLeft") go(idx-1); });
   if(window.ResizeObserver){ var ro=new ResizeObserver(size); slides.forEach(function(s){ ro.observe(s); }); }
   window.addEventListener("resize",function(){ equalise(); track.scrollLeft=idx*track.clientWidth; });
-  [img,p3,ban].forEach(function(i){ i.addEventListener("load",equalise); }); window.addEventListener("load",equalise);
+  [p3].forEach(function(i){ i.addEventListener("load",equalise); }); window.addEventListener("load",equalise);
   if(document.fonts&&document.fonts.ready) document.fonts.ready.then(equalise);
   equalise(); update();
 })();
