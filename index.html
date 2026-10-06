@@ -932,7 +932,7 @@
   /* ---- Mobile engine: a self-driving stage with a live funnel ---- */
   .eng-funnel{display:none;}
   @media (max-width: 860px){
-    .engine-body{display:flex !important; gap:0; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; -webkit-overflow-scrolling:touch; overscroll-behavior-x:contain; background:none; align-items:flex-start; transition:height .3s ease;}
+    .engine-body{display:flex !important; gap:0; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; -webkit-overflow-scrolling:touch; overscroll-behavior-x:contain; background:none; align-items:stretch; overflow-y:hidden;}
     .engine-body::-webkit-scrollbar{display:none;}
     .engine-body > .engine-col{flex:0 0 100%; box-sizing:border-box; scroll-snap-align:start; scroll-snap-stop:always; padding:22px 24px 24px; min-width:0;}
     .engine-body > .engine-col .engine-col-label{text-align:center;}
@@ -955,7 +955,8 @@
     .eng-funnel .ef-bar i{display:block; height:100%; width:100%; background:linear-gradient(90deg,var(--sapphire),var(--cyan)); transform-origin:left; transition:transform .8s cubic-bezier(.2,.7,.2,1);}
     .engine-panel.is-done .eng-funnel .ef-num{color:var(--cyan);}
     .stat-row{display:none !important;}
-    .engine-body > .engine-col{padding:16px 22px 18px;}
+    .engine-body > .engine-col{padding:20px 22px 22px; display:flex; flex-direction:column; justify-content:center;}
+    .engine-body > .engine-col .engine-line{padding:5px 0;}
     .engine-col-label{margin-bottom:8px;}
     .engine-line{padding:3px 0; font-size:12.5px;}
     .think{margin-bottom:10px;}
@@ -1840,12 +1841,11 @@
     top.parentNode.insertBefore(dots,body); top.parentNode.insertBefore(fun,body);
     var manual=false;
     function go(i){ if(!mq.matches) return; body.scrollTo({left:cols[i].offsetLeft-body.offsetLeft,behavior:'smooth'}); }
-    function fit(i){ if(!mq.matches){ body.style.height=''; return; } body.style.height=cols[i].offsetHeight+'px'; }
-    function upd(){ var best=0,bd=1e9; cols.forEach(function(c,i){var d=Math.abs(c.offsetLeft-body.offsetLeft-body.scrollLeft); if(d<bd){bd=d;best=i;}}); fit(best);
+    function upd(){ var best=0,bd=1e9; cols.forEach(function(c,i){var d=Math.abs(c.offsetLeft-body.offsetLeft-body.scrollLeft); if(d<bd){bd=d;best=i;}});
       btns.forEach(function(b,i){ if(i===best) b.setAttribute('aria-current','true'); else b.removeAttribute('aria-current'); }); }
     body.addEventListener('scroll',function(){requestAnimationFrame(upd);},{passive:true});
     body.addEventListener('touchstart',function(){manual=true;},{passive:true});
-    window.addEventListener('resize',upd); upd(); if(window.ResizeObserver){ var ro=new ResizeObserver(upd); cols.forEach(function(c){ro.observe(c);}); }
+    window.addEventListener('resize',upd); upd(); 
     // funnel follows the reasoning steps
     var W=[1,.62,.36,.2,.1,.05], L=['wines in the network','wines in the network','match your style & region','fit price & volume','never sold in your market','top matches'];
     function setF(i,n){ num.textContent=n; lbl.textContent=L[i]; bar.style.transform='scaleX('+W[i]+')'; }
