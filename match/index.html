@@ -402,7 +402,12 @@
     box-shadow:0 10px 30px rgba(0,0,0,0.3);
     max-height:calc(100vh - 130px); display:flex; flex-direction:column; overflow:hidden;
   }
-  @media (max-width:980px){ .pallet-side-inner{max-height:none;} }
+  @media (max-width:980px){ .pallet-side-inner{max-height:none;}
+    /* show 3 wines, then scroll inside the pallet instead of growing forever */
+    .pallet-items{flex:0 1 auto; max-height:var(--pi-3,370px); overscroll-behavior:contain; -webkit-overflow-scrolling:touch; scrollbar-width:thin;}
+    .pallet-item{padding:9px 10px;}
+    .pallet-item .pi-qty-price{margin-top:4px; padding-top:5px;}
+  }
 
   .pallet-empty{padding:40px 26px; text-align:center; color:var(--ink-faint);}
   .pallet-empty-glass{color:var(--border); margin-bottom:14px;}
@@ -1579,10 +1584,10 @@
   ];
   function bottleImageSrc(r){
     if(r.variety && KNOWN_BOTTLE_VARIETIES.indexOf(r.variety) > -1){
-      return "bottles/" + r.variety.toLowerCase().replace(/\s+/g,"-") + ".svg";
+      return "/match/bottles/" + r.variety.toLowerCase().replace(/\s+/g,"-") + ".svg";
     }
     const style = (r.style === "White") ? "white" : "red";
-    return "bottles/style-" + style + ".svg";
+    return "/match/bottles/style-" + style + ".svg";
   }
 
   function buildResultCard(r){
@@ -1671,6 +1676,18 @@
         '<div class="pi-qty-price"><span class="pi-qty">'+l.qty+' × '+formatPrice(l.result.price)+'</span><span class="pi-price">'+formatPrice(lineTotalAud)+'</span></div>';
       itemsBox.appendChild(row);
     });
+    // phones: size the list to exactly three wines, then scroll inside it
+    function fitThree(){
+      if(!window.matchMedia("(max-width:980px)").matches){ itemsBox.style.removeProperty("--pi-3"); return; }
+      const kids = Array.prototype.slice.call(itemsBox.children, 0, 3);
+      if(!kids.length) return;
+      const gap = parseFloat(getComputedStyle(itemsBox).rowGap) || 12;
+      const h = kids.reduce(function(n,k){ return n + k.offsetHeight; }, 0) + gap*(kids.length-1) + 6;
+      itemsBox.style.setProperty("--pi-3", Math.ceil(h)+"px");
+    }
+    fitThree(); requestAnimationFrame(fitThree);
+    if(!window.__fitThreeBound){ window.__fitThreeBound = true; window.addEventListener("resize", function(){ if(window.__fitThree) window.__fitThree(); }); }
+    window.__fitThree = fitThree;
     itemsBox.querySelectorAll(".pi-remove").forEach(function(btn){
       btn.addEventListener("click", function(){
         const id = btn.dataset.id;
