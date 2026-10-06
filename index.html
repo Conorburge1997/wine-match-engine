@@ -697,6 +697,33 @@
   .about-li{display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border:1px solid var(--border); border-radius:var(--radius); color:var(--sapphire-glint); transition:border-color .2s, color .2s;}
   .about-li:hover,.about-li:focus-visible{border-color:var(--sapphire-bright); color:var(--ink);}
   @media (max-width: 520px){ .about-pic{float:none; display:block; width:120px; height:150px; margin:0 0 16px;} }
+
+  /* ---- About: swipe slides on mobile (built from the markup above by script) ---- */
+  .about-wiz{display:none;}
+  @media (max-width:820px){
+    .about-wiz{display:block;}
+    #about .about-grid{display:none;}
+    .aw-pager{overflow:hidden; transition:height .3s ease;}
+    .aw-track{display:flex; align-items:flex-start; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; -webkit-overflow-scrolling:touch; overscroll-behavior-x:contain;}
+    .aw-track::-webkit-scrollbar{display:none;}
+    .aw-slide{flex:0 0 100%; min-width:0; scroll-snap-align:start; scroll-snap-stop:always; box-sizing:border-box; padding:0 1px;}
+    .aw-slide p{color:var(--ink-dim); font-size:15.5px; line-height:1.75; margin:0 0 18px;}
+    .aw-box{border:1px solid var(--border); background:linear-gradient(160deg, var(--surface) 0%, var(--bg-2) 100%); padding:24px 22px; box-shadow:inset 0 1px 0 rgba(166,196,255,0.12), 0 30px 60px -30px rgba(58,110,222,0.3);}
+    .aw-box::after{content:''; display:table; clear:both;}
+    .aw-pic{float:left; width:124px; height:156px; object-fit:cover; object-position:50% 25%; border:1px solid var(--border); margin:2px 18px 10px 0; shape-outside:margin-box;}
+    .aw-quote blockquote{margin:0; font-family:'Fraunces',serif; font-size:19px; line-height:1.55; color:var(--ink);}
+    .aw-quote blockquote::before{content:'\201C'; display:block; font-size:54px; line-height:.6; color:var(--cyan); margin-bottom:6px;}
+    .aw-by{clear:both; padding-top:14px; font-size:12.5px; color:var(--ink-faint);}
+    .aw-by b{color:var(--cyan); font-weight:500; letter-spacing:.06em;}
+    .aw-ctl{display:flex; align-items:center; justify-content:space-between; margin-top:18px;}
+    .aw-dots{display:flex; gap:8px;}
+    .aw-dots i{width:22px; height:3px; background:var(--border); transition:background .3s;}
+    .aw-dots i.on{background:var(--sapphire-bright);}
+    .aw-arrows{display:flex; gap:8px;}
+    .aw-arrows button{width:38px; height:38px; background:transparent; border:1px solid var(--border); color:var(--ink-dim); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;}
+    .aw-arrows button:disabled{opacity:.35; cursor:default;}
+  }
+  @media (prefers-reduced-motion:reduce){ .aw-pager{transition:none;} }
   @media (max-width: 820px){ .about-grid{grid-template-columns:1fr; gap:32px;} .about-card{order:0;} .about-story{order:-1;} }
 
   /* News — intelligence feed: featured signal + live queue */
@@ -1613,6 +1640,53 @@
     es.forEach(function(e){ if(e.isIntersecting && !started){started=true; io.disconnect(); run();} });
   },{threshold:0.35});
   io.observe(panel);
+})();
+</script>
+<script>
+(function(){
+  var grid=document.querySelector("#about .about-grid"); if(!grid) return;
+  var ps=grid.querySelectorAll(".about-story p:not(.about-close)"), close=grid.querySelector(".about-close"),
+      pic=grid.querySelector(".about-pic"), head=grid.querySelector(".about-head"), bios=grid.querySelectorAll(".about-bio");
+  if(!close||!pic||!head) return;
+  function el(tag,cls,html){ var e=document.createElement(tag); if(cls) e.className=cls; if(html!=null) e.innerHTML=html; return e; }
+  var wiz=el("div","about-wiz"), pager=el("div","aw-pager"), track=el("div","aw-track");
+  track.setAttribute("aria-label","About Sapphire Panda, swipe for more"); track.tabIndex=0;
+  // 1: the quote, with Conor's photo alongside
+  var s1=el("div","aw-slide aw-quote"), b1=el("div","aw-box");
+  var img=pic.cloneNode(true); img.className="aw-pic"; img.removeAttribute("loading");
+  var bq=el("blockquote",null,close.innerHTML);
+  b1.appendChild(img); b1.appendChild(bq); b1.appendChild(el("div","aw-by","<b>CONOR</b> · Founder"));
+  s1.appendChild(b1);
+  // 2: the story
+  var s2=el("div","aw-slide"); Array.prototype.forEach.call(ps,function(p){ s2.appendChild(p.cloneNode(true)); });
+  // 3: credentials
+  var s3=el("div","aw-slide"), b3=el("div","aw-box"); b3.appendChild(head.cloneNode(true));
+  Array.prototype.forEach.call(bios,function(p){ var c=p.cloneNode(true); c.className=""; b3.appendChild(c); });
+  s3.appendChild(b3);
+  var slides=[s1,s2,s3]; slides.forEach(function(s){ track.appendChild(s); });
+  pager.appendChild(track); wiz.appendChild(pager);
+  var ctl=el("div","aw-ctl"), dots=el("div","aw-dots","<i class='on'></i><i></i><i></i>"), arrows=el("div","aw-arrows");
+  var prev=el("button",null,'<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2.5L4 7l5 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'),
+      next=el("button",null,'<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2.5L10 7l-5 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  prev.type=next.type="button"; prev.setAttribute("aria-label","Previous"); next.setAttribute("aria-label","Next");
+  arrows.appendChild(prev); arrows.appendChild(next); ctl.appendChild(dots); ctl.appendChild(arrows); wiz.appendChild(ctl);
+  grid.parentNode.insertBefore(wiz, grid.nextSibling);
+  var idx=0;
+  function size(){ pager.style.height = slides[idx].offsetHeight + "px"; }
+  function update(){
+    var w=track.clientWidth||1; idx=Math.max(0,Math.min(2,Math.round(track.scrollLeft/w)));
+    Array.prototype.forEach.call(dots.children,function(d,i){ d.classList.toggle("on",i===idx); });
+    prev.disabled=idx===0; next.disabled=idx===2; size();
+  }
+  var t; track.addEventListener("scroll",function(){ clearTimeout(t); t=setTimeout(update,60); },{passive:true});
+  function go(i){ track.scrollTo({left:i*track.clientWidth, behavior:"smooth"}); }
+  prev.addEventListener("click",function(){ go(idx-1); });
+  next.addEventListener("click",function(){ go(idx+1); });
+  track.addEventListener("keydown",function(e){ if(e.key==="ArrowRight") go(idx+1); if(e.key==="ArrowLeft") go(idx-1); });
+  if(window.ResizeObserver){ var ro=new ResizeObserver(size); slides.forEach(function(s){ ro.observe(s); }); }
+  window.addEventListener("resize",function(){ track.scrollLeft=idx*track.clientWidth; size(); });
+  img.addEventListener("load",size); window.addEventListener("load",size);
+  update();
 })();
 </script>
 </body>
