@@ -1834,7 +1834,8 @@
     function setF(i,n){ num.textContent=n; lbl.textContent=L[i]; bar.style.transform='scaleX('+W[i]+')'; }
     function ctOf(li){return li.querySelector('.ct').textContent;}
     var lis=[].slice.call(panel.querySelectorAll('#think li'));
-    setF(0,'3,412');
+    function idle(){ num.textContent='\u2014'; lbl.textContent='loading buyer requirements\u2026'; bar.style.transform='scaleX(0)'; }
+    idle();
     var mo=new MutationObserver(function(ms){ ms.forEach(function(m){ var t=m.target;
       if(t.classList.contains('active') && t===lis[0]){ if(!manual) go(1); }
       if(t.classList.contains('done')){ var i=lis.indexOf(t); if(i>0) setF(i, i===lis.length-1? '3' : ctOf(t)); if(i===0) setF(1,'3,412'); }
@@ -1842,7 +1843,7 @@
     }); });
     lis.concat(gems).forEach(function(n){ mo.observe(n,{attributes:true,attributeFilter:['class']}); });
     // a fresh run resets the stage
-    var so=new MutationObserver(function(){ if(!panel.classList.contains('is-done') && state.textContent==='Loading requirements…'){ manual=false; setF(0,'3,412'); body.scrollTo({left:0,behavior:'smooth'}); } });
+    var so=new MutationObserver(function(){ if(!panel.classList.contains('is-done') && state.textContent==='Loading requirements…'){ manual=false; idle(); body.scrollTo({left:0,behavior:'smooth'}); } });
     so.observe(state,{childList:true,characterData:true,subtree:true});
   })();
   if(reduce || !('IntersectionObserver' in window)){ show(); return; }
