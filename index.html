@@ -1856,19 +1856,20 @@
 (function(){
   var mq=window.matchMedia("(max-width:860px)");
   function el(t,c,h){var e=document.createElement(t); if(c) e.className=c; if(h!=null) e.innerHTML=h; return e;}
-  function swipe(track, slides, labels, mount){
+  function swipe(track, slides, labels, mount, tabOf, targets){
     if(!track||!slides.length) return;
     var dots=el("div","swipe-dots"+(labels?" has-labels":"")); dots.setAttribute("role","tablist");
-    var btns=slides.map(function(s,i){
+    var btns=(labels&&targets?labels:slides).map(function(s,i){
       var b=el("button",null,'<span class="dot"></span>'+(labels?'<span>'+labels[i]+'</span>':''));
       b.type="button"; b.setAttribute("aria-label","Show "+(labels?labels[i]:"item "+(i+1)));
-      b.addEventListener("click",function(){ track.scrollTo({left:slides[i].offsetLeft-track.offsetLeft,behavior:"smooth"}); });
+      b.addEventListener("click",function(){ var t=slides[targets?targets[i]:i]; track.scrollTo({left:t.offsetLeft-track.offsetLeft,behavior:"smooth"}); });
       dots.appendChild(b); return b; });
     mount(dots);
     var cur=-1;
     function upd(){
       var best=0,bd=1e9;
       slides.forEach(function(s,i){var d=Math.abs(s.offsetLeft-track.offsetLeft-track.scrollLeft); if(d<bd){bd=d;best=i;}});
+      if(tabOf) best=tabOf[best];
       if(best!==cur){cur=best; btns.forEach(function(b,i){ if(i===best) b.setAttribute("aria-current","true"); else b.removeAttribute("aria-current"); });}
     }
     track.addEventListener("scroll",function(){ requestAnimationFrame(upd); },{passive:true});
@@ -1901,7 +1902,7 @@
     var mc=body.querySelector(".mapcol"), tot=document.querySelector("#difference .consol-top .tot");
     if(mc && tot && !mc.querySelector(".m-tot")){ var mt=el("div","m-tot", tot.textContent.replace(/\s*→\s*/g,"<br>→ ").replace(/\u00a0/g," ")); mc.appendChild(mt); }
     var slides=[mc, body.querySelector(".m-mid"), pw].filter(Boolean);
-    swipe(body, slides, ["1 Sourced","2 Matched","3 Pallet"], function(d){ var c=document.querySelector("#difference .consol"); var foot=c.querySelector(".consol-foot"); c.insertBefore(d, foot); });
+    swipe(body, slides, ["1 Sourced","2 One pallet"], function(d){ var c=document.querySelector("#difference .consol"); var foot=c.querySelector(".consol-foot"); c.insertBefore(d, foot); }, [0,1,1], [0,2]);
   }
 })();
 </script>
