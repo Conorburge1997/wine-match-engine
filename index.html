@@ -712,21 +712,22 @@
     .aw-slide p{color:var(--ink-dim); font-size:13px; line-height:1.55; margin:0 0 11px;}
     .aw-slide .aw-box{min-height:0; display:flex; flex-direction:column; justify-content:center;}
     .aw-inner{display:flow-root;}
-    .aw-artwrap{margin:0 0 16px; border:1px solid var(--border); overflow:hidden; height:120px;}
-    .aw-art{display:block; width:100%; height:100%;}
-    .aw-chips{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 16px;}
-    .aw-chips span{border:1px solid rgba(95,212,224,.45); color:var(--cyan); font-size:12.5px; padding:6px 11px; background:rgba(95,212,224,.06);}
-    .aw-story p.aw-pull{margin-top:16px; padding-top:14px; border-top:1px solid var(--border); font-family:'Fraunces',serif; font-style:italic; color:var(--ink); font-size:21px; line-height:1.4;}
-    .aw-row{padding:12px 0; border-top:1px solid var(--border-soft);}
-    .aw-row:first-of-type{border-top:0; padding-top:0;}
-    .aw-lab{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--cyan); margin-bottom:6px;}
-    .aw-creds .aw-row p{font-size:15.5px; line-height:1.6; margin:0;}
-    .aw-creds .aw-banner{height:170px; object-position:50% 22%;}
+    .aw-big{font-family:'Fraunces',serif; font-size:1.5em; line-height:1.12; font-weight:500; color:var(--sapphire-glint); letter-spacing:-.01em;}
+    .aw-story p.aw-lead{font-family:'Fraunces',serif; font-size:26px; line-height:1.34; color:var(--ink); margin:0 0 20px;}
+    .aw-story p.aw-pull{margin:18px 0 0; font-family:'Fraunces',serif; font-style:italic; color:var(--sapphire-glint); font-size:25px; line-height:1.35;}
+    .aw-creds p.aw-lead{font-family:'Fraunces',serif; font-size:19px; line-height:1.45; color:var(--ink); margin-bottom:14px;}
+    .aw-creds p{font-size:15.5px; line-height:1.62; margin:0 0 14px;}
+    .aw-story .aw-vy{height:112px; object-position:50% 68%; margin-bottom:18px;}
+    .aw-story .aw-vy + p.aw-lead{font-size:23px;}
+    .aw-story .aw-port{height:112px; object-position:50% 60%;}
+    .aw-creds .aw-banner{height:130px; object-position:50% 16%;}
+    .aw-line{opacity:0; transform:translateY(10px); transition:opacity .7s ease, transform .7s ease;}
+    .aw-slide.in .aw-line{opacity:1; transform:none;}
     .aw-sec{padding:12px 0; border-top:1px solid var(--border-soft);}
     .aw-sec:nth-of-type(1){border-top:0; padding-top:0;}
     .aw-sec:last-child{padding-bottom:0;}
     .aw-sec p{margin:0;}
-    .aw-story p{font-size:20px; line-height:1.65; margin:0;}
+    .aw-story p{font-size:17px; line-height:1.65; margin:0 0 16px;}
     .aw-story .aw-box{justify-content:center;}
     .aw-creds p{font-size:16px; line-height:1.65; margin-bottom:18px;}
     .aw-creds .about-name{font-size:24px;}
@@ -739,7 +740,7 @@
     .aw-quote blockquote::before{content:'\201C'; color:var(--cyan); font-size:1.5em; line-height:0; vertical-align:-.28em; margin-right:.28em;}
     .aw-quote blockquote::after{content:'\201D'; color:var(--cyan); font-size:1.5em; line-height:0; vertical-align:-.28em; margin-left:.12em;}
     .aw-pic.sm{width:150px; height:148px; object-position:50% 30%; margin:2px 16px 8px 0;}
-    .aw-banner{display:block; width:100%; height:auto; aspect-ratio:760/605; max-height:230px; object-fit:cover; object-position:50% 45%; border:1px solid var(--border); margin:0 0 16px;}
+    .aw-banner{display:block; width:100%; height:112px; object-fit:cover; object-position:50% 50%; border:1px solid var(--border); margin:0 0 16px;}
     .aw-by{clear:both; padding-top:14px; font-size:12.5px; color:var(--ink-faint);}
     .aw-by{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
     .aw-by .about-li{margin-left:2px;}
@@ -752,7 +753,7 @@
     .aw-arrows button{width:38px; height:38px; background:transparent; border:1px solid var(--border); color:var(--ink-dim); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;}
     .aw-arrows button:disabled{opacity:.35; cursor:default;}
   }
-  @media (prefers-reduced-motion:reduce){ .aw-pager{transition:none;} }
+  @media (prefers-reduced-motion:reduce){ .aw-pager{transition:none;} .aw-line{opacity:1; transform:none; transition:none;} }
   @media (max-width: 820px){ .about-grid{grid-template-columns:1fr; gap:32px;} .about-card{order:0;} .about-story{order:-1;} }
 
   /* News — intelligence feed: featured signal + live queue */
@@ -1688,24 +1689,20 @@
   var in1=el("div","aw-inner"); in1.appendChild(img); in1.appendChild(bq); in1.appendChild(el("div","aw-by","<b>CONOR</b> · Founder"+LI)); b1.appendChild(in1);
   s1.appendChild(b1);
   // 2: the story
-  var VINES='<svg class="aw-art" viewBox="0 0 320 120" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="awsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a2b58"/><stop offset="1" stop-color="#0a0e1c"/></linearGradient></defs><rect width="320" height="120" fill="url(#awsky)"/><circle cx="244" cy="34" r="12" fill="#a6c4ff" fill-opacity=".9"/><path d="M0 62 Q50 38 105 56 T215 50 T320 56 V120 H0Z" fill="#0f1a3a"/><path d="M0 74 Q70 54 140 68 T320 64 V120 H0Z" fill="#0c1430"/><g stroke="#5fd4e0" stroke-opacity=".8" stroke-width="1.6" stroke-linecap="round" stroke-dasharray=".1 4.6" fill="none">'+
-    [-190,-120,-70,-28,28,70,120,190].map(function(d){ return '<path d="M'+(150+d*.1)+' 70 Q'+(150+d*.9)+' 92 '+(150+d*2.2)+' 120"/>'; }).join("")+'</g></svg>';
-  function chips(items){ return '<div class="aw-chips">'+items.map(function(t){ return '<span>'+t+'</span>'; }).join("")+'</div>'; }
+  function big(t,ws){ ws.forEach(function(w){ t=t.replace(w,'<span class="aw-big">'+w+'</span>'); }); return t; }
+  function sentences(t){ return t.match(/[^.]+\.(?:\s|$)/g).map(function(x){ return x.trim(); }); }
   var storySlides=Array.prototype.map.call(ps,function(p,k){
-    var sl=el("div","aw-slide aw-story"), bx=el("div","aw-box"), inn=el("div","aw-inner");
-    if(k===0){ inn.appendChild(el("div","aw-artwrap",VINES)); }
-    if(k===1){ var ban=el("img","aw-banner"); ban.src="assets/summit-wide.jpg"; ban.alt="Conor with attendees at the Belt and Road Summit, Hong Kong"; ban.width=760; ban.height=605; inn.appendChild(ban); }
-    if(k===2){ inn.appendChild(el("div",null,chips(["Minimum order quantities","Licensing and paperwork","Limited advertising spend"]))); }
-    var txt=p.textContent, pull=null;
-    if(k===2){ var at=txt.indexOf("Award-winning wine"); if(at>0){ pull=txt.slice(at); txt=txt.slice(0,at).trim(); } }
-    inn.appendChild(el("p",null,txt));
-    if(pull){ inn.appendChild(el("p","aw-pull",pull)); }
+    var sl=el("div","aw-slide aw-story"), bx=el("div","aw-box"), inn=el("div","aw-inner"), n=0;
+    function line(cls,t){ var d=el("p","aw-line "+cls,t); d.style.transitionDelay=(n++*0.28)+"s"; inn.appendChild(d); }
+    var ss=sentences(p.textContent);
+    if(k===1){ var ban=el("img","aw-banner"); ban.src="assets/cellar.jpg"; ban.alt="A restaurant wine cellar stocked with bottles"; ban.width=650; ban.height=385; inn.appendChild(ban); line("",big(ss.join(" "),["boutique, distinctive Australian wine","no reliable way to find it"])); }
+    else if(k===0){ var vy=el("img","aw-banner aw-vy"); vy.src="assets/vineyard.jpg"; vy.alt="Vineyard rows at sunset in an Australian wine region"; vy.width=1078; vy.height=720; inn.appendChild(vy); line("aw-lead",ss[0]); line("",big(ss.slice(1).join(" "),["barely represented"])); }
+    else { var pt=el("img","aw-banner aw-port"); pt.src="assets/port.jpg"; pt.alt="A container port with ships and stacked shipping containers"; pt.width=555; pt.height=312; inn.appendChild(pt); line("aw-lead aw-lead2",ss[0]); line("",big(ss.slice(1,-1).join(" "),["Minimum order quantities","licensing and paperwork","limited advertising spend"])); line("aw-pull",ss[ss.length-1]); }
     bx.appendChild(inn); sl.appendChild(bx); return sl; });
-  // credentials
+  // credentials: one flowing piece, photo on top
   var s3=el("div","aw-slide aw-creds"), b3=el("div","aw-box"), in3=el("div","aw-inner");
   var p3=el("img","aw-banner"); p3.src="assets/conference.jpg"; p3.alt="Conor at a business event in Hong Kong"; p3.width=720; p3.height=700; in3.appendChild(p3);
-  [["Experience",0],["Latest role",1],["Education",2]].forEach(function(r){
-    var row=el("div","aw-row"); row.appendChild(el("div","aw-lab mono",r[0])); row.appendChild(el("p",null,bios[r[1]].textContent)); in3.appendChild(row); });
+  [0,1,2].forEach(function(i){ in3.appendChild(el("p",i===0?"aw-lead aw-lead3":"",i===0?big(bios[i].textContent,["go-to-market strategy and AI transformation"]):i===1?big(bios[i].textContent,["large-scale AI"]):bios[i].textContent)); });
   b3.appendChild(in3); s3.appendChild(b3);
 
   var slides=[s1,s3].concat(storySlides); slides.forEach(function(s){ track.appendChild(s); });
@@ -1739,6 +1736,7 @@
   window.addEventListener("resize",function(){ equalise(); track.scrollLeft=idx*track.clientWidth; });
   [img].concat(Array.prototype.slice.call(wiz.querySelectorAll('.aw-banner'))).forEach(function(i){ i.addEventListener("load",equalise); }); window.addEventListener("load",equalise);
   if(document.fonts&&document.fonts.ready) document.fonts.ready.then(equalise);
+  if(window.IntersectionObserver){ var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('in'); }); },{root:track,threshold:.45}); slides.forEach(function(sl){ io.observe(sl); }); } else { slides.forEach(function(sl){ sl.classList.add('in'); }); }
   equalise(); update();
 })();
 </script>
