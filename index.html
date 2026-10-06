@@ -882,7 +882,7 @@
     .swipe-dots button[aria-current="true"]{color:var(--ink);}
     .swipe-dots button[aria-current="true"] .dot{background:var(--cyan); transform:scale(1.25); box-shadow:0 0 8px rgba(95,212,224,.7);}
     .swipe-dots.has-labels{gap:6px;}
-    .swipe-dots.has-labels button{padding:7px 14px; border:1px solid var(--border-soft); border-radius:20px; background:var(--surface);}
+    .swipe-dots.has-labels button{white-space:nowrap; padding:7px 11px; border:1px solid var(--border-soft); border-radius:20px; background:var(--surface);}
     .swipe-dots.has-labels button[aria-current="true"]{border-color:var(--sapphire-bright); background:linear-gradient(160deg,rgba(58,110,222,.28),rgba(58,110,222,.10));}
     .consol .swipe-dots{margin:0; padding:14px 0 16px; border-top:1px solid var(--border-soft);}
     .consol-body{display:flex !important; gap:0; padding:44px 0 18px !important; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; -webkit-overflow-scrolling:touch; overscroll-behavior-x:contain;}
@@ -907,7 +907,19 @@
     @keyframes mray{to{background-position:0 7px;}}
     .consol-foot{border-top:0;}
   }
-  @media (min-width:861px){ .m-node,.m-tot{display:none;} }
+  @media (min-width:861px){ .m-node,.m-tot,.m-mid{display:none;} }
+  @media (max-width:860px){
+    .consol-body > .m-mid{flex:0 0 100%; box-sizing:border-box; position:relative; scroll-snap-align:start; scroll-snap-stop:always; min-height:340px;}
+    .m-mid svg.m-lines{position:absolute; inset:0; width:100%; height:100%; overflow:visible;}
+    .m-mid .mray{fill:none; stroke:var(--sapphire-bright); stroke-width:1.2; opacity:.55; stroke-dasharray:3 7; animation:flowdash 2.4s linear infinite; vector-effect:non-scaling-stroke;}
+    .m-mid .mray.out{stroke:var(--cyan); opacity:.85; animation-duration:1.8s;}
+    .m-mid .mray:nth-child(even){animation-duration:3s;}
+    .m-mid .m-core{position:absolute; left:50%; top:46%; transform:translate(-50%,-50%); display:flex; flex-direction:column-reverse; align-items:center; gap:12px; z-index:2; text-align:center;}
+    .m-mid .m-core svg{width:78px; height:78px; filter:drop-shadow(0 0 14px rgba(58,110,222,.8)); animation:nodepulse 3.2s ease-in-out infinite;}
+    .m-mid .m-core .m-cap{font-size:12px; letter-spacing:.06em; color:var(--sapphire-glint); white-space:nowrap;}
+    .m-mid .m-core .m-sub{display:none;}
+    .m-mid .consol-col-label{left:0; right:0; text-align:center;}
+  }
   @media (max-width: 1024px){
     .steps{grid-template-columns:1fr;}
   }
@@ -1876,16 +1888,20 @@
   var body=document.querySelector("#difference .consol-body");
   if(body){
     var pw=body.querySelector(".pallet-wrap"), nodeSvg=document.querySelector("#difference .node svg");
-    if(pw && nodeSvg && !pw.querySelector(".m-node")){
-      var mn=el("div","m-node"); mn.setAttribute("aria-hidden","true");
-      mn.innerHTML=nodeSvg.outerHTML.replace(/gemg|scang|gemclip/g,function(m){return m+"-m";})+'<span class="m-rays"></span>';
-      var cap=el("span","m-cap","Matched and consolidated"); mn.insertBefore(cap,mn.firstChild);
-      var lab=pw.querySelector(".consol-col-label"); pw.insertBefore(mn, lab?lab.nextSibling:pw.firstChild);
+    var mid=null;
+    if(pw && nodeSvg && !body.querySelector(".m-mid")){
+      mid=el("div","m-mid"); mid.setAttribute("aria-hidden","true");
+      var NS="http://www.w3.org/2000/svg", px=50, py=46, paths="";
+      [8,16,24,32,40,50,58,66,74,82,90].forEach(function(y){ paths+='<path class="mray" d="M0,'+y+' C28,'+y+' 28,'+py+' '+(px-9)+','+py+'"/>'; });
+      [14,26,38,50,62,74,86].forEach(function(y){ paths+='<path class="mray out" d="M'+(px+9)+','+py+' C72,'+py+' 72,'+y+' 100,'+y+'"/>'; });
+      var core=nodeSvg.outerHTML.replace(/gemg|scang|gemclip/g,function(m){return m+"-m";});
+      mid.innerHTML='<div class="consol-col-label">Matched by our engine</div><svg class="m-lines" viewBox="0 0 100 100" preserveAspectRatio="none">'+paths+'</svg><div class="m-core">'+core+'<span class="m-cap">Matched and consolidated</span><span class="m-sub">Best-fit wine from each vineyard, one pallet</span></div>';
+      body.insertBefore(mid, pw);
     }
     var mc=body.querySelector(".mapcol"), tot=document.querySelector("#difference .consol-top .tot");
     if(mc && tot && !mc.querySelector(".m-tot")){ var mt=el("div","m-tot", tot.textContent.replace(/\s*→\s*/g,"<br>→ ").replace(/\u00a0/g," ")); mc.appendChild(mt); }
-    var slides=[mc, pw].filter(Boolean);
-    swipe(body, slides, ["1  Sourced","2  One pallet"], function(d){ var c=document.querySelector("#difference .consol"); var foot=c.querySelector(".consol-foot"); c.insertBefore(d, foot); });
+    var slides=[mc, body.querySelector(".m-mid"), pw].filter(Boolean);
+    swipe(body, slides, ["1 Sourced","2 Matched","3 Pallet"], function(d){ var c=document.querySelector("#difference .consol"); var foot=c.querySelector(".consol-foot"); c.insertBefore(d, foot); });
   }
 })();
 </script>
