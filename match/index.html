@@ -219,6 +219,30 @@
   }
   @media (min-width:821px){ #brief-submit-row{display:none;} }
   @media (prefers-reduced-motion:reduce){ .brief-track,.brief-pager{transition:none;} }
+
+  /* Sapphire wall down both margins + glint sweep, as on the home page */
+  .gem-wall{position:fixed; top:0; right:0; width:260px; height:100vh; pointer-events:none; z-index:0; overflow:hidden;}
+  .gem-wall.left{right:auto; left:0;}
+  @media (max-width:1400px){ .gem-wall{display:none;} }
+  .gem-wall-fill{position:absolute; top:0; right:0; width:220px; height:100%; background:url("/assets/sapphire-wall.png") repeat-y center top / 220px 220px; opacity:.45; filter:brightness(.55) saturate(.8);}
+  .gem-wall.left .gem-wall-fill{right:auto; left:0;}
+  .gem-wall::before{content:''; position:absolute; inset:0; z-index:1;
+    background:linear-gradient(90deg,var(--bg) 0%,var(--bg) 8%,rgba(6,8,16,.96) 16%,rgba(6,8,16,.85) 24%,rgba(6,8,16,.65) 34%,rgba(6,8,16,.42) 44%,rgba(6,8,16,.24) 55%,rgba(6,8,16,.1) 66%,rgba(6,8,16,.03) 78%,transparent 92%);}
+  .gem-wall.left::before{background:linear-gradient(270deg,var(--bg) 0%,var(--bg) 8%,rgba(6,8,16,.96) 16%,rgba(6,8,16,.85) 24%,rgba(6,8,16,.65) 34%,rgba(6,8,16,.42) 44%,rgba(6,8,16,.24) 55%,rgba(6,8,16,.1) 66%,rgba(6,8,16,.03) 78%,transparent 92%);}
+  .gem-wall::after{content:''; position:absolute; inset:0; z-index:1; background:linear-gradient(180deg,var(--bg) 0%,transparent 10%,transparent 90%,var(--bg) 100%);}
+  main.wrap{position:relative; z-index:1;}
+  .card,.pallet-side-inner{position:relative;}
+  .card::after,.pallet-side-inner::after{
+    content:''; position:absolute; inset:0; pointer-events:none; z-index:2;
+    background:linear-gradient(115deg,transparent 40%,rgba(166,196,255,.06) 47%,rgba(255,255,255,.13) 50%,rgba(166,196,255,.06) 53%,transparent 60%) no-repeat 100% 0 / 250% 100%;
+    animation:sweepbg 6s ease-in-out infinite;
+  }
+  .card:nth-of-type(2n)::after{animation-delay:1.5s;}
+  .card:nth-of-type(3n)::after{animation-delay:3s;}
+  .pallet-side-inner::after{animation-delay:2.2s;}
+  .card.locked::after{display:none;}
+  @keyframes sweepbg{0%{background-position:100% 0;} 35%,100%{background-position:0% 0;}}
+  @media (prefers-reduced-motion:reduce){ .card::after,.pallet-side-inner::after{animation:none; display:none;} }
   .btnrow{display:flex; gap:12px; flex-wrap:wrap; margin-top:12px; align-items:center;}
 
   /* ---- Loading / scanning state ---- */
@@ -413,6 +437,8 @@
 </style>
 </head>
 <body>
+<div class="gem-wall" aria-hidden="true"><div class="gem-wall-fill"></div></div>
+<div class="gem-wall left" aria-hidden="true"><div class="gem-wall-fill"></div></div>
 
 <header class="site-header">
   <div class="wrap nav">
