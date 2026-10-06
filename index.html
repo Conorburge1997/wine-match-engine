@@ -441,6 +441,26 @@
     padding:12px 24px; border-top:1px solid var(--border-soft); font-size:11px; color:var(--ink-faint);
   }
 
+
+  /* compact the Difference section so it fits one screen */
+  @media (min-width:961px){
+    #difference{padding:56px 0 48px;}
+    #difference .section-head{margin-bottom:24px;}
+    #difference .benefits{margin-bottom:18px;}
+    #difference .benefit{padding:18px 22px 20px;}
+    #difference .consol{margin-bottom:0;}
+    #difference .consol-top{padding:10px 24px;}
+    #difference .consol-body{grid-template-columns:minmax(250px,330px) minmax(40px,1fr) 300px; padding:38px 28px 18px;}
+    #difference .pallet-wrap{margin-left:50px;}
+    #difference .pallet-wrap{gap:10px;}
+    #difference .pl-legend{gap:3px;}
+    #difference .pl-legend li{font-size:11px;}
+    #difference .pl-legend{display:grid; grid-template-columns:1fr 1fr; column-gap:18px; row-gap:3px;}
+    #difference .pl-legend i{display:none;}
+    #difference .pl-legend li{white-space:nowrap;}
+    #difference .pl-legend em{margin-left:auto;}
+    #difference .consol-foot{padding:8px 24px;}
+  }
   .benefits{margin-bottom:28px; display:grid; grid-template-columns:repeat(3, 1fr); gap:1px; background:var(--border-soft); border:1px solid var(--border-soft);}
   .benefit{background:linear-gradient(160deg, var(--surface), var(--surface-2)); padding:22px 22px 24px; position:relative;}
   .benefit::before{
@@ -924,13 +944,13 @@
         </div>
         <div class="benefit">
           <span class="benefit-label">For vineyards</span>
-          <h3>Untapped markets, finally within reach</h3>
-          <p>Get your wine tasted abroad by buyers who would never otherwise find it, without having to compete with the scale and marketing budgets of large commercial brands. A few cases share a pallet, so many can export for the first time.</p>
+          <h3>Untapped markets within reach</h3>
+          <p>Get your wine tasted abroad without competing with the marketing budgets of large commercial brands. A few cases share a pallet, so many can export for the first time.</p>
         </div>
         <div class="benefit">
           <span class="benefit-label">For everyone</span>
           <h3>One contact, nothing to chase</h3>
-          <p>One point of contact, one invoice, one shipment. We handle the registrations, paperwork and minimum-volume hurdles, so there's one team to deal with, not a contact for every step. Better-matched wine means happier buyers and more people enjoying hidden gems.</p>
+          <p>One point of contact, one invoice, one shipment, with the registrations and paperwork handled. Better matches mean happier buyers and more people enjoying hidden gems.</p>
         </div>
       </div>
 
