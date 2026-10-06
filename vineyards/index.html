@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Vineyards: Register Your Interest | Sapphire Panda</title>
+<meta name="description" content="Independent Australian vineyard? Register your interest to be included in the Sapphire Panda network and get your vineyard in front of international trade buyers.">
+<meta name="theme-color" content="#060810">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="canonical" href="https://sapphirepanda.com/vineyards/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Sapphire Panda">
+<meta property="og:title" content="For Vineyards: Register Your Interest | Sapphire Panda">
+<meta property="og:description" content="Get your vineyard in front of international trade buyers, without a full pallet or a marketing budget.">
+<meta property="og:url" content="https://sapphirepanda.com/vineyards/">
+<meta property="og:image" content="https://sapphirepanda.com/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sapphirepanda.com/assets/og.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#060810; --bg-2:#0a0e1c; --surface:#0e1324; --surface-2:#121a30;
+    --border:#212c4a; --border-soft:#161d34;
+    --ink:#f4f5fa; --ink-dim:#b3bad2; --ink-faint:#7c85a6;
+    --sapphire:#3a6ede; --sapphire-bright:#6f93e8; --sapphire-glint:#a6c4ff; --sapphire-deep:#0f1a3d;
+    --cyan:#5fd4e0;
+    --good:#5fd4a0; --warn:#e0b273; --bad:#e58a8a;
+    --radius:2px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif; -webkit-font-smoothing:antialiased;
+    line-height:1.6; font-size:15px;
+  }
+  body{
+    background-image:
+      radial-gradient(ellipse 900px 500px at 15% -8%, rgba(58,110,222,0.14), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 5%, rgba(95,212,224,0.06), transparent 55%);
+  }
+  h1,h2,h3{font-family:'Fraunces',serif; font-weight:400; letter-spacing:-0.005em; margin:0;}
+  a{color:inherit;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  .wrap{max-width:1240px; margin:0 auto; padding:0 32px;}
+
+  header.site-header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(6,8,16,0.9); backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border-soft);
+  }
+  .nav{display:flex; align-items:center; justify-content:space-between; padding:18px 0;}
+  .brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink);}
+  .brand-word{font-family:'Fraunces',serif; font-weight:400; font-size:16px; letter-spacing:0.02em;}
+  .nav-links{display:flex; align-items:center; gap:32px;}
+  .nav-links .links{display:flex; gap:28px; font-size:12px;}
+  .nav-links a.navlink{text-decoration:none; color:var(--ink-dim); transition:color .2s; text-transform:uppercase; letter-spacing:0.06em; font-weight:500; position:relative; padding-bottom:2px;}
+  .nav-links a.navlink:hover{color:var(--sapphire-glint);}
+  .nav-links a.navlink.active{color:var(--cyan);}
+  .nav-links a.navlink.active::after{
+    content:''; position:absolute; left:0; right:0; bottom:-6px; height:2px;
+    background:linear-gradient(90deg, var(--sapphire-bright), var(--cyan));
+  }
+
+  /* Mobile header: compact row + hamburger menu (mirrors the home page) */
+  .nav-links .btn{padding:10px 20px;}
+  .nav-toggle{display:none;}
+  @media (max-width: 960px){
+    .nav{position:static; padding:12px 18px; gap:10px;}
+    .nav-links{display:contents;}
+    .brand{flex:none;}
+    .brand-word{white-space:nowrap; font-size:15px;}
+    .nav-links .btn{margin-left:auto; padding:9px 12px; font-size:10.5px; white-space:nowrap;}
+    .nav-toggle{
+      display:inline-flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+      width:38px; height:38px; flex:none; padding:0; cursor:pointer;
+      background:transparent; border:1px solid var(--border); border-radius:var(--radius); color:var(--ink);
+    }
+    .nav-toggle span{display:block; width:16px; height:1.5px; background:currentColor; transition:transform .2s, opacity .2s;}
+    header.open .nav-toggle span:nth-child(1){transform:translateY(5.5px) rotate(45deg);}
+    header.open .nav-toggle span:nth-child(2){opacity:0;}
+    header.open .nav-toggle span:nth-child(3){transform:translateY(-5.5px) rotate(-45deg);}
+    .nav-links .links{
+      display:none; position:absolute; top:100%; left:0; right:0; flex-direction:column; gap:0;
+      background:#060810; border-bottom:1px solid var(--border-soft);
+      padding:4px 18px 10px; font-size:13px; box-shadow:0 24px 40px -24px rgba(0,0,0,0.7);
+    }
+    header.open .nav-links .links{display:flex;}
+    .nav-links a.navlink{padding:15px 2px; border-bottom:1px solid var(--border-soft);}
+    .nav-links a.navlink:last-child{border-bottom:none;}
+    .nav-links a.navlink.active::after{display:none;}
+  }
+  @media (max-width: 360px){
+    .nav{padding:12px 12px; gap:8px;}
+    .brand-word{font-size:13px;}
+    .nav-links .btn{padding:8px 9px; font-size:9.5px; letter-spacing:0;}
+  }
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    background:transparent; color:var(--ink);
+    padding:12px 24px; border-radius:var(--radius);
+    font-size:12.5px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase;
+    text-decoration:none; border:1px solid var(--sapphire);
+    cursor:pointer; transition:all .2s; position:relative; overflow:hidden;
+    font-family:inherit;
+  }
+  .btn:disabled{opacity:0.4; cursor:not-allowed;}
+  .btn-solid{background:linear-gradient(120deg, var(--sapphire) 0%, var(--sapphire-bright) 55%, var(--sapphire-glint) 100%); color:#060810; border-color:var(--sapphire-bright); font-weight:700;}
+  .btn-solid:hover:not(:disabled){filter:brightness(1.08);}
+  .btn-ghost{border-color:var(--border); color:var(--ink-dim);}
+  .btn-ghost:hover{color:var(--ink); border-color:var(--ink-dim);}
+  label{display:block; font-size:13px; font-weight:600; color:var(--ink); margin-bottom:8px;}
+  label .opt{color:var(--ink-faint); font-weight:400; text-transform:none;}
+  label .req{color:var(--sapphire-glint); font-weight:500; text-transform:none;}
+  input.field-error,.price-input-wrap.field-error input{border-color:#e0607a !important;}
+  .pickrow.field-error{outline:1px solid #e0607a; outline-offset:4px; border-radius:2px;}
+  .field-error-note{color:#e88ba0; font-size:13px; margin-top:14px;}
+  input[type=text], input[type=number]{
+    width:100%; font-family:inherit; font-size:15px; color:var(--ink);
+    background:var(--bg); border:1px solid var(--border); border-radius:2px;
+    padding:11px 12px;
+  }
+  input::placeholder{color:var(--ink-faint);}
+  input:focus{outline:none; border-color:var(--sapphire-bright); box-shadow:0 0 0 3px rgba(58,110,222,0.18);}
+  select{
+    width:100%; font-family:inherit; font-size:15px; color:var(--ink);
+    background:var(--bg); border:1px solid var(--border); border-radius:2px;
+    padding:11px 12px; appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%237c85a6' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 14px center;
+  }
+  select:focus{outline:none; border-color:var(--sapphire-bright); box-shadow:0 0 0 3px rgba(58,110,222,0.18);}
+  select.field-error{border-color:#e0607a !important;}
+  .field-note{font-size:12.5px; color:var(--ink-dim); margin-top:8px; line-height:1.5;}
+  .field{margin-bottom:18px;}
+  .field:last-child{margin-bottom:0;}
+  .hint{font-size:12px; color:var(--ink-faint); margin-top:6px;}
+  /* Sapphire wall down both margins + glint sweep, as on the home page */
+  .gem-wall{position:fixed; top:0; right:0; width:min(260px, calc((100vw - 1240px) / 2)); height:100vh; pointer-events:none; z-index:0; overflow:hidden;}
+  .gem-wall.left{right:auto; left:0;}
+  @media (max-width:1360px){ .gem-wall{display:none;} }
+  .gem-wall-fill{position:absolute; top:0; right:0; width:min(220px, 100%); height:100%; background:url("/assets/sapphire-wall.png") repeat-y center top / 220px 220px; opacity:.45; filter:brightness(.55) saturate(.8);}
+  .gem-wall.left .gem-wall-fill{right:auto; left:0;}
+  .gem-wall::before{content:''; position:absolute; inset:0; z-index:1;
+    background:linear-gradient(90deg,var(--bg) 0%,var(--bg) 8%,rgba(6,8,16,.96) 16%,rgba(6,8,16,.85) 24%,rgba(6,8,16,.65) 34%,rgba(6,8,16,.42) 44%,rgba(6,8,16,.24) 55%,rgba(6,8,16,.1) 66%,rgba(6,8,16,.03) 78%,transparent 92%);}
+  .gem-wall.left::before{background:linear-gradient(270deg,var(--bg) 0%,var(--bg) 8%,rgba(6,8,16,.96) 16%,rgba(6,8,16,.85) 24%,rgba(6,8,16,.65) 34%,rgba(6,8,16,.42) 44%,rgba(6,8,16,.24) 55%,rgba(6,8,16,.1) 66%,rgba(6,8,16,.03) 78%,transparent 92%);}
+  .gem-wall::after{content:''; position:absolute; inset:0; z-index:1; background:linear-gradient(180deg,var(--bg) 0%,transparent 10%,transparent 90%,var(--bg) 100%);}
+  main.wrap,footer{position:relative; z-index:1;}
+  footer{border-top:1px solid var(--border-soft); padding:40px 0; margin-top:40px;}
+  .footer-row{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; max-width:1080px; margin:0 auto; padding:0 32px;}
+  .footer-brand{display:flex; align-items:center; gap:8px; font-family:'Fraunces',serif; font-weight:400; color:var(--ink-dim); font-size:13px;}
+  footer .fine{color:var(--ink-faint); font-size:11.5px;}
+  /* ---- Vineyard registration ---- */
+  .v-wrap{padding:32px 0 90px; max-width:880px; margin:0 auto;}
+  .v-intro{max-width:640px; margin-bottom:34px;}
+  .v-eyebrow{font-size:11px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--cyan); margin-bottom:14px; display:flex; align-items:center; gap:12px;}
+  .v-eyebrow::before{content:''; width:26px; height:1px; background:var(--cyan);}
+  .v-intro h1{font-size:clamp(26px,3.6vw,38px); line-height:1.15; margin-bottom:14px;}
+  .v-intro p{color:var(--ink-dim); font-size:15.5px; max-width:58ch; margin:0 0 10px;}
+  .v-note{color:var(--ink-dim);} .v-note b{color:var(--ink); font-weight:600;}
+  .v-follow{font-size:13px; color:var(--ink-dim); margin:22px 0 0; padding:12px 14px; border-left:2px solid var(--cyan); background:rgba(95,212,224,.05); line-height:1.55;}
+  .v-done p b{color:var(--ink);}
+  .v-points{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:0 0 28px;}
+  .v-point{border:1px solid var(--border-soft); background:var(--surface); padding:16px 16px 14px;}
+  .v-point b{display:block; font-family:'Fraunces',serif; font-weight:400; font-size:16px; margin-bottom:4px;}
+  .v-point span{font-size:13px; color:var(--ink-dim); line-height:1.5;}
+  .v-card{position:relative; background:var(--surface); border:1px solid var(--border-soft); padding:30px 32px; box-shadow:inset 0 1px 0 rgba(166,196,255,.1), 0 30px 60px -34px rgba(58,110,222,.35);}
+  .v-card h2{font-size:19px; margin-bottom:4px; font-weight:400;}
+  .v-card .sub{color:var(--ink-dim); font-size:13.5px; margin:0 0 22px;}
+  .v-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px 20px;}
+  .v-grid .full{grid-column:1 / -1;}
+  .v-card input[type=text],.v-card input[type=email],.v-card input[type=tel],.v-card input[type=url],.v-card textarea,.v-card select{
+    width:100%; font-family:inherit; font-size:15px; color:var(--ink); background:var(--bg); border:1px solid var(--border); border-radius:2px; padding:11px 12px;}
+  .v-card textarea{min-height:92px; resize:vertical; line-height:1.5;}
+  .v-card input:focus,.v-card textarea:focus{outline:none; border-color:var(--sapphire-bright); box-shadow:0 0 0 3px rgba(58,110,222,.18);}
+  .v-card input::placeholder,.v-card textarea::placeholder{color:var(--ink-faint);}
+  .v-card .bad{border-color:#e0607a !important;}
+  .v-hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;}
+  .v-consent{display:flex; gap:10px; align-items:flex-start; font-size:13px; color:var(--ink-dim); font-weight:400; line-height:1.5; margin:0;}
+  .v-consent input{margin-top:3px; accent-color:var(--sapphire);}
+  .v-actions{display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-top:24px;}
+  .v-msg{font-size:13px; color:#e88ba0; min-height:18px;}
+  .v-msg a{color:var(--sapphire-glint);}
+  .v-done{display:none; text-align:center; padding:34px 10px 26px;}
+  .v-done.show{display:block;}
+  .v-done .tick{width:54px; height:54px; border-radius:50%; border:1.5px solid var(--cyan); display:grid; place-items:center; margin:0 auto 18px; color:var(--cyan); box-shadow:0 0 0 4px rgba(95,212,224,.12);}
+  .v-done h2{font-size:22px; margin-bottom:8px;}
+  .v-done p{color:var(--ink-dim); max-width:46ch; margin:0 auto 6px;}
+  .v-card.sent form{display:none;}
+  .v-card.sent .v-head{display:none;}
+  @media (max-width:760px){ .v-points{display:none;} .v-grid{grid-template-columns:1fr;} .v-card{padding:22px 18px;} }
+  @media (max-width:960px){ .v-wrap{padding-top:18px;} }
+</style>
+</head>
+<body>
+<div class="gem-wall" aria-hidden="true"><div class="gem-wall-fill"></div></div>
+<div class="gem-wall left" aria-hidden="true"><div class="gem-wall-fill"></div></div>
+<header class="site-header">
+  <div class="wrap nav">
+    <a href="/" class="brand">
+      <svg width="20" height="20" viewBox="0 0 44 44" fill="none">
+        <circle cx="14" cy="15" r="4" fill="#8e97b8"/>
+        <circle cx="30" cy="15" r="4" fill="#8e97b8"/>
+        <ellipse cx="22" cy="24" rx="11" ry="9.5" fill="#8e97b8"/>
+        <circle cx="17" cy="22" r="3" fill="#060810"/>
+        <circle cx="27" cy="22" r="3" fill="#060810"/>
+      </svg>
+      <span class="brand-word">Sapphire Panda</span>
+    </a>
+    <div class="nav-links">
+      <div class="links" id="nav-menu">
+        <a href="/#difference" class="navlink">The Difference</a>
+        <a href="/#how" class="navlink">How It Works</a>
+        <a href="/#engine" class="navlink">The Engine</a>
+        <a href="/#about" class="navlink">About</a>
+        <a href="/#news" class="navlink">News</a>
+      </div>
+      <a href="/match/" class="btn btn-solid">Find your match</a>
+    </div>
+    <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main class="wrap">
+ <div class="v-wrap">
+  <div class="v-intro">
+    <div class="v-eyebrow">For vineyards</div>
+    <h1>Get your vineyard in front of international buyers.</h1>
+    <p>We match independent Australian vineyards with trade buyers overseas and combine several producers onto one shared pallet. You don't need a full pallet, an export team or a marketing budget.</p>
+    <p class="v-note"><b>This is just the first step.</b> Register your interest below and we'll be in contact with you directly to collect the full details about your range.</p>
+  </div>
+  <div class="v-points">
+    <div class="v-point"><b>Small volumes welcome</b><span>A few cases can share a pallet with other vineyards.</span></div>
+    <div class="v-point"><b>Matched, not marketed</b><span>Buyers find you by what they need, not by brand budget.</span></div>
+    <div class="v-point"><b>Paperwork handled</b><span>We coordinate the export process and the shipment.</span></div>
+  </div>
+  <div class="v-card" id="v-card">
+    <div class="v-head"><h2>Register your interest</h2><p class="sub">Takes about two minutes. Fields marked <span style="color:var(--sapphire-glint)">*</span> are required. We'll contact you afterwards for the full details.</p></div>
+    <form id="v-form" novalidate>
+      <div class="v-grid">
+        <div><label for="v-winery">Vineyard / winery name <span class="req">*</span></label><input type="text" id="v-winery" name="winery" autocomplete="organization" maxlength="120"></div>
+        <div><label for="v-contact">Your name <span class="req">*</span></label><input type="text" id="v-contact" name="contact" autocomplete="name" maxlength="100"></div>
+        <div><label for="v-email">Email <span class="req">*</span></label><input type="email" id="v-email" name="email" autocomplete="email" maxlength="160"></div>
+        <div><label for="v-phone">Phone <span class="req">*</span></label><input type="tel" id="v-phone" name="phone" autocomplete="tel" maxlength="40"></div>
+        <div><label for="v-state">State <span class="req">*</span></label>
+          <select id="v-state" name="state"><option value="">Select state</option><option>South Australia</option><option>Victoria</option><option>New South Wales</option><option>Western Australia</option><option>Tasmania</option><option>Queensland</option><option>ACT</option><option>Northern Territory</option></select></div>
+        <div><label for="v-region">Region <span class="req">*</span></label><input type="text" id="v-region" name="region" placeholder="e.g. Yarra Valley" maxlength="100"></div>
+        <div><label for="v-scale">Typical annual production <span class="opt">(optional)</span></label>
+          <select id="v-scale" name="scale"><option value="">Select range</option><option>Under 1,000 cases</option><option>1,000 – 5,000 cases</option><option>5,000 – 20,000 cases</option><option>Over 20,000 cases</option><option>Not sure</option></select></div>
+        <div><label for="v-export">Export experience <span class="opt">(optional)</span></label>
+          <select id="v-export" name="export"><option value="">Select</option><option>Never exported</option><option>Exported occasionally</option><option>Export regularly</option></select></div>
+        <div class="full"><label for="v-web">Website or Instagram <span class="opt">(optional)</span></label><input type="text" id="v-web" name="web" placeholder="https://" maxlength="200"></div>
+        <div class="full"><label for="v-notes">Anything you'd like us to know <span class="opt">(optional)</span></label><textarea id="v-notes" name="notes" placeholder="Main varieties, styles, awards, what you're hoping for…" maxlength="1500"></textarea></div>
+        <div class="v-hp" aria-hidden="true"><label>Leave this empty <input type="text" name="company" tabindex="-1" autocomplete="off"></label></div>
+        <div class="full"><label class="v-consent"><input type="checkbox" id="v-consent" name="consent"><span>I'm happy for Sapphire Panda to contact me about including my range. <span class="req">*</span></span></label></div>
+      </div>
+      <p class="v-follow">After you submit, a member of our team will contact you to go through the details. Please make sure your phone and email are correct.</p>
+      <div class="v-actions"><button class="btn btn-solid" id="v-submit" type="submit">Register interest</button><span class="v-msg" id="v-msg" role="status"></span></div>
+    </form>
+    <div class="v-done" id="v-done" role="status" aria-live="polite">
+      <div class="tick"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+      <h2>Thanks, we've got it.</h2>
+      <p><b>We'll be in contact with you soon</b> to collect the full details about your range.</p>
+      <p style="margin-top:18px"><a href="/" class="btn btn-ghost">Back to home</a></p>
+    </div>
+  </div>
+ </div>
+</main>
+
+<footer>
+  <div class="footer-row">
+    <div class="footer-brand">
+      <svg width="16" height="16" viewBox="0 0 44 44" fill="none"><circle cx="14" cy="15" r="4" fill="#8e97b8"/><circle cx="30" cy="15" r="4" fill="#8e97b8"/><ellipse cx="22" cy="24" rx="11" ry="9.5" fill="#8e97b8"/></svg>
+      Sapphire Panda
+    </div>
+    <div class="fine">© 2026 Sapphire Panda. AI-matched Australian wine, exported.</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var header=document.querySelector('header.site-header'), tg=document.querySelector('.nav-toggle');
+  if(tg){ tg.addEventListener('click',function(){ var o=header.classList.toggle('open'); tg.setAttribute('aria-expanded',o); }); }
+  var form=document.getElementById('v-form'), msg=document.getElementById('v-msg'), card=document.getElementById('v-card'), btn=document.getElementById('v-submit');
+  var MAILTO='hello@sapphirepanda.com';
+  function val(n){ return (form.elements[n].value||'').trim(); }
+  function bad(n,on){ var e=form.elements[n]; if(e) e.classList.toggle('bad',on); }
+  function fallbackLink(d){
+    var body='Vineyard: '+d.winery+'\nContact: '+d.contact+'\nEmail: '+d.email+'\nPhone: '+d.phone+'\nState: '+d.state+'\nRegion: '+d.region+'\nProduction: '+d.scale+'\nExport experience: '+d.export+'\nWebsite: '+d.web+'\nNotes: '+d.notes;
+    return 'mailto:'+MAILTO+'?subject='+encodeURIComponent('Vineyard registration: '+d.winery)+'&body='+encodeURIComponent(body);
+  }
+  form.addEventListener('submit',function(e){
+    e.preventDefault(); msg.textContent='';
+    var d={winery:val('winery'),contact:val('contact'),email:val('email'),phone:val('phone'),state:val('state'),region:val('region'),scale:val('scale'),export:val('export'),web:val('web'),notes:val('notes'),company:val('company'),consent:form.elements.consent.checked};
+    var ok=true;
+    ['winery','contact','phone','region','state'].forEach(function(k){ var b=!d[k]; bad(k,b); if(b) ok=false; });
+    var eb=!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email); bad('email',eb); if(eb) ok=false;
+    if(!d.consent) ok=false;
+    if(!ok){ msg.textContent=d.consent?'Please complete the highlighted fields.':'Please fill the required fields and tick the box so we can contact you.'; return; }
+    btn.disabled=true; btn.textContent='Sending…';
+    fetch('/api/vineyard',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})
+      .then(function(r){ if(!r.ok) throw new Error('x'); return r.json(); })
+      .then(function(){ card.classList.add('sent'); document.getElementById('v-done').classList.add('show'); window.scrollTo({top:card.offsetTop-80,behavior:'smooth'}); })
+      .catch(function(){ btn.disabled=false; btn.textContent='Register interest';
+        msg.innerHTML='We couldn\u2019t send that just now. <a href="'+fallbackLink(d).replace(/"/g,'&quot;')+'">Email us your details instead</a>.'; });
+  });
+  form.addEventListener('input',function(e){ if(e.target.classList) e.target.classList.remove('bad'); });
+})();
+</script>
+</body>
+</html>
