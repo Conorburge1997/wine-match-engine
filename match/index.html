@@ -434,7 +434,7 @@
   #pallet-filled{display:flex; flex-direction:column; min-height:0; flex:1 1 auto; padding:20px 22px 18px;}
   #pallet-filled h3{font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-dim); margin-bottom:14px; flex-shrink:0;}
 
-  /* Progress toward the 60-bottle order minimum. This is a FLOOR, not a
+  /* Progress toward the 48-bottle order minimum. This is a FLOOR, not a
      ceiling — once met, the bar shows full and a check, and the label
      switches to a plain running count with no bar at all, so it never
      reads as "you've hit the max". */
@@ -759,15 +759,15 @@
 
               <div class="pallet-minimum" id="pallet-minimum">
                 <div class="pallet-minimum-row">
-                  <span id="pallet-minimum-label">0 of 60 bottles</span>
+                  <span id="pallet-minimum-label">0 of 48 bottles</span>
                   <span id="pallet-minimum-status">minimum order</span>
                 </div>
                 <div class="pallet-minimum-track"><div class="pallet-minimum-fill" id="pallet-minimum-fill"></div></div>
-                <p class="pallet-minimum-note">Your order is consolidated with other buyers onto one shared shipping pallet — 60 bottles is just your minimum, not a pallet size.</p>
+                <p class="pallet-minimum-note">Your order is consolidated with other buyers onto one shared shipping pallet — 48 bottles is just your minimum, not a pallet size.</p>
               </div>
 
               <div class="pallet-items" id="pallet-items"></div>
-              <div class="pallet-moq-warning" id="pallet-moq-warning" style="display:none;">Fix the quantities below MOQ before continuing.</div>
+              <div class="pallet-moq-warning" id="pallet-moq-warning" style="display:none;">Each vineyard needs at least 12 bottles. Add more from the vineyards flagged above to continue.</div>
               <div class="pallet-footer">
                 <div class="pallet-info">
                   <span><b id="pallet-count">0</b> selections</span>
@@ -800,7 +800,7 @@
           <h2>Estimated Summary</h2>
           <div id="checkout-summary"></div>
           <button class="btn btn-solid" id="btn-request" style="width:100%; padding:14px; margin-top:20px;">Request This Pallet →</button>
-          <div class="checkout-note">This is an estimate based on listed wholesale prices and standard consolidated freight. Final pricing is confirmed once your pallet is locked with other buyers' orders.</div>
+          <div class="checkout-note">This is an estimate based on the listed prices, which include shipping and paperwork for your destination. Final pricing is confirmed once your pallet is locked with other buyers' orders.</div>
         </div>
       </div>
     </div>
@@ -852,7 +852,7 @@
   // state.quantities: Map of wine id -> quantity in bottles the buyer has
   // entered (replaces the old checkbox-select model; a wine with qty 0 or
   // unset is simply not included in the pallet).
-  const state = { brief: null, groups: [], resultsById: new Map(), quantities: new Map() };
+  const state = { brief: null, groups: [], resultsById: new Map(), quantities: new Map(), cardValidators: new Map() };
 
   // Varietal sub-options shown once a buyer picks a wine style. Rosé,
   // Sparkling and Dessert/fortified aren't sold by single varietal the same
@@ -1624,15 +1624,17 @@
       '<div class="card-qty">' +
         '<label for="qty-'+r.id+'">Qty</label>' +
         '<input type="number" min="0" step="1" id="qty-'+r.id+'" data-id="'+r.id+'" value="'+existingQty+'" placeholder="0">' +
-        '<span class="moq-hint">MOQ '+r.moq+'</span>' +
+        '<span class="moq-hint">'+vMin(r)+' min per vineyard</span>' +
       '</div>' +
-      '<div class="card-qty-error" id="qty-error-'+r.id+'" style="display:none;">Below MOQ of '+r.moq+' bottles</div>';
+      '<div class="card-qty-error" id="qty-error-'+r.id+'" style="display:none;"></div>';
     const input = card.querySelector("input");
     const errorEl = card.querySelector("#qty-error-"+r.id);
     function validate(){
       const n = parseInt(input.value, 10);
-      const belowMoq = n > 0 && n < r.moq;
+      const short = n > 0 ? vShort(r) : 0;
+      const belowMoq = short > 0;
       input.classList.toggle("qty-error", belowMoq);
+      errorEl.textContent = belowMoq ? "Add "+short+" more bottle"+(short===1?"":"s")+" from this vineyard to reach its "+vMin(r)+" minimum — mixing its wines is fine" : "";
       errorEl.style.display = belowMoq ? "" : "none";
       return belowMoq;
     }
@@ -1646,15 +1648,32 @@
       else { state.quantities.set(r.id, n); }
       updatePalletBar();
     });
+    state.cardValidators.set(r.id, validate);
     validate();
     return card;
   }
 
+  // Per-vineyard minimum: a buyer orders at least one case (12 bottles) from each
+  // vineyard they buy from, mixed across that vineyard's wines however they like.
+  // Wines carry an opaque vineyardKey from the server (never the vineyard's name).
+  function vKey(r){ return r.vineyardKey || r.id; }
+  function vMin(r){ return r.vineyardMin || 12; }
+  function vTotal(r){
+    const key = vKey(r); let t = 0;
+    state.quantities.forEach(function(qty, id){
+      const o = state.resultsById.get(id);
+      if(o && vKey(o) === key) t += qty;
+    });
+    return t;
+  }
+  // Bottles still needed from this wine's vineyard (0 when met or nothing picked).
+  function vShort(r){ const t = vTotal(r); return t > 0 ? Math.max(0, vMin(r) - t) : 0; }
+
   // Minimum total bottles for a single buyer's order. This isn't a pallet
   // capacity limit — it's the floor below which handling an order isn't
   // worth it for us. Orders are consolidated with other buyers onto one
-  // shared shipping pallet, so hitting 60 doesn't mean the pallet is full.
-  const PALLET_MIN_BOTTLES = 60;
+  // shared shipping pallet, so hitting 48 doesn't mean the pallet is full.
+  const PALLET_MIN_BOTTLES = 48;
 
   function pickedLines(){
     return Array.from(state.quantities.entries())
@@ -1682,14 +1701,15 @@
     let anyBelowMoq = false;
     lines.forEach(function(l){
       const lineTotalAud = l.result.price * l.qty;
-      const belowMoq = l.qty < l.result.moq;
+      const short = vShort(l.result);
+      const belowMoq = short > 0;
       if(belowMoq) anyBelowMoq = true;
       const row = document.createElement("div");
       row.className = "pallet-item";
       row.innerHTML =
         '<div class="pi-thumb-wrap"><img class="pi-thumb" src="'+bottleImageSrc(l.result)+'" alt=""></div>' +
         '<div class="pi-name-wrap"><div class="pi-name">'+l.result.name+'</div><div class="pi-meta">'+l.result.region+' · '+l.result.style+(l.result.variety?' · '+l.result.variety:'')+
-          (belowMoq ? '<span class="pi-moq-error">below MOQ of '+l.result.moq+'</span>' : '') +
+          (belowMoq ? '<span class="pi-moq-error">needs '+short+' more from this vineyard</span>' : '') +
         '</div></div>' +
         '<button class="pi-remove" type="button" data-id="'+l.result.id+'" aria-label="Remove">×</button>' +
         '<div class="pi-qty-price"><span class="pi-qty">'+l.qty+' × '+formatPrice(l.result.price)+'</span><span class="pi-price">'+formatPrice(lineTotalAud)+'</span></div>';
@@ -1739,12 +1759,13 @@
       $("pallet-minimum-status").textContent = (PALLET_MIN_BOTTLES - bottles) + " to go";
     }
 
-    // Block checkout while any line is below that wine's MOQ, or the total
+    // Block checkout while any vineyard is below its 12-bottle minimum, or the total
     // order hasn't reached the minimum yet — matches the per-card
     // validation, so a buyer can't proceed with an order the vineyard
     // couldn't actually fulfil or that's too small for us to process.
     $("btn-to-checkout").disabled = anyBelowMoq || !metMin;
     $("pallet-moq-warning").style.display = anyBelowMoq ? "" : "none";
+    state.cardValidators.forEach(function(fn){ fn(); });
   }
 
   $("btn-edit-brief").addEventListener("click", function(){ showPanel(1); });
@@ -1768,22 +1789,19 @@
     lines.forEach(function(l){
       const lineTotalAud = l.result.price * l.qty;
       subtotalAud += lineTotalAud;
-      const belowMoq = l.qty < l.result.moq;
+      const belowMoq = vShort(l.result) > 0;
       const item = document.createElement("div");
       item.className = "line-item";
       item.innerHTML =
-        '<div><div class="li-name">'+l.result.name+'</div><div class="li-meta">'+l.result.region+' · '+l.qty+' bottles'+(belowMoq ? ' <span style="color:var(--cyan);">(below MOQ of '+l.result.moq+')</span>' : '')+' · '+formatPrice(l.result.price)+'/bottle</div></div>' +
+        '<div><div class="li-name">'+l.result.name+'</div><div class="li-meta">'+l.result.region+' · '+l.qty+' bottles'+(belowMoq ? ' <span style="color:var(--cyan);">(vineyard minimum not met)</span>' : '')+' · '+formatPrice(l.result.price)+'/bottle</div></div>' +
         '<div class="li-price">'+formatPrice(lineTotalAud)+'</div>';
       itemsBox.appendChild(item);
     });
 
-    const freightAud = lines.length ? 480 + lines.length*60 : 0;
-    const totalAud = subtotalAud + freightAud;
     const summary = $("checkout-summary");
     summary.innerHTML =
-      '<div class="summary-row"><span>Wine subtotal</span><span>'+formatPrice(subtotalAud)+'</span></div>' +
-      '<div class="summary-row"><span>Est. consolidated freight</span><span>'+formatPrice(freightAud)+'</span></div>' +
-      '<div class="summary-row total"><span>Estimated total</span><span class="val">'+formatPrice(totalAud)+'</span></div>';
+      '<div class="summary-row"><span>'+bottleCount+' bottles, shipping and paperwork included</span><span></span></div>' +
+      '<div class="summary-row total"><span>Estimated total</span><span class="val">'+formatPrice(subtotalAud)+'</span></div>';
   }
 
   $("btn-back-results").addEventListener("click", function(){ showPanel(2); });

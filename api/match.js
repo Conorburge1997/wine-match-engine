@@ -32,6 +32,50 @@
 //                    weights. Never linked from buyer-facing pages.
 
 const WINES = require("./data/wines.json");
+const crypto = require("crypto");
+
+// ---------------------------------------------------------------------------
+// Ordering rules
+// A buyer orders at least VINEYARD_MIN bottles (one 12-bottle case) from each
+// vineyard they buy from, mixed across that vineyard's wines however they like.
+// The order total minimum (48) is enforced in the match tool's pallet.
+const VINEYARD_MIN = 12;
+
+// ---------------------------------------------------------------------------
+// Destination pricing — THEORETICAL PLACEHOLDERS, NOT DECIDED.
+// The price a buyer sees is the vineyard's price plus everything it takes to
+// land the wine in their market (margin, shipping, paperwork, duties), shown as
+// one all-in price per bottle. These numbers are stand-ins so the tool can show
+// prices that change by destination; set the real ones before launch.
+// Lives server-side only, so the markup is never sent to the browser.
+const MARKET_UPLIFT = {
+  "Hong Kong": 0.15,
+  "Mainland China": 0.30,
+  "Japan": 0.30,
+  "Singapore": 0.20,
+  "Other": 0.35,
+};
+// Optional per-country overrides for buyers who pick "Other", e.g. { "United Kingdom": 0.40 }
+const COUNTRY_UPLIFT = {};
+
+function upliftFor(brief) {
+  if (brief && brief.market === "Other" && brief.otherCountry && COUNTRY_UPLIFT[brief.otherCountry] != null) {
+    return COUNTRY_UPLIFT[brief.otherCountry];
+  }
+  const m = brief && MARKET_UPLIFT[brief.market];
+  return m != null ? m : MARKET_UPLIFT["Other"];
+}
+
+// All-in AUD price per bottle for this buyer's destination, rounded to whole dollars.
+function priceFor(brief, wine) {
+  return Math.round(wine.price * (1 + upliftFor(brief)));
+}
+
+// Opaque id so the browser can group wines from one vineyard without ever
+// learning the vineyard's name.
+function vineyardKeyFor(wine) {
+  return crypto.createHash("sha256").update("sp-vineyard:" + wine.vineyard).digest("hex").slice(0, 10);
+}
 
 function clamp01(n) {
   return Math.max(0, Math.min(1, n));
@@ -109,22 +153,23 @@ function scoreWine(brief, wine) {
   } else {
     const lo = brief.priceMin ?? 0;
     const hi = brief.priceMax ?? Infinity;
-    if (wine.price >= lo && wine.price <= hi) {
+    const price = priceFor(brief, wine);
+    if (price >= lo && price <= hi) {
       points += 4;
       notes.push("Within price band");
     } else {
-      const dist = wine.price < lo ? lo - wine.price : wine.price - hi;
+      const dist = price < lo ? lo - price : price - hi;
       const ref = hi === Infinity ? lo || 1 : hi;
       points += 4 * clamp01(1 - dist / (ref * 0.6 || 1));
     }
   }
 
-  // Volume / MOQ — critical, hard fail if below
+  // Volume — critical, hard fail if the buyer's volume can't cover one vineyard minimum
   maxPoints += 5;
   let hardFail = false;
   if (brief.volume == null) {
     points += 5 * 0.7;
-  } else if (brief.volume >= wine.moq) {
+  } else if (brief.volume >= VINEYARD_MIN) {
     points += 5;
   } else {
     hardFail = true;
@@ -199,7 +244,7 @@ function buildGroupedResults(brief) {
   // No style selected: one flat top-3, no grouping to speak of.
   if (styles.length === 0) {
     scored.sort((a, b) => b.score - a.score);
-    return [{ label: "Top matches", results: trimResults(scored.slice(0, TOP_N_PER_GROUP)) }];
+    return [{ label: "Top matches", results: trimResults(scored.slice(0, TOP_N_PER_GROUP), brief) }];
   }
 
   // For each selected style, work out whether the buyer named any varietal
@@ -249,11 +294,11 @@ function buildGroupedResults(brief) {
     .map((k) => {
       const g = groups[k];
       g.results.sort((a, b) => b.score - a.score);
-      return { label: g.label, results: trimResults(g.results.slice(0, TOP_N_PER_GROUP)) };
+      return { label: g.label, results: trimResults(g.results.slice(0, TOP_N_PER_GROUP), brief) };
     });
 }
 
-function trimResults(scoredList) {
+function trimResults(scoredList, brief) {
   // Never send the raw dataset — only the scored, ranked results, and only
   // the fields the buyer-facing UI actually needs.
   return scoredList.map((r) => ({
@@ -265,8 +310,9 @@ function trimResults(scoredList) {
     style: r.wine.style,
     variety: r.wine.variety,
     body: r.wine.body,
-    price: r.wine.price,
-    moq: r.wine.moq,
+    price: priceFor(brief, r.wine),
+    vineyardKey: vineyardKeyFor(r.wine),
+    vineyardMin: VINEYARD_MIN,
     neverExported: r.wine.neverExported,
     score: r.score,
     notes: r.notes,
@@ -325,8 +371,9 @@ module.exports = async function handler(req, res) {
         style: r.wine.style,
         variety: r.wine.variety,
         body: r.wine.body,
-        price: r.wine.price,
-        moq: r.wine.moq,
+        price: priceFor(brief, r.wine),
+        basePrice: r.wine.price,
+        vineyardKey: vineyardKeyFor(r.wine),
         stock: r.wine.stock,
         neverExported: r.wine.neverExported,
         score: r.score,
