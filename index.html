@@ -1938,10 +1938,11 @@
     var sl=el("div","aw-slide aw-story"), bx=el("div","aw-box"), inn=el("div","aw-inner"), n=0;
     function line(cls,t){ var d=el("p","aw-line "+cls,t); d.style.transitionDelay=(n++*0.28)+"s"; inn.appendChild(d); }
     var ss=sentences(p.textContent);
+    function splitLine(ss,start,w){ var i=ss.findIndex(function(x){ return x.indexOf(start)===0; }); if(i<1){ line("",key(ss.join(" "),w)); return; } line("",ss.slice(0,i).join(" ")); line("",key(ss.slice(i).join(" "),w)); }
     function key(t,w){ return t.replace(w,'<span class="aw-key">'+w+'</span>'); }
     if(k===1){ var ban=el("img","aw-banner"); ban.src="assets/cellar.jpg"; ban.alt="A restaurant wine cellar stocked with bottles"; ban.width=650; ban.height=385; inn.appendChild(ban); line("",key(ss.join(" "),"who wanted boutique, distinctive Australian wine but had no reliable way to find it")); }
-    else if(k===0){ var vy=el("img","aw-banner aw-vy"); vy.src="assets/vineyard.jpg"; vy.alt="Vineyard rows at sunset in an Australian wine region"; vy.width=1078; vy.height=720; inn.appendChild(vy); line("",key(ss.join(" "),"small and medium-sized Australian vineyards barely represented")); }
-    else { var pt=el("img","aw-banner aw-port"); pt.src="assets/port.jpg"; pt.alt="A container port with ships and stacked shipping containers"; pt.width=555; pt.height=312; inn.appendChild(pt); line("",key(ss.join(" "),"So we built the alternative")); }
+    else if(k===0){ var vy=el("img","aw-banner aw-vy"); vy.src="assets/vineyard.jpg"; vy.alt="Vineyard rows at sunset in an Australian wine region"; vy.width=1078; vy.height=720; inn.appendChild(vy); splitLine(ss,"Working overseas","small and medium-sized Australian vineyards barely represented"); }
+    else { var pt=el("img","aw-banner aw-port"); pt.src="assets/port.jpg"; pt.alt="A container port with ships and stacked shipping containers"; pt.width=555; pt.height=312; inn.appendChild(pt); splitLine(ss,"So we built the alternative","So we built the alternative"); }
     bx.appendChild(inn); sl.appendChild(bx); return sl; });
   // credentials: one flowing piece, photo on top
   var s3=el("div","aw-slide aw-creds"), b3=el("div","aw-box"), in3=el("div","aw-inner");
