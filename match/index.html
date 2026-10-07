@@ -400,6 +400,42 @@
     color:var(--ink); padding:6px 8px; font-size:13px; font-family:'Inter',sans-serif;
   }
   .card-qty .moq-hint{font-size:10.5px; color:var(--ink-faint);}
+  .card-more{align-self:flex-start; margin-top:2px; padding:4px 0; background:none; border:0; border-bottom:1px solid var(--border); color:var(--sapphire-glint); font:inherit; font-size:12px; cursor:pointer;}
+  .card-more:hover{color:var(--ink); border-color:var(--sapphire-bright);}
+  .pallet-item .pi-more{display:inline-block; margin-top:5px; padding:0; background:none; border:0; border-bottom:1px solid var(--border); color:var(--sapphire-glint); font:inherit; font-size:11px; cursor:pointer; text-align:left;}
+  .pallet-item .pi-more:hover{color:var(--ink);}
+  .vp-overlay{position:fixed; inset:0; z-index:200; background:rgba(3,5,12,.78); display:flex; align-items:center; justify-content:center; padding:20px;}
+  .vp-overlay[hidden]{display:none;}
+  .vp-dialog{width:min(620px,100%); max-height:min(86vh,760px); display:flex; flex-direction:column; background:linear-gradient(160deg,var(--surface) 0%,var(--bg-2) 100%); border:1px solid var(--border); box-shadow:0 24px 70px rgba(0,0,0,.55);}
+  .vp-head{display:flex; gap:16px; justify-content:space-between; align-items:flex-start; padding:20px 22px 12px;}
+  .vp-head h3{margin:0 0 4px; font-family:'Fraunces',serif; font-weight:400; font-size:22px; color:var(--ink);}
+  .vp-sub{margin:0; font-size:13px; line-height:1.5; color:var(--ink-dim);}
+  .vp-close{flex:none; width:34px; height:34px; background:transparent; border:1px solid var(--border); color:var(--ink-dim); font-size:20px; line-height:1; cursor:pointer;}
+  .vp-close:hover{color:var(--ink); border-color:var(--sapphire-bright);}
+  .vp-progress{padding:4px 22px 14px; border-bottom:1px solid var(--border-soft);}
+  .vp-prog-row{display:flex; justify-content:space-between; font-size:12px; margin-bottom:7px; color:var(--ink-dim);}
+  .vp-prog-row b{color:var(--ink); font-weight:500;}
+  .vp-track{height:5px; background:var(--bg); border:1px solid var(--border-soft); overflow:hidden;}
+  .vp-fill{height:100%; width:0; background:linear-gradient(90deg,var(--sapphire),var(--cyan)); transition:width .25s ease;}
+  .vp-progress.met .vp-fill{background:var(--good);}
+  .vp-progress.met .vp-prog-status{color:var(--good);}
+  .vp-list{overflow-y:auto; padding:6px 22px; flex:1 1 auto; min-height:120px;}
+  .vp-row{display:grid; grid-template-columns:44px 1fr auto; gap:12px; align-items:center; padding:12px 0; border-bottom:1px solid var(--border-soft);}
+  .vp-row:last-child{border-bottom:0;}
+  .vp-row img{width:44px; height:60px; object-fit:contain;}
+  .vp-name{font-size:14px; color:var(--ink); line-height:1.35;}
+  .vp-meta{font-size:12px; color:var(--ink-faint); margin-top:2px;}
+  .vp-price{font-size:12.5px; color:var(--ink-dim); margin-top:3px;}
+  .vp-qty{display:flex; flex-direction:column; align-items:flex-end; gap:4px; font-size:11px; color:var(--ink-faint);}
+  .vp-qty input{width:68px; padding:8px 8px; background:var(--bg); border:1px solid var(--border); color:var(--ink); font:inherit; font-size:14px; text-align:center;}
+  .vp-note{padding:18px 0; font-size:13px; color:var(--ink-dim);}
+  .vp-foot{padding:14px 22px 18px; border-top:1px solid var(--border-soft); display:flex; justify-content:flex-end;}
+  @media (max-width:640px){
+    .vp-overlay{align-items:flex-end; padding:0;}
+    .vp-dialog{width:100%; max-height:90vh;}
+    .vp-head,.vp-progress,.vp-list,.vp-foot{padding-left:16px; padding-right:16px;}
+    .vp-foot .btn{width:100%;}
+  }
   .card-qty input.qty-error{border-color:var(--bad, #e58a8a); color:var(--bad, #e58a8a);}
   .card-qty-error{font-size:11px; color:var(--bad, #e58a8a); margin-top:-4px;}
 
@@ -852,7 +888,7 @@
   // state.quantities: Map of wine id -> quantity in bottles the buyer has
   // entered (replaces the old checkbox-select model; a wine with qty 0 or
   // unset is simply not included in the pallet).
-  const state = { brief: null, groups: [], resultsById: new Map(), quantities: new Map(), cardValidators: new Map() };
+  const state = { brief: null, groups: [], resultsById: new Map(), quantities: new Map(), cardValidators: new Map(), extras: new Map() };
 
   // Varietal sub-options shown once a buyer picks a wine style. Rosé,
   // Sparkling and Dessert/fortified aren't sold by single varietal the same
@@ -1385,6 +1421,7 @@
             .then(function(data){
               $("scan-view").style.display = "none";
               $("results-view").style.display = "";
+              state.extras = new Map();
               renderResults(data.groups || []);
             })
             .catch(function(err){
@@ -1488,6 +1525,7 @@
         if(seq !== refilterSeq) return;
         $("results-groups").classList.remove("is-updating");
         const keepWasOpen = true;
+        state.extras = new Map();
         renderResults(data.groups || []);
         $("brief-recap").classList.add("open");
         const t2 = $("brief-recap").querySelector(".recap-toggle"); if(t2){ t2.setAttribute("aria-expanded","true"); t2.querySelector("i").textContent = "▴"; }
@@ -1505,6 +1543,8 @@
     state.groups = groups;
     state.resultsById = new Map();
     groups.forEach(function(g){ g.results.forEach(function(r){ state.resultsById.set(r.id, r); }); });
+    // Wines added from a vineyard's "more wines" panel aren't on the shortlist but stay in the pallet.
+    state.extras.forEach(function(x, id){ if(!state.resultsById.has(id)) state.resultsById.set(id, x); });
     // Drop any quantities for wines that are no longer in the current
     // result set (e.g. the buyer edited their brief and re-ran the search).
     Array.from(state.quantities.keys()).forEach(function(id){
@@ -1626,7 +1666,10 @@
         '<input type="number" min="0" step="1" id="qty-'+r.id+'" data-id="'+r.id+'" value="'+existingQty+'" placeholder="0">' +
         '<span class="moq-hint">'+vMin(r)+' min per vineyard</span>' +
       '</div>' +
-      '<div class="card-qty-error" id="qty-error-'+r.id+'" style="display:none;"></div>';
+      '<div class="card-qty-error" id="qty-error-'+r.id+'" style="display:none;"></div>' +
+      (r.moreFromVineyard > 0 ? '<button type="button" class="card-more">'+r.moreFromVineyard+' other wine'+(r.moreFromVineyard===1?'':'s')+' from this vineyard ›</button>' : '');
+    const moreBtn = card.querySelector(".card-more");
+    if(moreBtn) moreBtn.addEventListener("click", function(){ openVineyardPanel(r, moreBtn); });
     const input = card.querySelector("input");
     const errorEl = card.querySelector("#qty-error-"+r.id);
     function validate(){
@@ -1669,6 +1712,104 @@
   // Bottles still needed from this wine's vineyard (0 when met or nothing picked).
   function vShort(r){ const t = vTotal(r); return t > 0 ? Math.max(0, vMin(r) - t) : 0; }
 
+  // ---------- "More from this vineyard" panel ----------
+  // Lets a buyer fill a vineyard's 12-bottle minimum with its other wines (any
+  // style or variety). Wines come from the server by opaque vineyard key; the
+  // ones the buyer picks are kept as state.extras so they survive a refresh.
+  const vp = { el: null, list: null, key: null, min: 12, opener: null, seq: 0 };
+  function ensureVineyardPanel(){
+    if(vp.el) return;
+    const el = document.createElement("div");
+    el.className = "vp-overlay"; el.hidden = true;
+    el.innerHTML =
+      '<div class="vp-dialog" role="dialog" aria-modal="true" aria-labelledby="vp-title">' +
+        '<div class="vp-head"><div><h3 id="vp-title">More from this vineyard</h3><p class="vp-sub" id="vp-sub"></p></div>' +
+        '<button type="button" class="vp-close" aria-label="Close">×</button></div>' +
+        '<div class="vp-progress" id="vp-progress"><div class="vp-prog-row"><span id="vp-prog-label"></span><span class="vp-prog-status" id="vp-prog-status"></span></div>' +
+        '<div class="vp-track"><div class="vp-fill" id="vp-fill"></div></div></div>' +
+        '<div class="vp-list" id="vp-list"></div>' +
+        '<div class="vp-foot"><button type="button" class="btn btn-solid" id="vp-done">Done</button></div>' +
+      '</div>';
+    document.body.appendChild(el);
+    vp.el = el; vp.list = el.querySelector("#vp-list");
+    el.addEventListener("click", function(e){ if(e.target === el) closeVineyardPanel(); });
+    el.querySelector(".vp-close").addEventListener("click", closeVineyardPanel);
+    el.querySelector("#vp-done").addEventListener("click", closeVineyardPanel);
+    document.addEventListener("keydown", function(e){ if(e.key === "Escape" && !vp.el.hidden) closeVineyardPanel(); });
+  }
+  function vineyardTotalByKey(key){
+    let t = 0;
+    state.quantities.forEach(function(qty, id){
+      const o = state.resultsById.get(id);
+      if(o && vKey(o) === key) t += qty;
+    });
+    return t;
+  }
+  function refreshVineyardPanel(){
+    if(!vp.el || vp.el.hidden) return;
+    const total = vineyardTotalByKey(vp.key), met = total >= vp.min;
+    $("vp-progress").classList.toggle("met", met);
+    $("vp-prog-label").innerHTML = "<b>"+total+"</b> of "+vp.min+" bottles from this vineyard";
+    $("vp-prog-status").textContent = met ? "✓ minimum met" : (total > 0 ? (vp.min-total)+" to go" : "");
+    $("vp-fill").style.width = Math.min(100, total/vp.min*100) + "%";
+    vp.list.querySelectorAll("input[data-id]").forEach(function(inp){
+      if(document.activeElement === inp) return;
+      inp.value = state.quantities.get(inp.dataset.id) || "";
+    });
+  }
+  state.refreshVineyardPanel = refreshVineyardPanel;
+  function closeVineyardPanel(){
+    if(!vp.el) return;
+    vp.el.hidden = true; document.body.style.overflow = "";
+    if(vp.opener && document.contains(vp.opener)) vp.opener.focus();
+    updatePalletBar();
+  }
+  function setQuantityFromPanel(r, raw){
+    const n = parseInt(raw, 10);
+    if(!n || n <= 0){ state.quantities.delete(r.id); }
+    else { state.quantities.set(r.id, n); }
+    // keep the shortlist card's own box in step, if this wine is on the shortlist
+    const cardInput = document.getElementById("qty-"+r.id);
+    if(cardInput) cardInput.value = (n > 0) ? n : "";
+    updatePalletBar();
+    if(window.briefSaveSoon) window.briefSaveSoon();
+  }
+  function openVineyardPanel(r, opener){
+    ensureVineyardPanel();
+    vp.key = vKey(r); vp.min = vMin(r); vp.opener = opener || null;
+    const seq = ++vp.seq;
+    $("vp-sub").textContent = r.vineyard + ". Mix its wines however you like — you need " + vp.min + " bottles from this vineyard in total.";
+    vp.list.innerHTML = '<p class="vp-note">Loading this vineyard’s wines…</p>';
+    vp.el.hidden = false; document.body.style.overflow = "hidden";
+    vp.el.querySelector(".vp-close").focus();
+    refreshVineyardPanel();
+    callMatchApi({action:"vineyardWines", brief:state.brief, vineyardKey:vp.key}).then(function(data){
+      if(seq !== vp.seq) return;
+      const wines = data.results || [];
+      if(!wines.length){ vp.list.innerHTML = '<p class="vp-note">No other wines are listed for this vineyard yet.</p>'; return; }
+      vp.list.innerHTML = "";
+      wines.forEach(function(x){
+        // reuse the shortlist's own copy of a wine when we already have it
+        const w = state.resultsById.get(x.id) || x;
+        if(!state.resultsById.has(w.id)){ state.resultsById.set(w.id, w); state.extras.set(w.id, w); }
+        const row = document.createElement("div");
+        row.className = "vp-row";
+        row.innerHTML =
+          '<img src="'+bottleImageSrc(w)+'" alt="">' +
+          '<div><div class="vp-name">'+w.name+'</div><div class="vp-meta">'+w.style+(w.variety?' · '+w.variety:'')+', '+w.body+'-bodied</div>' +
+          '<div class="vp-price">'+formatPrice(w.price)+' per bottle</div></div>' +
+          '<label class="vp-qty">Qty<input type="number" min="0" step="1" inputmode="numeric" placeholder="0" data-id="'+w.id+'" value="'+(state.quantities.get(w.id)||"")+'"></label>';
+        row.querySelector("input").addEventListener("input", function(e){ setQuantityFromPanel(w, e.target.value); });
+        vp.list.appendChild(row);
+      });
+      refreshVineyardPanel();
+    }).catch(function(err){
+      if(seq !== vp.seq) return;
+      console.error("Vineyard wines failed", err);
+      vp.list.innerHTML = '<p class="vp-note">We couldn’t load this vineyard’s wines. Please try again.</p>';
+    });
+  }
+
   // Minimum total bottles for a single buyer's order. This isn't a pallet
   // capacity limit — it's the floor below which handling an order isn't
   // worth it for us. Orders are consolidated with other buyers onto one
@@ -1691,6 +1832,8 @@
     if(lines.length === 0){
       $("pallet-empty").style.display = "";
       $("pallet-filled").style.display = "none";
+      state.cardValidators.forEach(function(fn){ fn(); });
+      if(state.refreshVineyardPanel) state.refreshVineyardPanel();
       return;
     }
     $("pallet-empty").style.display = "none";
@@ -1710,6 +1853,7 @@
         '<div class="pi-thumb-wrap"><img class="pi-thumb" src="'+bottleImageSrc(l.result)+'" alt=""></div>' +
         '<div class="pi-name-wrap"><div class="pi-name">'+l.result.name+'</div><div class="pi-meta">'+l.result.region+' · '+l.result.style+(l.result.variety?' · '+l.result.variety:'')+
           (belowMoq ? '<span class="pi-moq-error">needs '+short+' more from this vineyard</span>' : '') +
+          (belowMoq && l.result.moreFromVineyard > 0 ? '<button type="button" class="pi-more" data-id="'+l.result.id+'">Add other wines from this vineyard ›</button>' : '') +
         '</div></div>' +
         '<button class="pi-remove" type="button" data-id="'+l.result.id+'" aria-label="Remove">×</button>' +
         '<div class="pi-qty-price"><span class="pi-qty">'+l.qty+' × '+formatPrice(l.result.price)+'</span><span class="pi-price">'+formatPrice(lineTotalAud)+'</span></div>';
@@ -1727,6 +1871,9 @@
     fitThree(); requestAnimationFrame(fitThree);
     if(!window.__fitThreeBound){ window.__fitThreeBound = true; window.addEventListener("resize", function(){ if(window.__fitThree) window.__fitThree(); }); }
     window.__fitThree = fitThree;
+    itemsBox.querySelectorAll(".pi-more").forEach(function(btn){
+      btn.addEventListener("click", function(){ const r = state.resultsById.get(btn.dataset.id); if(r) openVineyardPanel(r, btn); });
+    });
     itemsBox.querySelectorAll(".pi-remove").forEach(function(btn){
       btn.addEventListener("click", function(){
         const id = btn.dataset.id;
@@ -1766,6 +1913,7 @@
     $("btn-to-checkout").disabled = anyBelowMoq || !metMin;
     $("pallet-moq-warning").style.display = anyBelowMoq ? "" : "none";
     state.cardValidators.forEach(function(fn){ fn(); });
+    if(state.refreshVineyardPanel) state.refreshVineyardPanel();
   }
 
   $("btn-edit-brief").addEventListener("click", function(){ showPanel(1); });
@@ -1833,6 +1981,7 @@
           pricemin:$("f-pricemin").value, pricemax:$("f-pricemax").value, volume:$("f-volume").value, flavour:$("f-flavour").value
         },
         brief:state.brief, groups:state.groups,
+        extras:Array.from(state.extras.values()).filter(function(x){ return state.quantities.has(x.id); }),
         quantities:Array.from(state.quantities.entries())
       };
     }
@@ -1873,6 +2022,7 @@
       if(d.brief && d.groups && d.groups.length && d.panel>=2){
         state.brief=d.brief;
         state.quantities=new Map(d.quantities||[]);
+        state.extras=new Map((d.extras||[]).map(function(x){ return [x.id,x]; }));
         $("scan-view").style.display="none"; $("results-view").style.display="";
         renderResults(d.groups);
         updatePalletBar();

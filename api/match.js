@@ -1,7 +1,7 @@
 // Serverless function (Vercel /api route) — the private matching backend.
 //
 // The real vineyard/wine inventory never ships to the browser. This
-// function holds it server-side (currently a 211-row DUMMY dataset — see
+// function holds it server-side (currently a 289-row DUMMY dataset — see
 // api/data/wines.json's header comment and the Notes written into the
 // original spreadsheet — standing in for what real vineyard partners will
 // eventually supply) and the match tool's frontend only ever receives:
@@ -76,6 +76,14 @@ function priceFor(brief, wine) {
 function vineyardKeyFor(wine) {
   return crypto.createHash("sha256").update("sp-vineyard:" + wine.vineyard).digest("hex").slice(0, 10);
 }
+
+// How many wines each vineyard lists, so a result can say "N other wines from
+// this vineyard" without naming the vineyard.
+const VINEYARD_WINE_COUNT = {};
+WINES.forEach((w) => {
+  const k = vineyardKeyFor(w);
+  VINEYARD_WINE_COUNT[k] = (VINEYARD_WINE_COUNT[k] || 0) + 1;
+});
 
 function clamp01(n) {
   return Math.max(0, Math.min(1, n));
@@ -313,6 +321,7 @@ function trimResults(scoredList, brief) {
     price: priceFor(brief, r.wine),
     vineyardKey: vineyardKeyFor(r.wine),
     vineyardMin: VINEYARD_MIN,
+    moreFromVineyard: Math.max(0, (VINEYARD_WINE_COUNT[vineyardKeyFor(r.wine)] || 1) - 1),
     neverExported: r.wine.neverExported,
     score: r.score,
     notes: r.notes,
@@ -351,6 +360,24 @@ module.exports = async function handler(req, res) {
       const groups = buildGroupedResults(brief);
       const count = groups.reduce((n, g) => n + g.results.length, 0);
       res.status(200).json({ groups, count });
+      return;
+    }
+
+    // Every wine from one vineyard (identified by the opaque key from a prior
+    // result), so a buyer can fill that vineyard's 12-bottle minimum with other
+    // styles and varieties. Scored against the brief for ordering only; never
+    // filtered, since the point is to explore the rest of the vineyard's range.
+    if (body.action === "vineyardWines") {
+      const brief = body.brief || {};
+      const key = String(body.vineyardKey || "");
+      const mine = WINES.filter((w) => vineyardKeyFor(w) === key);
+      if (!mine.length) {
+        res.status(404).json({ error: "Unknown vineyard" });
+        return;
+      }
+      const scored = mine.map((w) => scoreWine(brief, w));
+      scored.sort((a, b) => b.score - a.score);
+      res.status(200).json({ results: trimResults(scored, brief) });
       return;
     }
 
