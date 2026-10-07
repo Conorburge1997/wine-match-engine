@@ -184,6 +184,8 @@
   .v-hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;}
   .v-consent{display:flex; gap:10px; align-items:flex-start; font-size:13px; color:var(--ink-dim); font-weight:400; line-height:1.5; margin:0;}
   .v-consent input{margin-top:3px; accent-color:var(--sapphire);}
+  .v-consent.field-error{color:#e88ba0; outline:1px solid #e0607a; outline-offset:6px; border-radius:2px;}
+  .v-consent.field-error input{outline:2px solid #e0607a; outline-offset:2px;}
   .v-actions{display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-top:24px;}
   .v-msg{font-size:13px; color:#e88ba0; min-height:18px;}
   .v-msg a{color:var(--sapphire-glint);}
@@ -297,13 +299,14 @@
     var body='Vineyard: '+d.winery+'\nContact: '+d.contact+'\nEmail: '+d.email+'\nPhone: '+d.phone+'\nState: '+d.state+'\nRegion: '+d.region+'\nProduction: '+d.scale+'\nExport experience: '+d.export+'\nWebsite: '+d.web+'\nNotes: '+d.notes;
     return 'mailto:'+MAILTO+'?subject='+encodeURIComponent('Vineyard registration: '+d.winery)+'&body='+encodeURIComponent(body);
   }
+  form.elements.consent.addEventListener('change',function(){ if(this.checked) form.querySelector('.v-consent').classList.remove('field-error'); });
   form.addEventListener('submit',function(e){
     e.preventDefault(); msg.textContent='';
     var d={winery:val('winery'),contact:val('contact'),email:val('email'),phone:val('phone'),state:val('state'),region:val('region'),scale:val('scale'),export:val('export'),web:val('web'),notes:val('notes'),company:val('company'),consent:form.elements.consent.checked};
     var ok=true;
     ['winery','contact','phone','region','state'].forEach(function(k){ var b=!d[k]; bad(k,b); if(b) ok=false; });
     var eb=!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email); bad('email',eb); if(eb) ok=false;
-    if(!d.consent) ok=false;
+    var cl=form.querySelector('.v-consent'); cl.classList.toggle('field-error',!d.consent); if(!d.consent) ok=false;
     if(!ok){ msg.textContent=d.consent?'Please complete the highlighted fields.':'Please fill the required fields and tick the box so we can contact you.'; return; }
     btn.disabled=true; btn.textContent='Sending…';
     fetch('/api/vineyard',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})
