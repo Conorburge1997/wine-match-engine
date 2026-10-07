@@ -69,18 +69,12 @@
 
   /* Mobile header: compact row + hamburger menu (mirrors the home page) */
   .nav-links .btn{padding:10px 20px;}
-  .nav-links a.faq-icon{flex:none; width:28px; height:28px; border-radius:50%; border:1px solid var(--border); color:var(--ink-dim); display:inline-flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; text-decoration:none; margin-right:-12px; transition:color .2s,border-color .2s;}
-  .nav-links a.faq-icon:hover,.nav-links a.faq-icon:focus-visible{color:var(--sapphire-glint); border-color:var(--sapphire-bright);}
-  .nav-links a.faq-icon.active{color:var(--cyan); border-color:var(--cyan);}
-  .nav-links a.navlink.faq-m{display:none;}
   .nav-toggle{display:none;}
   @media (max-width: 960px){
     .nav{position:static; padding:12px 18px; gap:10px;}
     .nav-links{display:contents;}
     .brand{flex:none;}
     .brand-word{white-space:nowrap; font-size:15px;}
-    .nav-links a.faq-icon{display:none;}
-    .nav-links a.navlink.faq-m{display:block;}
     .nav-links .btn{margin-left:auto; padding:9px 12px; font-size:10.5px; white-space:nowrap;}
     .nav-toggle{
       display:inline-flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
@@ -228,9 +222,7 @@
         <a href="/#about" class="navlink">About</a>
         <a href="/#news" class="navlink">News</a>
         <a href="/vineyards/" class="navlink active">For Vineyards</a>
-        <a href="/faq/" class="navlink faq-m">FAQ</a>
       </div>
-      <a href="/faq/" class="faq-icon" aria-label="FAQ" title="FAQ">?</a>
       <a href="/match" class="btn btn-solid">Find Your Match</a>
     </div>
     <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu"><span></span><span></span><span></span></button>
