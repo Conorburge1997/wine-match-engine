@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FAQ | Sapphire Panda</title>
-<meta name="description" content="Answers to common questions from buyers and vineyards about ordering, minimums, samples, pricing, shipping and joining Sapphire Panda.">
+<title>Contact Us | Sapphire Panda</title>
+<meta name="description" content="Get in touch with Sapphire Panda. Send us a message and we will reply by email.">
 <meta name="theme-color" content="#060810">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<link rel="canonical" href="https://sapphirepanda.com/faq/">
+<link rel="canonical" href="https://sapphirepanda.com/contact/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Sapphire Panda">
-<meta property="og:title" content="FAQ | Sapphire Panda">
-<meta property="og:description" content="Answers to common questions from buyers and vineyards about ordering, minimums, samples, pricing, shipping and joining Sapphire Panda.">
-<meta property="og:url" content="https://sapphirepanda.com/faq/">
+<meta property="og:title" content="Contact Us | Sapphire Panda">
+<meta property="og:description" content="Send us a message and we will get back to you.">
+<meta property="og:url" content="https://sapphirepanda.com/contact/">
 <meta property="og:image" content="https://sapphirepanda.com/assets/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -156,31 +156,48 @@
   .footer-row{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; max-width:1080px; margin:0 auto; padding:0 32px;}
   .footer-brand{display:flex; align-items:center; gap:8px; font-family:'Fraunces',serif; font-weight:400; color:var(--ink-dim); font-size:13px;}
   footer .fine{color:var(--ink-faint); font-size:11.5px;}
-  /* ---- FAQ ---- */
-  .f-wrap{padding:32px 0 90px; max-width:760px; margin:0 auto;}
-  .f-wrap h1{font-size:clamp(28px,3.8vw,40px); line-height:1.15; margin:0 0 12px;}
-  .f-lead{color:var(--ink-dim); font-size:15.5px; max-width:56ch; margin:0 0 34px;}
-  .f-group{margin:0 0 34px;}
-  .f-group h2{font-size:20px; font-weight:400; margin:0 0 12px;}
-  .f-list{border:1px solid var(--border-soft); background:var(--surface); box-shadow:inset 0 1px 0 rgba(166,196,255,.08);}
-  .f-item{border-bottom:1px solid var(--border-soft);}
-  .f-item:last-child{border-bottom:0;}
-  .f-item summary{list-style:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:18px; padding:17px 20px; font-size:15.5px; color:var(--ink); line-height:1.4;}
-  .f-item summary::-webkit-details-marker{display:none;}
-  .f-item summary::after{content:'+'; flex:none; width:22px; height:22px; display:grid; place-items:center; color:var(--sapphire-glint); font-size:20px; line-height:1; font-weight:300; border:1px solid var(--border); transition:transform .2s ease, color .2s ease;}
-  .f-item[open] summary::after{content:'\2212'; color:var(--cyan); border-color:var(--cyan);}
-  .f-item summary:hover{background:rgba(58,110,222,.06);}
-  .f-item summary:focus-visible{outline:2px solid var(--sapphire-bright); outline-offset:-2px;}
-  .f-a{padding:0 20px 20px; color:var(--ink-dim); font-size:14.5px; line-height:1.65; max-width:64ch;}
-  .f-a p{margin:0 0 10px;}
-  .f-a p:last-child{margin-bottom:0;}
-  .f-a ul{margin:0 0 10px; padding-left:18px;}
-  .f-a li{margin:0 0 4px;}
-  .f-contact{border:1px solid var(--border-soft); background:var(--surface); padding:24px 22px; display:flex; align-items:center; justify-content:space-between; gap:18px; flex-wrap:wrap;}
-  .f-contact h2{font-size:20px; font-weight:400; margin:0 0 4px;}
-  .f-contact p{margin:0; color:var(--ink-dim); font-size:14.5px;}
-  @media (max-width:640px){ .f-item summary{padding:15px 14px; font-size:15px;} .f-a{padding:0 14px 18px;} .f-contact .btn{width:100%; text-align:center;} }
-  @media (max-width:960px){ .f-wrap{padding-top:18px;} }
+  /* ---- Vineyard registration ---- */
+  .v-wrap{padding:32px 0 90px; max-width:880px; margin:0 auto;}
+  .v-intro{max-width:640px; margin-bottom:34px;}
+  .v-eyebrow{font-size:11px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--cyan); margin-bottom:14px; display:flex; align-items:center; gap:12px;}
+  .v-eyebrow::before{content:''; width:26px; height:1px; background:var(--cyan);}
+  .v-intro h1{font-size:clamp(26px,3.6vw,38px); line-height:1.15; margin-bottom:14px;}
+  .v-intro p{color:var(--ink-dim); font-size:15.5px; max-width:58ch; margin:0 0 10px;}
+  .v-note{color:var(--ink-dim);} .v-note b{color:var(--ink); font-weight:600;}
+  .v-follow{font-size:13px; color:var(--ink-dim); margin:22px 0 0; padding:12px 14px; border-left:2px solid var(--cyan); background:rgba(95,212,224,.05); line-height:1.55;}
+  .v-done p b{color:var(--ink);}
+  .v-points{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:0 0 28px;}
+  .v-point{border:1px solid var(--border-soft); background:var(--surface); padding:16px 16px 14px;}
+  .v-point b{display:block; font-family:'Fraunces',serif; font-weight:400; font-size:16px; margin-bottom:4px;}
+  .v-point span{font-size:13px; color:var(--ink-dim); line-height:1.5;}
+  .v-card{position:relative; background:var(--surface); border:1px solid var(--border-soft); padding:30px 32px; box-shadow:inset 0 1px 0 rgba(166,196,255,.1), 0 30px 60px -34px rgba(58,110,222,.35);}
+  .v-card h2{font-size:19px; margin-bottom:4px; font-weight:400;}
+  .v-card .sub{color:var(--ink-dim); font-size:13.5px; margin:0 0 22px;}
+  .v-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px 20px;}
+  .v-grid .full{grid-column:1 / -1;}
+  .v-card input[type=text],.v-card input[type=email],.v-card input[type=tel],.v-card input[type=url],.v-card textarea,.v-card select{
+    width:100%; font-family:inherit; font-size:15px; color:var(--ink); background:var(--bg); border:1px solid var(--border); border-radius:2px; padding:11px 12px;}
+  .v-card textarea{min-height:92px; resize:vertical; line-height:1.5;}
+  .v-card input:focus,.v-card textarea:focus{outline:none; border-color:var(--sapphire-bright); box-shadow:0 0 0 3px rgba(58,110,222,.18);}
+  .v-card input::placeholder,.v-card textarea::placeholder{color:var(--ink-faint);}
+  .v-card .bad{border-color:#e0607a !important;}
+  .v-hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;}
+  .v-consent{display:flex; gap:10px; align-items:flex-start; font-size:13px; color:var(--ink-dim); font-weight:400; line-height:1.5; margin:0;}
+  .v-consent input{margin-top:3px; accent-color:var(--sapphire);}
+  .v-consent.field-error{color:#e88ba0; outline:1px solid #e0607a; outline-offset:6px; border-radius:2px;}
+  .v-consent.field-error input{outline:2px solid #e0607a; outline-offset:2px;}
+  .v-actions{display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-top:24px;}
+  .v-msg{font-size:13px; color:#e88ba0; min-height:18px;}
+  .v-msg a{color:var(--sapphire-glint);}
+  .v-done{display:none; text-align:center; padding:34px 10px 26px;}
+  .v-done.show{display:block;}
+  .v-done .tick{width:54px; height:54px; border-radius:50%; border:1.5px solid var(--cyan); display:grid; place-items:center; margin:0 auto 18px; color:var(--cyan); box-shadow:0 0 0 4px rgba(95,212,224,.12);}
+  .v-done h2{font-size:22px; margin-bottom:8px;}
+  .v-done p{color:var(--ink-dim); max-width:46ch; margin:0 auto 6px;}
+  .v-card.sent form{display:none;}
+  .v-card.sent .v-head{display:none;}
+  @media (max-width:760px){ .v-points{display:none;} .v-grid{grid-template-columns:1fr;} .v-card{padding:22px 18px;} }
+  @media (max-width:960px){ .v-wrap{padding-top:18px;} }
 </style>
 </head>
 <body>
@@ -215,35 +232,31 @@
 </header>
 
 <main class="wrap">
- <div class="f-wrap">
-  <h1>Frequently asked questions</h1>
-  <p class="f-lead">Short answers for buyers and for vineyards. If yours isn&rsquo;t here, get in touch.</p>
-  <section class="f-group" aria-labelledby="fq-buyers">
-    <h2 id="fq-buyers">For buyers</h2>
-    <div class="f-list">
-      <details class="f-item" name="faq" open><summary>How does the engine work?</summary><div class="f-a"><p>Tell us your region, flavour profile, price point and volume. Our engine searches Australian vineyards and recommends the best fits, including ones most buyers have never heard of.</p></div></details>
-      <details class="f-item" name="faq"><summary>Who are the vineyards?</summary><div class="f-a"><p>Our focus is independent Australian vineyards, especially small and family-run ones that are hard for overseas buyers to find. Any Australian vineyard is welcome to register, whatever its size and whether or not it has exported before.</p></div></details>
-      <details class="f-item" name="faq"><summary>Can I mix wines from different vineyards in one order?</summary><div class="f-a"><p>Yes. We combine them on one pallet, with one order, one contact and one invoice.</p></div></details>
-      <details class="f-item" name="faq"><summary>What&rsquo;s the minimum order?</summary><div class="f-a"><p>48 bottles (4 cases) per order, and at least 1 case (12 bottles) from each vineyard you order from. You can mix wines from the same vineyard however you like.</p></div></details>
-      <details class="f-item" name="faq"><summary>How much does it cost?</summary><div class="f-a"><p>Each wine shows one price per bottle for your destination, with shipping and paperwork included. The price you see is the price you pay.</p></div></details>
-      <details class="f-item" name="faq"><summary>Can I taste before I commit?</summary><div class="f-a"><p>Yes. Request a sample pack of up to 12 wines, sent as sample vials rather than full bottles. What you pay for the wine in your samples is deducted from your first order of 48 bottles or more, placed within 90 days. Shipping and handling aren&rsquo;t deducted.</p></div></details>
-      <details class="f-item" name="faq"><summary>Who handles shipping and paperwork?</summary><div class="f-a"><p>We do. We handle consolidation, export documents and shipping, including registering wines for export where needed, and you receive one invoice. We&rsquo;ll confirm delivery timing when you place your order.</p></div></details>
+ <div class="v-wrap">
+  <div class="v-intro">
+    <h1>Contact us</h1>
+    <p>Questions about buying, listing your vineyard, or anything else? Send us a message and we&rsquo;ll reply by email. You may find a quick answer in the <a href="/faq/" style="color:var(--sapphire-glint)">FAQ</a>.</p>
+  </div>
+  <div class="v-card" id="v-card">
+    <form id="v-form" novalidate>
+      <div class="v-grid">
+        <div><label for="c-name">Your name <span class="req">*</span></label><input type="text" id="c-name" name="name" autocomplete="name" maxlength="100"></div>
+        <div><label for="c-email">Email <span class="req">*</span></label><input type="email" id="c-email" name="email" autocomplete="email" maxlength="160"></div>
+        <div><label for="c-phone">Phone <span class="opt">(optional)</span></label><input type="tel" id="c-phone" name="phone" autocomplete="tel" maxlength="40"></div>
+        <div><label for="c-topic">I&rsquo;m a <span class="opt">(optional)</span></label>
+          <select id="c-topic" name="topic"><option value="">Select</option><option>Buyer</option><option>Vineyard</option><option>Something else</option></select></div>
+        <div class="full"><label for="c-subject">Subject <span class="req">*</span></label><input type="text" id="c-subject" name="subject" maxlength="150"></div>
+        <div class="full"><label for="c-message">Message <span class="req">*</span></label><textarea id="c-message" name="message" style="min-height:150px" maxlength="3000"></textarea></div>
+        <div class="v-hp" aria-hidden="true"><label>Leave this empty <input type="text" name="company" tabindex="-1" autocomplete="off"></label></div>
+      </div>
+      <div class="v-actions"><button class="btn btn-solid" id="v-submit" type="submit">Send message</button><span class="v-msg" id="v-msg" role="status"></span></div>
+    </form>
+    <div class="v-done" id="v-done" role="status" aria-live="polite">
+      <div class="tick"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+      <h2>Message sent.</h2>
+      <p>Thanks, we&rsquo;ll reply to your email soon.</p>
+      <p style="margin-top:18px"><a href="/" class="btn btn-ghost">Back to home</a></p>
     </div>
-  </section>
-  <section class="f-group" aria-labelledby="fq-vineyards">
-    <h2 id="fq-vineyards">For vineyards</h2>
-    <div class="f-list">
-      <details class="f-item" name="faq"><summary>How do I join?</summary><div class="f-a"><p>Register your interest on the <a href="/vineyards/" style="color:var(--sapphire-glint)">vineyard page</a>. We&rsquo;ll contact you to collect the full details.</p></div></details>
-      <details class="f-item" name="faq"><summary>Does it cost anything to be listed?</summary><div class="f-a"><p>No. Listing is free, with no joining fees. We don&rsquo;t take ownership of your stock.</p></div></details>
-      <details class="f-item" name="faq"><summary>What are the requirements to be listed?</summary><div class="f-a"><p>To be listed, we ask that you:</p><ul><li>are a recognised, registered Australian vineyard or wine producer</li><li>have a range of wines available to sell</li><li>stay committed to fulfilling the orders for the wines you list</li><li>maintain the quality buyers expect</li></ul><p>We recommend your wines to buyers on the strength of what you list, and we act on buyer feedback. Vineyards that list wines they can&rsquo;t supply, or that receive repeated poor quality feedback, may be removed from the platform.</p><p>Registering your interest doesn&rsquo;t guarantee listing. We&rsquo;ll contact you to collect the full details and confirm that you meet the requirements.</p></div></details>
-      <details class="f-item" name="faq"><summary>Do I need to be exporting already?</summary><div class="f-a"><p>No. Whether you&rsquo;ve exported before or this would be your first time, we handle the export documents and registrations.</p></div></details>
-      <details class="f-item" name="faq"><summary>Which states do you work with?</summary><div class="f-a"><p>We work with vineyards in every Australian state and territory. Register your interest and we&rsquo;ll be in touch.</p></div></details>
-      <details class="f-item" name="faq"><summary>How is my wine recommended to a buyer?</summary><div class="f-a"><p>The engine recommends wines based on what the buyer asked for: region, style, price and volume. A vineyard&rsquo;s size or marketing budget isn&rsquo;t a factor. That&rsquo;s why we reach out before onboarding to collect the details we need, so the engine has everything it needs to recommend your wines to the right buyers.</p></div></details>
-    </div>
-  </section>
-  <div class="f-contact">
-    <div><h2>Still have a question?</h2><p>We&rsquo;d love to hear from you.</p></div>
-    <a class="btn btn-solid" href="/contact/">Get in touch</a>
   </div>
  </div>
 </main>
@@ -262,6 +275,29 @@
 (function(){
   var header=document.querySelector('header.site-header'), tg=document.querySelector('.nav-toggle');
   if(tg){ tg.addEventListener('click',function(){ var o=header.classList.toggle('open'); tg.setAttribute('aria-expanded',o); }); }
+  var form=document.getElementById('v-form'), msg=document.getElementById('v-msg'), card=document.getElementById('v-card'), btn=document.getElementById('v-submit');
+  var MAILTO='hello@sapphirepanda.com';
+  function val(n){ return (form.elements[n].value||'').trim(); }
+  function bad(n,on){ var e=form.elements[n]; if(e) e.classList.toggle('bad',on); }
+  function fallbackLink(d){
+    var body='Name: '+d.name+'\nEmail: '+d.email+'\nPhone: '+d.phone+'\n\n'+d.message;
+    return 'mailto:'+MAILTO+'?subject='+encodeURIComponent(d.subject)+'&body='+encodeURIComponent(body);
+  }
+  form.addEventListener('submit',function(e){
+    e.preventDefault(); msg.textContent='';
+    var d={name:val('name'),email:val('email'),phone:val('phone'),topic:val('topic'),subject:val('subject'),message:val('message'),company:val('company')};
+    var ok=true;
+    ['name','subject','message'].forEach(function(k){ var b=!d[k]; bad(k,b); if(b) ok=false; });
+    var eb=!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email); bad('email',eb); if(eb) ok=false;
+    if(!ok){ msg.textContent='Please complete the highlighted fields.'; return; }
+    btn.disabled=true; btn.textContent='Sending…';
+    fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})
+      .then(function(r){ if(!r.ok) throw new Error('x'); return r.json(); })
+      .then(function(){ card.classList.add('sent'); document.getElementById('v-done').classList.add('show'); })
+      .catch(function(){ btn.disabled=false; btn.textContent='Send message';
+        msg.innerHTML='We couldn\u2019t send that just now. <a href="'+fallbackLink(d).replace(/"/g,'&quot;')+'">Email us directly instead</a>.'; });
+  });
+  form.addEventListener('input',function(e){ if(e.target.classList) e.target.classList.remove('bad'); });
 })();
 </script>
 </body>
