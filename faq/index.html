@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ | Sapphire Panda</title>
+<meta name="description" content="Answers to common questions from buyers and vineyards about ordering, minimums, samples, pricing, shipping and joining Sapphire Panda.">
+<meta name="theme-color" content="#060810">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="canonical" href="https://sapphirepanda.com/faq/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Sapphire Panda">
+<meta property="og:title" content="FAQ | Sapphire Panda">
+<meta property="og:description" content="Answers to common questions from buyers and vineyards about ordering, minimums, samples, pricing, shipping and joining Sapphire Panda.">
+<meta property="og:url" content="https://sapphirepanda.com/faq/">
+<meta property="og:image" content="https://sapphirepanda.com/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sapphirepanda.com/assets/og.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#060810; --bg-2:#0a0e1c; --surface:#0e1324; --surface-2:#121a30;
+    --border:#212c4a; --border-soft:#161d34;
+    --ink:#f4f5fa; --ink-dim:#b3bad2; --ink-faint:#7c85a6;
+    --sapphire:#3a6ede; --sapphire-bright:#6f93e8; --sapphire-glint:#a6c4ff; --sapphire-deep:#0f1a3d;
+    --cyan:#5fd4e0;
+    --good:#5fd4a0; --warn:#e0b273; --bad:#e58a8a;
+    --radius:2px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif; -webkit-font-smoothing:antialiased;
+    line-height:1.6; font-size:15px;
+  }
+  body{
+    background-image:
+      radial-gradient(ellipse 900px 500px at 15% -8%, rgba(58,110,222,0.14), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 5%, rgba(95,212,224,0.06), transparent 55%);
+  }
+  h1,h2,h3{font-family:'Fraunces',serif; font-weight:400; letter-spacing:-0.005em; margin:0;}
+  a{color:inherit;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  .wrap{max-width:1240px; margin:0 auto; padding:0 32px;}
+
+  header.site-header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(6,8,16,0.9); 
+    border-bottom:1px solid var(--border-soft);
+  }
+  .nav{display:flex; align-items:center; justify-content:space-between; padding:18px 0;}
+  .brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink);}
+  .brand-word{font-family:'Fraunces',serif; font-weight:400; font-size:16px; letter-spacing:0.02em;}
+  .nav-links{display:flex; align-items:center; gap:32px;}
+  .nav-links .links{display:flex; gap:28px; font-size:12px;}
+  .nav-links a.navlink{text-decoration:none; color:var(--ink-dim); transition:color .2s; text-transform:uppercase; letter-spacing:0.06em; font-weight:500; position:relative; padding-bottom:2px;}
+  .nav-links a.navlink:hover{color:var(--sapphire-glint);}
+  .nav-links a.navlink.active{color:var(--cyan);}
+  .nav-links a.navlink.active::after{
+    content:''; position:absolute; left:0; right:0; bottom:-6px; height:2px;
+    background:linear-gradient(90deg, var(--sapphire-bright), var(--cyan));
+  }
+
+  /* Mobile header: compact row + hamburger menu (mirrors the home page) */
+  .nav-links .btn{padding:10px 20px;}
+  .nav-toggle{display:none;}
+  @media (max-width: 960px){
+    .nav{position:static; padding:12px 18px; gap:10px;}
+    .nav-links{display:contents;}
+    .brand{flex:none;}
+    .brand-word{white-space:nowrap; font-size:15px;}
+    .nav-links .btn{margin-left:auto; padding:9px 12px; font-size:10.5px; white-space:nowrap;}
+    .nav-toggle{
+      display:inline-flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+      width:38px; height:38px; flex:none; padding:0; cursor:pointer;
+      background:transparent; border:1px solid var(--border); border-radius:var(--radius); color:var(--ink);
+    }
+    .nav-toggle span{display:block; width:16px; height:1.5px; background:currentColor; transition:transform .2s, opacity .2s;}
+    header.open .nav-toggle span:nth-child(1){transform:translateY(5.5px) rotate(45deg);}
+    header.open .nav-toggle span:nth-child(2){opacity:0;}
+    header.open .nav-toggle span:nth-child(3){transform:translateY(-5.5px) rotate(-45deg);}
+    .nav-links .links{
+      display:none; position:absolute; top:100%; left:0; right:0; flex-direction:column; gap:0;
+      background:#060810; border-bottom:1px solid var(--border-soft);
+      padding:4px 18px 10px; font-size:13px; box-shadow:0 24px 40px -24px rgba(0,0,0,0.7);
+    }
+    header.open .nav-links .links{display:flex;}
+    .nav-links a.navlink{padding:15px 2px; border-bottom:1px solid var(--border-soft);}
+    .nav-links a.navlink:last-child{border-bottom:none;}
+    .nav-links a.navlink.active::after{display:none;}
+  }
+  @media (max-width: 360px){
+    .nav{padding:12px 12px; gap:8px;}
+    .brand-word{font-size:13px;}
+    .nav-links .btn{padding:8px 9px; font-size:9.5px; letter-spacing:0;}
+  }
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    background:transparent; color:var(--ink);
+    padding:12px 24px; border-radius:var(--radius);
+    font-size:12.5px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase;
+    text-decoration:none; border:1px solid var(--sapphire);
+    cursor:pointer; transition:all .2s; position:relative; overflow:hidden;
+    font-family:inherit;
+  }
+  .btn:disabled{opacity:0.4; cursor:not-allowed;}
+  .btn-solid{background:linear-gradient(120deg, var(--sapphire) 0%, var(--sapphire-bright) 55%, var(--sapphire-glint) 100%); color:#060810; border-color:var(--sapphire-bright); font-weight:700;}
+  .btn-solid:hover:not(:disabled){filter:brightness(1.08);}
+  .btn-ghost{border-color:var(--border); color:var(--ink-dim);}
+  .btn-ghost:hover{color:var(--ink); border-color:var(--ink-dim);}
+  label{display:block; font-size:13px; font-weight:600; color:var(--ink); margin-bottom:8px;}
+  label .opt{color:var(--ink-faint); font-weight:400; text-transform:none;}
+  label .req{color:var(--sapphire-glint); font-weight:500; text-transform:none;}
+  input.field-error,.price-input-wrap.field-error input{border-color:#e0607a !important;}
+  .pickrow.field-error{outline:1px solid #e0607a; outline-offset:4px; border-radius:2px;}
+  .field-error-note{color:#e88ba0; font-size:13px; margin-top:14px;}
+  input[type=text], input[type=number]{
+    width:100%; font-family:inherit; font-size:15px; color:var(--ink);
+    background:var(--bg); border:1px solid var(--border); border-radius:2px;
+    padding:11px 12px;
+  }
+  input::placeholder{color:var(--ink-faint);}
+  input:focus{outline:none; border-color:var(--sapphire-bright); box-shadow:0 0 0 3px rgba(58,110,222,0.18);}
+  select{
+    width:100%; font-family:inherit; font-size:15px; color:var(--ink);
+    background:var(--bg); border:1px solid var(--border); border-radius:2px;
+    padding:11px 12px; appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%237c85a6' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 14px center;
+  }
+  select:focus{outline:none; border-color:var(--sapphire-bright); box-shadow:0 0 0 3px rgba(58,110,222,0.18);}
+  select.field-error{border-color:#e0607a !important;}
+  .field-note{font-size:12.5px; color:var(--ink-dim); margin-top:8px; line-height:1.5;}
+  .field{margin-bottom:18px;}
+  .field:last-child{margin-bottom:0;}
+  .hint{font-size:12px; color:var(--ink-faint); margin-top:6px;}
+  /* Sapphire wall down both margins + glint sweep, as on the home page */
+  .gem-wall{position:fixed; top:0; right:0; width:min(260px, calc((100vw - 1240px) / 2)); height:100vh; pointer-events:none; z-index:0; overflow:hidden;}
+  .gem-wall.left{right:auto; left:0;}
+  @media (max-width:1360px){ .gem-wall{display:none;} }
+  .gem-wall-fill{position:absolute; top:0; right:0; width:min(220px, 100%); height:100%; background:url("/assets/sapphire-wall.png") repeat-y center top / 220px 220px; opacity:.25;}
+  .gem-wall.left .gem-wall-fill{right:auto; left:0;}
+  .gem-wall::before{content:''; position:absolute; inset:0; z-index:1;
+    background:linear-gradient(90deg,var(--bg) 0%,var(--bg) 8%,rgba(6,8,16,.96) 16%,rgba(6,8,16,.85) 24%,rgba(6,8,16,.65) 34%,rgba(6,8,16,.42) 44%,rgba(6,8,16,.24) 55%,rgba(6,8,16,.1) 66%,rgba(6,8,16,.03) 78%,transparent 92%);}
+  .gem-wall.left::before{background:linear-gradient(270deg,var(--bg) 0%,var(--bg) 8%,rgba(6,8,16,.96) 16%,rgba(6,8,16,.85) 24%,rgba(6,8,16,.65) 34%,rgba(6,8,16,.42) 44%,rgba(6,8,16,.24) 55%,rgba(6,8,16,.1) 66%,rgba(6,8,16,.03) 78%,transparent 92%);}
+  .gem-wall::after{content:''; position:absolute; inset:0; z-index:1; background:linear-gradient(180deg,var(--bg) 0%,transparent 10%,transparent 90%,var(--bg) 100%);}
+  main.wrap,footer{position:relative; z-index:1;}
+  footer{border-top:1px solid var(--border-soft); padding:40px 0; margin-top:40px;}
+  .footer-row{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; max-width:1080px; margin:0 auto; padding:0 32px;}
+  .footer-brand{display:flex; align-items:center; gap:8px; font-family:'Fraunces',serif; font-weight:400; color:var(--ink-dim); font-size:13px;}
+  footer .fine{color:var(--ink-faint); font-size:11.5px;}
+  /* ---- FAQ ---- */
+  .f-wrap{padding:32px 0 90px; max-width:760px; margin:0 auto;}
+  .f-wrap h1{font-size:clamp(28px,3.8vw,40px); line-height:1.15; margin:0 0 12px;}
+  .f-lead{color:var(--ink-dim); font-size:15.5px; max-width:56ch; margin:0 0 34px;}
+  .f-group{margin:0 0 34px;}
+  .f-group h2{font-size:20px; font-weight:400; margin:0 0 12px;}
+  .f-list{border:1px solid var(--border-soft); background:var(--surface); box-shadow:inset 0 1px 0 rgba(166,196,255,.08);}
+  .f-item{border-bottom:1px solid var(--border-soft);}
+  .f-item:last-child{border-bottom:0;}
+  .f-item summary{list-style:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:18px; padding:17px 20px; font-size:15.5px; color:var(--ink); line-height:1.4;}
+  .f-item summary::-webkit-details-marker{display:none;}
+  .f-item summary::after{content:'+'; flex:none; width:22px; height:22px; display:grid; place-items:center; color:var(--sapphire-glint); font-size:20px; line-height:1; font-weight:300; border:1px solid var(--border); transition:transform .2s ease, color .2s ease;}
+  .f-item[open] summary::after{content:'\2212'; color:var(--cyan); border-color:var(--cyan);}
+  .f-item summary:hover{background:rgba(58,110,222,.06);}
+  .f-item summary:focus-visible{outline:2px solid var(--sapphire-bright); outline-offset:-2px;}
+  .f-a{padding:0 20px 20px; color:var(--ink-dim); font-size:14.5px; line-height:1.65; max-width:64ch;}
+  .f-a p{margin:0 0 10px;}
+  .f-a p:last-child{margin-bottom:0;}
+  .f-a ul{margin:0 0 10px; padding-left:18px;}
+  .f-a li{margin:0 0 4px;}
+  .f-contact{border:1px solid var(--border-soft); background:var(--surface); padding:24px 22px; display:flex; align-items:center; justify-content:space-between; gap:18px; flex-wrap:wrap;}
+  .f-contact h2{font-size:20px; font-weight:400; margin:0 0 4px;}
+  .f-contact p{margin:0; color:var(--ink-dim); font-size:14.5px;}
+  @media (max-width:640px){ .f-item summary{padding:15px 14px; font-size:15px;} .f-a{padding:0 14px 18px;} .f-contact .btn{width:100%; text-align:center;} }
+  @media (max-width:960px){ .f-wrap{padding-top:18px;} }
+</style>
+</head>
+<body>
+<div class="gem-wall" aria-hidden="true"><div class="gem-wall-fill"></div></div>
+<div class="gem-wall left" aria-hidden="true"><div class="gem-wall-fill"></div></div>
+<header class="site-header">
+  <div class="wrap nav">
+    <a href="/" class="brand">
+      <svg width="20" height="20" viewBox="0 0 44 44" fill="none">
+        <circle cx="14" cy="15" r="4" fill="#8e97b8"/>
+        <circle cx="30" cy="15" r="4" fill="#8e97b8"/>
+        <ellipse cx="22" cy="24" rx="11" ry="9.5" fill="#8e97b8"/>
+        <circle cx="17" cy="22" r="3" fill="#060810"/>
+        <circle cx="27" cy="22" r="3" fill="#060810"/>
+      </svg>
+      <span class="brand-word">Sapphire Panda</span>
+    </a>
+    <div class="nav-links">
+      <div class="links" id="nav-menu">
+        <a href="/" class="navlink">Home</a>
+        <a href="/#difference" class="navlink">The Difference</a>
+        <a href="/#how" class="navlink">How It Works</a>
+        <a href="/#engine" class="navlink">The Engine</a>
+        <a href="/#about" class="navlink">About</a>
+        <a href="/#news" class="navlink">News</a>
+        <a href="/vineyards/" class="navlink">For Vineyards</a>
+      </div>
+      <a href="/match" class="btn btn-solid">Find Your Match</a>
+    </div>
+    <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main class="wrap">
+ <div class="f-wrap">
+  <h1>Frequently asked questions</h1>
+  <p class="f-lead">Short answers for buyers and for vineyards. If yours isn&rsquo;t here, get in touch.</p>
+  <section class="f-group" aria-labelledby="fq-buyers">
+    <h2 id="fq-buyers">For buyers</h2>
+    <div class="f-list">
+      <details class="f-item" name="faq" open><summary>How does the engine work?</summary><div class="f-a"><p>Tell us your region, flavour profile, price point and volume. Our engine searches Australian vineyards and recommends the best fits, including ones most buyers have never heard of.</p></div></details>
+      <details class="f-item" name="faq"><summary>Who are the vineyards?</summary><div class="f-a"><p>Our focus is independent Australian vineyards, especially small and family-run ones that are hard for overseas buyers to find. Any Australian vineyard is welcome to register, whatever its size and whether or not it has exported before.</p></div></details>
+      <details class="f-item" name="faq"><summary>Can I mix wines from different vineyards in one order?</summary><div class="f-a"><p>Yes. We combine them on one pallet, with one order, one contact and one invoice.</p></div></details>
+      <details class="f-item" name="faq"><summary>What&rsquo;s the minimum order?</summary><div class="f-a"><p>48 bottles (4 cases) per order, and at least 1 case (12 bottles) from each vineyard you order from. You can mix wines from the same vineyard however you like.</p></div></details>
+      <details class="f-item" name="faq"><summary>How much does it cost?</summary><div class="f-a"><p>Each wine shows one price per bottle for your destination, with shipping and paperwork included. The price you see is the price you pay.</p></div></details>
+      <details class="f-item" name="faq"><summary>Can I taste before I commit?</summary><div class="f-a"><p>Yes. Request a sample pack of 6 wines, or ask us if you&rsquo;d like to taste more, up to 12. What you pay for the wine in your samples is deducted from your first order of 48 bottles or more, if you place it within 90 days. Shipping and handling aren&rsquo;t deducted.</p></div></details>
+      <details class="f-item" name="faq"><summary>Who handles shipping and paperwork?</summary><div class="f-a"><p>We do. We handle consolidation, export documents and shipping, including registering wines for export where needed, and you receive one invoice. We&rsquo;ll confirm delivery timing when you place your order.</p></div></details>
+    </div>
+  </section>
+  <section class="f-group" aria-labelledby="fq-vineyards">
+    <h2 id="fq-vineyards">For vineyards</h2>
+    <div class="f-list">
+      <details class="f-item" name="faq"><summary>How do I join?</summary><div class="f-a"><p>Register your interest on the <a href="/vineyards/" style="color:var(--sapphire-glint)">vineyard page</a>. We&rsquo;ll contact you to collect the full details.</p></div></details>
+      <details class="f-item" name="faq"><summary>Does it cost anything to be listed?</summary><div class="f-a"><p>No. Listing is free, with no joining fees. We don&rsquo;t take ownership of your stock.</p></div></details>
+      <details class="f-item" name="faq"><summary>What are the requirements to be listed?</summary><div class="f-a"><p>To be listed, we ask that you:</p><ul><li>are a recognised, registered Australian vineyard or wine producer</li><li>have a range of wines available to sell</li><li>stay committed to fulfilling the orders for the wines you list</li><li>maintain the quality buyers expect</li></ul><p>We recommend your wines to buyers on the strength of what you list, and we act on buyer feedback. Vineyards that list wines they can&rsquo;t supply, or that receive repeated poor quality feedback, may be removed from the platform.</p><p>Registering your interest doesn&rsquo;t guarantee listing. We&rsquo;ll contact you to collect the full details and confirm that you meet the requirements.</p></div></details>
+      <details class="f-item" name="faq"><summary>Do I need to be exporting already?</summary><div class="f-a"><p>No. Whether you&rsquo;ve exported before or this would be your first time, we handle the export documents and registrations.</p></div></details>
+      <details class="f-item" name="faq"><summary>Which states do you work with?</summary><div class="f-a"><p>We work with vineyards in every Australian state and territory. Register your interest and we&rsquo;ll be in touch.</p></div></details>
+      <details class="f-item" name="faq"><summary>How is my wine recommended to a buyer?</summary><div class="f-a"><p>The engine recommends wines based on what the buyer asked for: region, style, price and volume. A vineyard&rsquo;s size or marketing budget isn&rsquo;t a factor. That&rsquo;s why we reach out before onboarding to collect the details we need, so the engine has everything it needs to recommend your wines to the right buyers.</p></div></details>
+    </div>
+  </section>
+  <div class="f-contact">
+    <div><h2>Still have a question?</h2><p>We&rsquo;d love to hear from you.</p></div>
+    <a class="btn btn-solid" href="mailto:hello@sapphirepanda.com">Get in touch</a>
+  </div>
+ </div>
+</main>
+
+<footer>
+  <div class="footer-row">
+    <div class="footer-brand">
+      <svg width="16" height="16" viewBox="0 0 44 44" fill="none"><circle cx="14" cy="15" r="4" fill="#8e97b8"/><circle cx="30" cy="15" r="4" fill="#8e97b8"/><ellipse cx="22" cy="24" rx="11" ry="9.5" fill="#8e97b8"/></svg>
+      Sapphire Panda
+    </div>
+    <div class="fine"><a href="/vineyards/" style="color:var(--ink-dim);text-decoration:none">For vineyards</a> · <a href="/faq/" style="color:var(--ink-dim);text-decoration:none">FAQ</a> · © 2026 Sapphire Panda. AI-matched Australian wine, exported.</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var header=document.querySelector('header.site-header'), tg=document.querySelector('.nav-toggle');
+  if(tg){ tg.addEventListener('click',function(){ var o=header.classList.toggle('open'); tg.setAttribute('aria-expanded',o); }); }
+})();
+</script>
+</body>
+</html>
