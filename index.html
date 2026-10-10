@@ -1389,7 +1389,7 @@
       </div>
       <div class="about-grid">
         <div class="about-story">
-          <p class="about-close">No vineyard should be locked out of exporting because of its size, yet the distance and complexity of the Australian wine export market has left it dominated by a few commercial brands. Thousands of award-winning vineyards can't compete on scale or price, so their wines go untasted and their stories untold. Sapphire Panda exists to change that.</p>
+          <p class="about-close">No vineyard should be locked out of exporting because of its size, yet the distance and complexity of the Australian wine export market has left it dominated by a few commercial brands. Thousands of award-winning vineyards can't compete on scale or price, so their wines go untasted and their stories untold.<br>Sapphire Panda exists to change that.</p>
           <p>Conor grew up less than an hour from the Yarra Valley, visiting independent vineyards rich in history and award-winning wine. Working overseas, he found a market dominated by a few commercial brands, with small and medium-sized Australian vineyards barely represented.</p>
           <p>After attending the Belt and Road Summit in Hong Kong and events with Business Network International, he spoke with buyers at clubs, venues and restaurants across Europe and Asia, who wanted boutique, distinctive Australian wine but had no reliable way to find it.</p>
           <p>Back home, minimum orders, paperwork and the big players' marketing budgets stood between vineyards and export. So we built the alternative: AI that matches each buyer's requirements to the best-fit vineyard in Australia, whatever its size, and combines them on one pallet. One order, less complexity, a win for both sides.</p>
@@ -1916,7 +1916,7 @@
   // 1: the quote, with Conor's photo alongside
   var s1=el("div","aw-slide aw-quote"), b1=el("div","aw-box");
   var img=pic.cloneNode(true); img.className="aw-pic"; img.removeAttribute("loading");
-  var qh=close.innerHTML, qi=qh.indexOf("Thousands"); var bq=el("blockquote",null, qi>0 ? (function(){ var a=qh.slice(0,qi).trim(), r=qh.slice(qi), si=r.indexOf("Sapphire Panda exists"); return "<p>"+a+"</p>"+(si>0 ? "<p>"+r.slice(0,si).trim()+"</p><p>"+r.slice(si)+"</p>" : "<p>"+r+"</p>"); })() : qh);
+  var qh=close.innerHTML.replace(/<br\s*\/?>/gi,' '), qi=qh.indexOf("Thousands"); var bq=el("blockquote",null, qi>0 ? (function(){ var a=qh.slice(0,qi).trim(), r=qh.slice(qi), si=r.indexOf("Sapphire Panda exists"); return "<p>"+a+"</p>"+(si>0 ? "<p>"+r.slice(0,si).trim()+"</p><p>"+r.slice(si)+"</p>" : "<p>"+r+"</p>"); })() : qh);
   var in1=el("div","aw-inner"); in1.appendChild(img); in1.appendChild(bq); in1.appendChild(el("div","aw-by","<b>CONOR</b> · Founder"+LI)); b1.appendChild(in1);
   s1.appendChild(b1);
   // 2: the story
