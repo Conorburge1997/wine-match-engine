@@ -187,14 +187,18 @@
   .pick[aria-pressed="true"]{background:var(--sapphire); border-color:var(--sapphire-bright); color:#fff; font-weight:600;}
   .pick:focus-visible{outline:2px solid var(--cyan); outline-offset:2px;}
 
-  .psearch{margin-bottom:16px;}
-  .ps-results{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;}
-  .ps-results:empty{display:none;}
-  .ps-item{font-family:inherit; font-size:13px; color:var(--ink); background:var(--surface); border:1px dashed var(--sapphire-bright); border-radius:2px; padding:9px 14px; cursor:pointer; line-height:1.3; text-align:left;}
-  .ps-item:hover,.ps-item:focus-visible{background:rgba(58,110,222,.18); outline:none;}
-  .ps-item .ps-sub{color:var(--ink-faint); font-size:11.5px; margin-left:6px;}
-  .ps-item[aria-pressed="true"]{border-style:solid; background:var(--sapphire); color:#fff;}
-  .ps-item[aria-pressed="true"] .ps-sub{color:rgba(255,255,255,.75);}
+  .psearch{margin:14px 0 16px;}
+  .ps-toggle{display:inline-block; margin:2px 0 16px; padding:0; background:none; border:0; border-bottom:1px solid var(--border); color:var(--sapphire-glint); font:inherit; font-size:13px; cursor:pointer;}
+  .ps-toggle:hover{color:var(--ink);}
+  .ps-toggle[hidden]{display:none;}
+  .ps-box{position:relative;}
+  .ps-results{position:relative; margin-top:4px; z-index:2; background:var(--surface); border:1px solid var(--sapphire-bright); border-radius:2px; max-height:248px; overflow-y:auto; box-shadow:0 18px 40px -12px rgba(0,0,0,.6); scrollbar-width:thin;}
+  .ps-results[hidden]{display:none;}
+  .ps-item{display:flex; align-items:baseline; justify-content:space-between; gap:12px; width:100%; font-family:inherit; font-size:14px; color:var(--ink); background:transparent; border:0; border-bottom:1px solid var(--border-soft); padding:11px 14px; cursor:pointer; text-align:left; line-height:1.3;}
+  .ps-item:last-child{border-bottom:0;}
+  .ps-item.active,.ps-item:hover{background:rgba(58,110,222,.18);}
+  .ps-item .ps-sub{color:var(--ink-faint); font-size:12px; white-space:nowrap;}
+  .ps-item[aria-selected="true"] .ps-name::after{content:" \2713"; color:var(--cyan);}
   .ps-msg{font-size:12.5px; color:var(--ink-faint); margin:8px 0 0; min-height:0;}
   .ps-msg:empty{display:none;}
   .pickrow-state{gap:10px;}
@@ -695,13 +699,6 @@
       <h2>What you're looking for</h2>
       <p class="sub">Tap everything that would work — there's no wrong answer.</p>
 
-      <div class="field psearch" id="ps-wine">
-        <label for="ps-wine-input">Search <span class="opt">(optional)</span></label>
-        <input type="text" id="ps-wine-input" placeholder="Type a style or grape, e.g. Shiraz" autocomplete="off" aria-describedby="ps-wine-msg">
-        <div class="ps-results" id="ps-wine-results"></div>
-        <p class="ps-msg" id="ps-wine-msg" role="status"></p>
-      </div>
-
       <div class="field">
         <label>Wine style <span class="req">(required — pick at least one)</span></label>
         <div class="pickrow" id="f-style" data-picker="multi">
@@ -716,6 +713,16 @@
       <div class="field" id="f-variety-wrap" style="display:none;">
         <label>Varietal <span class="opt">(optional)</span></label>
         <div class="pickrow" id="f-variety" data-picker="multi"></div>
+      </div>
+
+      <button type="button" class="ps-toggle" data-target="ps-wine">Can&rsquo;t see what you&rsquo;re after? Search instead</button>
+      <div class="field psearch" id="ps-wine" hidden>
+        <label for="ps-wine-input">Search styles and grapes</label>
+        <div class="ps-box">
+          <input type="text" id="ps-wine-input" placeholder="Type a style or grape, e.g. Shiraz" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="ps-wine-results" aria-describedby="ps-wine-msg">
+          <div class="ps-results" id="ps-wine-results" role="listbox" hidden></div>
+        </div>
+        <p class="ps-msg" id="ps-wine-msg" role="status"></p>
       </div>
 
       <div class="field">
@@ -737,13 +744,6 @@
       <h2>Where it's from</h2>
       <p class="sub">Narrow it down by state and region, or skip to see everything.</p>
 
-      <div class="field psearch" id="ps-region">
-        <label for="ps-region-input">Search regions <span class="opt">(optional)</span></label>
-        <input type="text" id="ps-region-input" placeholder="Type a region, e.g. Barossa" autocomplete="off" aria-describedby="ps-region-msg">
-        <div class="ps-results" id="ps-region-results"></div>
-        <p class="ps-msg" id="ps-region-msg" role="status"></p>
-      </div>
-
       <div class="field">
         <label>State <span class="opt">(optional)</span></label>
         <p class="sub" style="margin-top:-4px; margin-bottom:12px;">Each state shows how many wine regions it covers — tap one to see them.</p>
@@ -753,6 +753,16 @@
       <div class="field" id="f-region-wrap" style="display:none;">
         <label>Region preference <span class="opt">(optional)</span></label>
         <div class="pickrow" id="f-region" data-picker="multi"></div>
+      </div>
+
+      <button type="button" class="ps-toggle" data-target="ps-region">Can&rsquo;t find a region? Search instead</button>
+      <div class="field psearch" id="ps-region" hidden>
+        <label for="ps-region-input">Search regions <span class="opt">(optional)</span></label>
+        <div class="ps-box">
+          <input type="text" id="ps-region-input" placeholder="Type a region, e.g. Barossa" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="ps-region-results" aria-describedby="ps-region-msg">
+          <div class="ps-results" id="ps-region-results" role="listbox" hidden></div>
+        </div>
+        <p class="ps-msg" id="ps-region-msg" role="status"></p>
       </div>
     </div>
 
@@ -1223,34 +1233,57 @@
   function setupSearch(inputId, resultsId, msgId, getOptions, noun){
     const input = $(inputId), box = $(resultsId), msg = $(msgId);
     if(!input) return function(){};
+    let matches = [], active = 0;
+    function close(){ box.hidden = true; box.innerHTML = ""; input.setAttribute("aria-expanded","false"); input.removeAttribute("aria-activedescendant"); }
+    function highlight(){
+      Array.prototype.forEach.call(box.children, function(el, k){ el.classList.toggle("active", k===active); });
+      const el = box.children[active];
+      if(el){ input.setAttribute("aria-activedescendant", el.id); el.scrollIntoView({block:"nearest"}); }
+    }
+    function choose(k){
+      const o = matches[k]; if(!o) return;
+      if(!optSelected(o)) chooseOption(o);
+      msg.textContent = o.label + " selected.";
+      input.value = ""; close();
+    }
     function render(){
       const q = norm(input.value);
-      box.innerHTML = ""; msg.textContent = "";
-      if(!q) return;
-      const matches = getOptions().filter(function(o){ return norm(o.label).indexOf(q) > -1 || norm(o.sub).indexOf(q) > -1; }).slice(0, 12);
-      if(!matches.length){ msg.textContent = "We don\u2019t have any " + noun + " matching \u201c" + input.value.trim() + "\u201d yet."; return; }
+      msg.textContent = "";
+      if(!q){ close(); return; }
+      matches = getOptions().filter(function(o){ return norm(o.label).indexOf(q) > -1 || norm(o.sub).indexOf(q) > -1; });
+      matches.sort(function(x, y){ return (norm(x.label).indexOf(q)===0 ? 0 : 1) - (norm(y.label).indexOf(q)===0 ? 0 : 1); });
+      if(!matches.length){ close(); msg.textContent = "We don\u2019t have any " + noun + " matching \u201c" + input.value.trim() + "\u201d yet."; return; }
+      active = 0;
       box.innerHTML = matches.map(function(o, i){
-        return '<button type="button" class="ps-item" data-i="'+i+'" aria-pressed="'+(optSelected(o)?"true":"false")+'">'+esc(o.label)+'<span class="ps-sub">'+esc(o.sub)+'</span></button>';
+        return '<div class="ps-item" role="option" id="'+resultsId+'-'+i+'" data-i="'+i+'" aria-selected="'+(optSelected(o)?"true":"false")+'"><span class="ps-name">'+esc(o.label)+'</span><span class="ps-sub">'+esc(o.sub)+'</span></div>';
       }).join("");
-      Array.prototype.forEach.call(box.querySelectorAll(".ps-item"), function(btn){
-        btn.addEventListener("click", function(){
-          const o = matches[+btn.dataset.i];
-          if(!optSelected(o)) chooseOption(o);
-          btn.setAttribute("aria-pressed","true");
-          msg.textContent = o.label + " selected.";
-        });
-      });
+      box.hidden = false; input.setAttribute("aria-expanded","true");
+      highlight();
     }
+    box.addEventListener("mousedown", function(e){ e.preventDefault(); });
+    box.addEventListener("click", function(e){ const it = e.target.closest(".ps-item"); if(it) choose(+it.dataset.i); });
     input.addEventListener("input", render);
+    input.addEventListener("focus", function(){ if(input.value) render(); });
+    input.addEventListener("blur", function(){ setTimeout(close, 120); });
     input.addEventListener("keydown", function(e){
-      if(e.key === "Enter"){ e.preventDefault(); const first = box.querySelector(".ps-item"); if(first) first.click(); }
-      if(e.key === "Escape"){ input.value = ""; render(); }
+      if(box.hidden) { if(e.key === "Enter") e.preventDefault(); return; }
+      if(e.key === "ArrowDown"){ e.preventDefault(); active = Math.min(matches.length-1, active+1); highlight(); }
+      else if(e.key === "ArrowUp"){ e.preventDefault(); active = Math.max(0, active-1); highlight(); }
+      else if(e.key === "Enter"){ e.preventDefault(); choose(active); }
+      else if(e.key === "Escape"){ close(); }
     });
-    return render;
+    return function(){ if(!box.hidden) render(); };
   }
   const renderWineSearch = setupSearch("ps-wine-input", "ps-wine-results", "ps-wine-msg", wineOptions, "styles or grapes");
   const renderRegionSearch = setupSearch("ps-region-input", "ps-region-results", "ps-region-msg", regionOptions, "regions for your picks");
   function refreshSearches(){ renderWineSearch(); renderRegionSearch(); }
+  Array.prototype.forEach.call(document.querySelectorAll(".ps-toggle"), function(t){
+    t.addEventListener("click", function(){
+      const box = $(t.dataset.target); if(!box) return;
+      box.hidden = false; t.hidden = true;
+      const inp = box.querySelector("input"); if(inp) inp.focus();
+    });
+  });
 
   // ---------- brief-form price band: buyer's own currency, with an AUD hint ----------
   function briefCurrency(){
