@@ -187,6 +187,16 @@
   .pick[aria-pressed="true"]{background:var(--sapphire); border-color:var(--sapphire-bright); color:#fff; font-weight:600;}
   .pick:focus-visible{outline:2px solid var(--cyan); outline-offset:2px;}
 
+  .psearch{margin-bottom:16px;}
+  .ps-results{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;}
+  .ps-results:empty{display:none;}
+  .ps-item{font-family:inherit; font-size:13px; color:var(--ink); background:var(--surface); border:1px dashed var(--sapphire-bright); border-radius:2px; padding:9px 14px; cursor:pointer; line-height:1.3; text-align:left;}
+  .ps-item:hover,.ps-item:focus-visible{background:rgba(58,110,222,.18); outline:none;}
+  .ps-item .ps-sub{color:var(--ink-faint); font-size:11.5px; margin-left:6px;}
+  .ps-item[aria-pressed="true"]{border-style:solid; background:var(--sapphire); color:#fff;}
+  .ps-item[aria-pressed="true"] .ps-sub{color:rgba(255,255,255,.75);}
+  .ps-msg{font-size:12.5px; color:var(--ink-faint); margin:8px 0 0; min-height:0;}
+  .ps-msg:empty{display:none;}
   .pickrow-state{gap:10px;}
   .pick-state{
     display:flex; flex-direction:column; align-items:flex-start; gap:3px;
@@ -685,6 +695,13 @@
       <h2>What you're looking for</h2>
       <p class="sub">Tap everything that would work — there's no wrong answer.</p>
 
+      <div class="field psearch" id="ps-wine">
+        <label for="ps-wine-input">Search <span class="opt">(optional)</span></label>
+        <input type="text" id="ps-wine-input" placeholder="Type a style or grape, e.g. Shiraz" autocomplete="off" aria-describedby="ps-wine-msg">
+        <div class="ps-results" id="ps-wine-results"></div>
+        <p class="ps-msg" id="ps-wine-msg" role="status"></p>
+      </div>
+
       <div class="field">
         <label>Wine style <span class="req">(required — pick at least one)</span></label>
         <div class="pickrow" id="f-style" data-picker="multi">
@@ -719,6 +736,13 @@
     <div class="card c3">
       <h2>Where it's from</h2>
       <p class="sub">Narrow it down by state and region, or skip to see everything.</p>
+
+      <div class="field psearch" id="ps-region">
+        <label for="ps-region-input">Search regions <span class="opt">(optional)</span></label>
+        <input type="text" id="ps-region-input" placeholder="Type a region, e.g. Barossa" autocomplete="off" aria-describedby="ps-region-msg">
+        <div class="ps-results" id="ps-region-results"></div>
+        <p class="ps-msg" id="ps-region-msg" role="status"></p>
+      </div>
 
       <div class="field">
         <label>State <span class="opt">(optional)</span></label>
@@ -931,6 +955,7 @@
   // refresh from the API, so the UI never feels like it's waiting on
   // network before showing anything.
   let regionCountsCache = null; // last successful /api/match "regionCounts" response
+  const pendingRegions = new Set(); // regions picked from search before their state row has rendered
 
   function renderStateOptionsFromCounts(data, selectedStates){
     const row = $("f-state");
@@ -982,6 +1007,7 @@
     const prevSelectedRegions = new Set(
       Array.from($("f-region").querySelectorAll(".pick[aria-pressed='true']")).map(function(b){ return b.dataset.value; })
     );
+    pendingRegions.forEach(function(r){ prevSelectedRegions.add(r); });
     const payload = {
       action: "regionCounts",
       styles: multiValues("f-style"),
@@ -991,6 +1017,8 @@
       regionCountsCache = data;
       renderStateOptionsFromCounts(data, selectedStates);
       renderRegionOptionsFromCounts(data, selectedStates, prevSelectedRegions);
+      pendingRegions.clear();
+      if(typeof refreshSearches === "function") refreshSearches();
     }).catch(function(err){
       console.error("regionCounts lookup failed", err);
       // Fall back to whatever we last successfully loaded, if anything,
@@ -1145,6 +1173,84 @@
   // listeners are bound.
   updateVarietyOptions();
   updateRegionOptions();
+
+  // ---------- quick search for styles/grapes and regions ----------
+  // Typing shows matching options as tappable chips; tapping one selects it
+  // in the normal pickers below (selecting its style or state first if
+  // needed). Only options we actually stock are offered.
+  function norm(t){ return String(t||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim(); }
+  function esc(t){ return String(t).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+  function psIsPressed(groupId, value){
+    return Array.prototype.some.call(document.querySelectorAll("#"+groupId+" .pick"), function(b){ return b.dataset.value===value && b.getAttribute("aria-pressed")==="true"; });
+  }
+  function psPickBtn(groupId, value){
+    return Array.prototype.find.call(document.querySelectorAll("#"+groupId+" .pick"), function(b){ return b.dataset.value===value; });
+  }
+  function wineOptions(){
+    const opts = [];
+    Array.prototype.forEach.call(document.querySelectorAll("#f-style .pick"), function(b){
+      opts.push({kind:"style", value:b.dataset.value, label:b.textContent.trim(), sub:"Style"});
+    });
+    Object.keys(VARIETY_BY_STYLE).forEach(function(style){
+      VARIETY_BY_STYLE[style].forEach(function(v){ opts.push({kind:"variety", value:v, label:v, sub:style, style:style}); });
+    });
+    return opts;
+  }
+  function regionOptions(){
+    const out = [];
+    ((regionCountsCache && regionCountsCache.states) || []).forEach(function(st){
+      st.regions.forEach(function(r){ out.push({kind:"region", value:r.region, label:r.region, sub:st.state, state:st.state}); });
+    });
+    return out;
+  }
+  function optSelected(o){
+    if(o.kind==="style") return psIsPressed("f-style", o.value);
+    if(o.kind==="variety") return psIsPressed("f-variety", o.value);
+    return psIsPressed("f-region", o.value) || pendingRegions.has(o.value);
+  }
+  function chooseOption(o){
+    if(o.kind==="style"){
+      const b = psPickBtn("f-style", o.value); if(b && b.getAttribute("aria-pressed")!=="true") b.click();
+    } else if(o.kind==="variety"){
+      const sb = psPickBtn("f-style", o.style); if(sb && sb.getAttribute("aria-pressed")!=="true") sb.click();
+      const vb = psPickBtn("f-variety", o.value); if(vb && vb.getAttribute("aria-pressed")!=="true") vb.click();
+    } else {
+      const stb = psPickBtn("f-state", o.state);
+      if(stb && stb.getAttribute("aria-pressed")!=="true"){ pendingRegions.add(o.value); stb.click(); }
+      else { const rb = psPickBtn("f-region", o.value); if(rb && rb.getAttribute("aria-pressed")!=="true") rb.click(); }
+    }
+  }
+  function setupSearch(inputId, resultsId, msgId, getOptions, noun){
+    const input = $(inputId), box = $(resultsId), msg = $(msgId);
+    if(!input) return function(){};
+    function render(){
+      const q = norm(input.value);
+      box.innerHTML = ""; msg.textContent = "";
+      if(!q) return;
+      const matches = getOptions().filter(function(o){ return norm(o.label).indexOf(q) > -1 || norm(o.sub).indexOf(q) > -1; }).slice(0, 12);
+      if(!matches.length){ msg.textContent = "We don\u2019t have any " + noun + " matching \u201c" + input.value.trim() + "\u201d yet."; return; }
+      box.innerHTML = matches.map(function(o, i){
+        return '<button type="button" class="ps-item" data-i="'+i+'" aria-pressed="'+(optSelected(o)?"true":"false")+'">'+esc(o.label)+'<span class="ps-sub">'+esc(o.sub)+'</span></button>';
+      }).join("");
+      Array.prototype.forEach.call(box.querySelectorAll(".ps-item"), function(btn){
+        btn.addEventListener("click", function(){
+          const o = matches[+btn.dataset.i];
+          if(!optSelected(o)) chooseOption(o);
+          btn.setAttribute("aria-pressed","true");
+          msg.textContent = o.label + " selected.";
+        });
+      });
+    }
+    input.addEventListener("input", render);
+    input.addEventListener("keydown", function(e){
+      if(e.key === "Enter"){ e.preventDefault(); const first = box.querySelector(".ps-item"); if(first) first.click(); }
+      if(e.key === "Escape"){ input.value = ""; render(); }
+    });
+    return render;
+  }
+  const renderWineSearch = setupSearch("ps-wine-input", "ps-wine-results", "ps-wine-msg", wineOptions, "styles or grapes");
+  const renderRegionSearch = setupSearch("ps-region-input", "ps-region-results", "ps-region-msg", regionOptions, "regions for your picks");
+  function refreshSearches(){ renderWineSearch(); renderRegionSearch(); }
 
   // ---------- brief-form price band: buyer's own currency, with an AUD hint ----------
   function briefCurrency(){
