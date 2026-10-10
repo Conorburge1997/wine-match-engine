@@ -1598,17 +1598,34 @@
     bar.appendChild(prev); bar.appendChild(tabs); bar.appendChild(next);
     container.appendChild(bar); container.appendChild(track);
 
-    let cur = 0, raf = 0;
+    let cur = 0, raf = 0, target = -1, settleTimer = 0;
+    // Tapping a tab or arrow scrolls the track programmatically. iOS Safari can
+    // cancel one smooth scroll when another starts (e.g. the tab strip
+    // re-centring), which left the track stuck on the wrong group. So we lock
+    // onto the target, move the tab strip instantly, and snap the track
+    // into place if the smooth scroll doesn't arrive.
     function goTo(i){
       i = Math.max(0, Math.min(groups.length-1, i));
+      target = i;
+      setActive(i, true);
       track.scrollTo({left:i*track.clientWidth, behavior:"smooth"});
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(function(){
+        if(target === i && Math.abs(track.scrollLeft - i*track.clientWidth) > 2){
+          track.scrollLeft = i*track.clientWidth;
+        }
+        target = -1;
+      }, 650);
     }
-    function setActive(i){
+    function setActive(i, instant){
       cur = i;
       tabEls.forEach(function(t, k){ t.setAttribute("aria-selected", k===i ? "true" : "false"); });
       prev.disabled = i<=0; next.disabled = i>=groups.length-1;
       const t = tabEls[i];
-      if(t) tabs.scrollTo({left:t.offsetLeft - (tabs.clientWidth - t.offsetWidth)/2, behavior:"smooth"});
+      if(t){
+        const left = t.offsetLeft - (tabs.clientWidth - t.offsetWidth)/2;
+        if(instant) tabs.scrollLeft = left; else tabs.scrollTo({left:left, behavior:"smooth"});
+      }
     }
     prev.addEventListener("click", function(){ goTo(cur-1); });
     next.addEventListener("click", function(){ goTo(cur+1); });
@@ -1618,6 +1635,11 @@
         raf = 0;
         if(!track.clientWidth) return;
         const i = Math.round(track.scrollLeft / track.clientWidth);
+        if(target > -1){
+          // Ignore the groups we pass through on the way to the tapped one.
+          if(Math.abs(track.scrollLeft - target*track.clientWidth) <= 2){ target = -1; clearTimeout(settleTimer); }
+          return;
+        }
         if(i !== cur) setActive(i);
       });
     }, {passive:true});
