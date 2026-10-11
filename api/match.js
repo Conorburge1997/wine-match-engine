@@ -244,6 +244,33 @@ function varietiesForStyle(style) {
   return set;
 }
 
+// ---------- picker options for the buyer brief ----------
+// Grapes and flavour notes the buyer can pick, read from the wines we hold
+// (most common first), so the brief can only ask for values a vineyard can
+// actually have. Vineyards choose these from the same lists in the
+// onboarding template (tools/onboarding_lists.py).
+function countBy(map, style, value) {
+  if (!map[style]) map[style] = {};
+  map[style][value] = (map[style][value] || 0) + 1;
+}
+function sortedKeys(counts) {
+  return Object.keys(counts).sort((a, b) => counts[b] - counts[a] || a.localeCompare(b));
+}
+function computeOptions() {
+  const varieties = {};
+  const flavours = {};
+  WINES.forEach((w) => {
+    if (w.variety) countBy(varieties, w.style, w.variety);
+    tokenize(w.flavour).forEach((f) => countBy(flavours, w.style, f));
+  });
+  const out = { varietiesByStyle: {}, flavoursByStyle: {} };
+  Object.keys(varieties).forEach((s) => { out.varietiesByStyle[s] = sortedKeys(varieties[s]); });
+  Object.keys(flavours).forEach((s) => {
+    out.flavoursByStyle[s] = sortedKeys(flavours[s]).map((f) => [f, flavours[s][f]]);
+  });
+  return out;
+}
+
 function buildGroupedResults(brief) {
   const scored = WINES.map((w) => scoreWine(brief, w)).filter((r) => !r.hardFail);
   const styles = brief.styles || [];
@@ -349,6 +376,11 @@ module.exports = async function handler(req, res) {
   body = body || {};
 
   try {
+    if (body.action === "options") {
+      res.status(200).json(computeOptions());
+      return;
+    }
+
     if (body.action === "regionCounts") {
       const result = computeRegionCounts(body);
       res.status(200).json(result);

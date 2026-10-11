@@ -191,6 +191,9 @@
   .ps-toggle{display:inline-block; margin:2px 0 16px; padding:0; background:none; border:0; border-bottom:1px solid var(--border); color:var(--sapphire-glint); font:inherit; font-size:13px; cursor:pointer;}
   .ps-toggle:hover{color:var(--ink);}
   .ps-toggle[hidden]{display:none;}
+  .fl-more{display:inline-block; margin:10px 0 0; padding:0; background:none; border:0; border-bottom:1px solid var(--border); color:var(--sapphire-glint); font:inherit; font-size:13px; cursor:pointer;}
+  .fl-more:hover{color:var(--ink);}
+  .fl-more[hidden]{display:none;}
   .ps-box{position:relative;}
   .ps-results{position:relative; margin-top:4px; z-index:2; background:var(--surface); border:1px solid var(--sapphire-bright); border-radius:2px; max-height:248px; overflow-y:auto; box-shadow:0 18px 40px -12px rgba(0,0,0,.6); scrollbar-width:thin;}
   .ps-results[hidden]{display:none;}
@@ -736,8 +739,10 @@
       </div>
 
       <div class="field">
-        <label>Flavour notes <span class="opt">(optional, comma-separated)</span></label>
-        <input type="text" id="f-flavour" placeholder="e.g. blackberry, white pepper, cedar">
+        <label>Flavour notes <span class="opt">(optional)</span></label>
+        <div class="pickrow" id="f-flavour-picks" data-picker="multi"></div>
+        <button type="button" class="fl-more" id="f-flavour-more" hidden>Show all flavours</button>
+        <input type="hidden" id="f-flavour">
       </div>
     </div>
 
@@ -926,18 +931,29 @@
   // unset is simply not included in the pallet).
   const state = { brief: null, groups: [], resultsById: new Map(), quantities: new Map(), cardValidators: new Map(), extras: new Map() };
 
-  // Varietal sub-options shown once a buyer picks a wine style. Rosé,
-  // Sparkling and Dessert/fortified aren't sold by single varietal the same
-  // way reds and whites are, so no sub-picker appears for those styles.
-  const VARIETY_BY_STYLE = {
+  // Grapes per style. Replaced on load by the grapes our wines actually
+  // have (most common first, from /api/match "options"), which vineyards
+  // pick from the same list in the onboarding template. This is only the
+  // fallback if that lookup fails.
+  let VARIETY_BY_STYLE = {
     Red: ["Shiraz", "Cabernet Sauvignon", "Pinot Noir", "Grenache", "Merlot", "Tempranillo"],
-    White: ["Chardonnay", "Sauvignon Blanc", "Riesling", "Semillon", "Pinot Gris", "Fiano"],
+    White: ["Chardonnay", "Sauvignon Blanc", "Riesling", "Semillon", "Pinot Gris / Grigio", "Fiano"],
   };
+  // Quick-pick buttons: the six most common grapes for reds and whites.
+  // Rosé, sparkling and dessert/fortified aren't usually bought by grape,
+  // so they get no buttons; any grape is still reachable through search.
+  const QUICK_VARIETY_STYLES = ["Red", "White"];
+  const QUICK_VARIETY_COUNT = 6;
+  const searchedVarieties = new Set(); // grapes added through search
   function updateVarietyOptions(){
     const styles = multiValues("f-style");
     const varieties = [];
+    function add(v){ if(varieties.indexOf(v)===-1) varieties.push(v); }
     styles.forEach(function(s){
-      (VARIETY_BY_STYLE[s] || []).forEach(function(v){ if(varieties.indexOf(v)===-1) varieties.push(v); });
+      if(QUICK_VARIETY_STYLES.indexOf(s) > -1) (VARIETY_BY_STYLE[s] || []).slice(0, QUICK_VARIETY_COUNT).forEach(add);
+    });
+    styles.forEach(function(s){
+      (VARIETY_BY_STYLE[s] || []).forEach(function(v){ if(searchedVarieties.has(v)) add(v); });
     });
     const wrap = $("f-variety-wrap");
     const row = $("f-variety");
@@ -1169,6 +1185,10 @@
       if(group.id === "f-style"){
         updateVarietyOptions();
         updateRegionOptions();
+        updateFlavourOptions();
+      }
+      if(group.id === "f-flavour-picks"){
+        $("f-flavour").value = multiValues("f-flavour-picks").join(", ");
       }
       if(group.id === "f-variety"){
         updateRegionOptions();
@@ -1178,6 +1198,51 @@
       }
     });
   });
+
+  // ---------- flavour notes ----------
+  // Buyers pick flavour notes from the same list vineyards use in the
+  // onboarding template, limited to notes our wines of the chosen styles
+  // actually have (most common first). The hidden #f-flavour input holds
+  // the picks as "a, b, c" so the brief, recap chips and saved progress
+  // keep working as before.
+  let FLAVOURS_BY_STYLE = {};   // style -> [[note, count], ...]
+  const FLAVOUR_QUICK = 12;
+  let flavoursExpanded = false;
+  function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+  function flavourEsc(s){ return String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;"); }
+  function updateFlavourOptions(){
+    const row = $("f-flavour-picks"), more = $("f-flavour-more");
+    const styles = multiValues("f-style");
+    const use = styles.length ? styles : Object.keys(FLAVOURS_BY_STYLE);
+    const totals = {};
+    use.forEach(function(st){ (FLAVOURS_BY_STYLE[st] || []).forEach(function(p){ totals[p[0]] = (totals[p[0]] || 0) + p[1]; }); });
+    const selected = tokenize($("f-flavour").value);
+    selected.forEach(function(f){ if(!(f in totals)) totals[f] = 0; }); // never drop a pick
+    const all = Object.keys(totals).sort(function(a, b){ return totals[b] - totals[a] || a.localeCompare(b); });
+    const shown = flavoursExpanded ? all : all.filter(function(f, i){ return i < FLAVOUR_QUICK || selected.indexOf(f) > -1; });
+    row.innerHTML = shown.map(function(f){
+      return '<button class="pick" type="button" data-value="'+flavourEsc(f)+'" aria-pressed="'+(selected.indexOf(f) > -1)+'">'+flavourEsc(cap(f))+'</button>';
+    }).join("");
+    more.hidden = all.length <= FLAVOUR_QUICK;
+    more.textContent = flavoursExpanded ? "Show fewer flavours" : "Show all flavours";
+  }
+  function syncFlavourPicks(){
+    const selected = tokenize($("f-flavour").value);
+    if(selected.some(function(f){ return !psPickBtn("f-flavour-picks", f); })) { updateFlavourOptions(); return; }
+    Array.prototype.forEach.call(document.querySelectorAll("#f-flavour-picks .pick"), function(b){
+      b.setAttribute("aria-pressed", selected.indexOf(b.dataset.value) > -1 ? "true" : "false");
+    });
+  }
+  $("f-flavour").addEventListener("input", syncFlavourPicks); // saved progress restore
+  $("f-flavour-more").addEventListener("click", function(){ flavoursExpanded = !flavoursExpanded; updateFlavourOptions(); });
+
+  // Grape and flavour lists come from the wines we actually hold.
+  callMatchApi({ action: "options" }).then(function(data){
+    if(data && data.varietiesByStyle && Object.keys(data.varietiesByStyle).length) VARIETY_BY_STYLE = data.varietiesByStyle;
+    if(data && data.flavoursByStyle) FLAVOURS_BY_STYLE = data.flavoursByStyle;
+    updateVarietyOptions();
+    updateFlavourOptions();
+  }).catch(function(err){ console.error("options lookup failed", err); });
 
   // Varietal/region options depend on style/varietal/state, so make sure
   // both rows reflect whatever's pre-selected (none, on first load) once
@@ -1224,7 +1289,9 @@
       const b = psPickBtn("f-style", o.value); if(b && b.getAttribute("aria-pressed")!=="true") b.click();
     } else if(o.kind==="variety"){
       const sb = psPickBtn("f-style", o.style); if(sb && sb.getAttribute("aria-pressed")!=="true") sb.click();
-      const vb = psPickBtn("f-variety", o.value); if(vb && vb.getAttribute("aria-pressed")!=="true") vb.click();
+      let vb = psPickBtn("f-variety", o.value);
+      if(!vb){ searchedVarieties.add(o.value); updateVarietyOptions(); vb = psPickBtn("f-variety", o.value); }
+      if(vb && vb.getAttribute("aria-pressed")!=="true") vb.click();
     } else {
       const stb = psPickBtn("f-state", o.state);
       if(stb && stb.getAttribute("aria-pressed")!=="true"){ pendingRegions.add(o.value); stb.click(); }
@@ -1652,6 +1719,7 @@
       document.querySelectorAll("#f-novelty .pick").forEach(function(b){ b.setAttribute("aria-pressed","false"); });
     } else if(kind === "flavour"){
       $("f-flavour").value = tokenize($("f-flavour").value).filter(function(t){ return t !== value; }).join(", ");
+      syncFlavourPicks();
     }
     state.brief = readBrief();
     if(window.briefSaveSoon) window.briefSaveSoon();
@@ -1802,11 +1870,11 @@
   // for real vineyard photos once vineyards supply them.
   const KNOWN_BOTTLE_VARIETIES = [
     "Shiraz","Cabernet Sauvignon","Pinot Noir","Grenache","Merlot","Tempranillo",
-    "Chardonnay","Sauvignon Blanc","Riesling","Semillon","Pinot Gris","Fiano",
+    "Chardonnay","Sauvignon Blanc","Riesling","Semillon","Pinot Gris / Grigio","Fiano",
   ];
   function bottleImageSrc(r){
     if(r.variety && KNOWN_BOTTLE_VARIETIES.indexOf(r.variety) > -1){
-      return "/match/bottles/" + r.variety.toLowerCase().replace(/\s+/g,"-") + ".svg";
+      return "/match/bottles/" + r.variety.split(" / ")[0].toLowerCase().replace(/\s+/g,"-") + ".svg";
     }
     const style = (r.style === "White") ? "white" : "red";
     return "/match/bottles/style-" + style + ".svg";
