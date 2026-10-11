@@ -448,3 +448,8 @@ module.exports = async function handler(req, res) {
     res.status(500).json({ error: String((err && err.message) || err) });
   }
 };
+
+// Shared with api/chat.js so the website assistant ranks wines with exactly
+// the same scoring as the match tool (still never exposing the dataset).
+module.exports.buildGroupedResults = buildGroupedResults;
+module.exports.computeOptions = computeOptions;
