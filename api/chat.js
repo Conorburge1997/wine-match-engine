@@ -205,7 +205,9 @@ async function callClaude(messages) {
 
 module.exports = async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
-  if (req.method !== "POST") { res.status(405).json({ error: "POST only" }); return; }
+  // GET tells the widget whether to show itself (only once the key is set).
+  if (req.method === "GET") { res.status(200).json({ enabled: !!process.env.ANTHROPIC_API_KEY }); return; }
+  if (req.method !== "POST") { res.status(405).json({ error: "GET or POST only" }); return; }
 
   const origin = req.headers.origin || "";
   if (origin && !ALLOWED_ORIGINS.some((re) => re.test(origin))) { res.status(403).json({ error: "Not allowed" }); return; }

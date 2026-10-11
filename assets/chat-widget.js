@@ -17,7 +17,7 @@
     ".spc-btn:hover{background:#16245a}.spc-btn:focus-visible{outline:2px solid #a6c4ff;outline-offset:3px}" +
     ".spc-btn svg{width:18px;height:18px;flex:none}" +
     ".spc-panel{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:901;width:min(380px,calc(100vw - 32px));height:min(560px,calc(100vh - 40px));display:flex;flex-direction:column;background:#0e1324;border:1px solid #212c4a;border-radius:6px;box-shadow:0 18px 60px rgba(0,0,0,.55);color:#f4f5fa;font:400 14.5px/1.5 Inter,system-ui,sans-serif;overflow:hidden}" +
-    ".spc-panel[hidden]{display:none}" +
+    ".spc-panel[hidden],.spc-btn[hidden]{display:none}" +
     ".spc-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 14px;border-bottom:1px solid #212c4a;background:#0a0e1c}" +
     ".spc-title{font:400 17px/1.2 Fraunces,Georgia,serif}.spc-sub{font-size:12px;color:#7c85a6}" +
     ".spc-x{background:none;border:1px solid #212c4a;color:#b3bad2;border-radius:4px;padding:4px 9px;cursor:pointer;font:inherit;font-size:13px}.spc-x:hover{color:#f4f5fa}.spc-x:focus-visible{outline:2px solid #a6c4ff}" +
@@ -49,7 +49,13 @@
     '<form class="spc-form"><label class="spc-sr" for="spc-in" style="position:absolute;left:-9999px">Your message</label><textarea id="spc-in" class="spc-in" rows="1" maxlength="1000" placeholder="Type your question"></textarea><button class="spc-send" type="submit">Send</button></form>' +
     '<div class="spc-foot">Answers are AI-generated and can be wrong. Please don\'t share sensitive details.</div>';
 
+  // Only show the chat once the server has an API key configured.
+  btn.hidden = true;
   document.body.appendChild(btn); document.body.appendChild(panel);
+  fetch("/api/chat", { method: "GET" })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (j) { if (j && j.enabled) { btn.hidden = false; if (state.messages.length && state.open) open(); } })
+    .catch(function () {});
   var log = panel.querySelector(".spc-log"), form = panel.querySelector(".spc-form"), input = panel.querySelector(".spc-in"), send = panel.querySelector(".spc-send");
 
   function linkify(text) {
