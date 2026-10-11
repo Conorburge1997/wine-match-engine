@@ -33,11 +33,11 @@
     ".spc-in:focus{outline:none;border-color:#6f93e8}" +
     ".spc-send{background:#3a6ede;color:#fff;border:0;border-radius:4px;padding:0 14px;font:inherit;font-weight:600;cursor:pointer}.spc-send:disabled{opacity:.5;cursor:default}.spc-send:focus-visible{outline:2px solid #a6c4ff;outline-offset:2px}" +
     ".spc-foot{font-size:11.5px;color:#7c85a6;padding:0 12px 10px;background:#0a0e1c}" +
-    "@media (max-width:480px){.spc-panel{right:0;left:0;bottom:0;width:100%;height:calc(100% - 40px);border-radius:10px 10px 0 0}.spc-btn{right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px))}}";
+    "@media (max-width:480px){.spc-panel{right:0;left:0;bottom:0;width:100%;height:calc(100% - 40px);border-radius:10px 10px 0 0}.spc-btn{right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));width:48px;height:48px;padding:0;justify-content:center;gap:0}.spc-btn span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.spc-btn svg{width:21px;height:21px}}";
   var st = document.createElement("style"); st.textContent = css; document.head.appendChild(st);
 
   var btn = document.createElement("button");
-  btn.className = "spc-btn"; btn.type = "button"; btn.setAttribute("aria-haspopup", "dialog");
+  btn.className = "spc-btn"; btn.type = "button"; btn.setAttribute("aria-haspopup", "dialog"); btn.setAttribute("aria-label", "Ask a question");
   btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg><span>Ask a question</span>';
 
   var panel = document.createElement("section");
