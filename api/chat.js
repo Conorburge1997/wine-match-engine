@@ -6,7 +6,7 @@
 // run any tools it asks for, and return { reply }.
 //
 // Env vars:
-//   ANTHROPIC_API_KEY (required). Without it the function answers 503 and the
+//   ANTHROPIC_API_KEY (required; conor_claude_tokens also accepted). Without it the function answers 503 and the
 //                     widget points people to the contact page.
 //   CHAT_MODEL        (optional, default claude-haiku-5-5).
 //   RESEND_API_KEY, NOTIFY_EMAIL, MAIL_FROM (optional): used by the hand-off
@@ -19,6 +19,9 @@
 const { buildGroupedResults } = require("./match.js");
 
 const MODEL = process.env.CHAT_MODEL || "claude-haiku-5-5";
+
+// The key can be stored under the standard name or the name used in Vercel.
+const API_KEY = process.env.ANTHROPIC_API_KEY || process.env.conor_claude_tokens || process.env.CONOR_CLAUDE_TOKENS || "";
 
 // Flip to true once real vineyard wines replace the demo dataset in
 // api/data/wines.json. Until then the assistant never names specific wines
@@ -182,7 +185,7 @@ async function callClaude(messages) {
   const r = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
-      "x-api-key": process.env.ANTHROPIC_API_KEY,
+      "x-api-key": API_KEY,
       "anthropic-version": "2023-06-01",
       "content-type": "application/json",
     },
@@ -206,7 +209,7 @@ async function callClaude(messages) {
 module.exports = async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
   // GET tells the widget whether to show itself (only once the key is set).
-  if (req.method === "GET") { res.status(200).json({ enabled: !!process.env.ANTHROPIC_API_KEY }); return; }
+  if (req.method === "GET") { res.status(200).json({ enabled: !!API_KEY }); return; }
   if (req.method !== "POST") { res.status(405).json({ error: "GET or POST only" }); return; }
 
   const origin = req.headers.origin || "";
@@ -215,7 +218,7 @@ module.exports = async function handler(req, res) {
   const ip = String(req.headers["x-forwarded-for"] || "").split(",")[0].trim() || "unknown";
   if (rateLimited(ip)) { res.status(429).json({ error: "Too many messages. Please wait a few minutes." }); return; }
 
-  if (!process.env.ANTHROPIC_API_KEY) { res.status(503).json({ error: "Chat not configured", fallback: true }); return; }
+  if (!API_KEY) { res.status(503).json({ error: "Chat not configured", fallback: true }); return; }
 
   let body = req.body;
   if (typeof body === "string") { try { body = JSON.parse(body); } catch (e) { body = null; } }
