@@ -313,16 +313,16 @@
   /* right: the gems, sparkling */
   .facet.gemmy{background:linear-gradient(135deg, rgba(200,220,255,.95), rgba(58,110,222,.6) 35%, rgba(33,44,74,.9) 60%, rgba(95,212,224,.95)); filter:drop-shadow(0 18px 40px rgba(95,140,255,.35));}
   .facet.gemmy .facet-in{background:radial-gradient(120% 90% at 100% 0%, rgba(58,110,222,.22), transparent 55%), linear-gradient(150deg, #131d38, #0a0e1c 70%);}
-  .facet.gemmy .facet-num{background:linear-gradient(100deg,#a6c4ff 0%,#ffffff 35%,#5fd4e0 60%,#a6c4ff 100%); background-size:200% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; filter:drop-shadow(0 0 14px rgba(120,170,255,.55)); animation:gemtext 6s ease-in-out infinite;}
+  .facet.gemmy .facet-num{background:linear-gradient(100deg,#a6c4ff 0%,#ffffff 35%,#5fd4e0 60%,#a6c4ff 100%); background-size:200% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; filter:drop-shadow(0 0 8px rgba(120,170,255,.3)); animation:gemtext 8s ease-in-out infinite;}
   .share.inv{overflow:visible; height:8px; background:rgba(33,44,74,.7);}
   .share.inv span{overflow:hidden; background:linear-gradient(90deg,#5fd4e0,#c9dafd 45%,#6f93e8 75%,#a6c4ff);
-    box-shadow:0 0 10px rgba(166,196,255,.9), 0 0 26px rgba(95,212,224,.55);}
-  .share.inv span::before{content:''; position:absolute; inset:0; background:repeating-linear-gradient(115deg, rgba(255,255,255,.0) 0 6px, rgba(255,255,255,.35) 6px 7px, rgba(255,255,255,0) 7px 13px);}
-  .share.inv span::after{content:''; position:absolute; top:0; bottom:0; width:40%; left:-50%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.95),transparent); animation:shimmer 2.8s ease-in-out infinite;}
-  .spk{position:absolute; width:12px; height:12px; margin-left:-6px; background:#fff; clip-path:polygon(50% 0,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0 50%,40% 40%); filter:drop-shadow(0 0 4px #a6c4ff); animation:twinkle 2.4s ease-in-out infinite;}
-  .spk.s2{width:9px; height:9px; animation-delay:.8s;} .spk.s3{width:7px; height:7px; animation-delay:1.5s;}
-  @keyframes shimmer{0%{left:-50%}60%,100%{left:120%}}
-  @keyframes twinkle{0%,100%{opacity:.15; transform:scale(.5) rotate(0)}50%{opacity:1; transform:scale(1) rotate(45deg)}}
+    box-shadow:0 0 6px rgba(166,196,255,.55), 0 0 14px rgba(95,212,224,.25);}
+  .share.inv span::before{content:''; position:absolute; inset:0; background:repeating-linear-gradient(115deg, rgba(255,255,255,.0) 0 6px, rgba(255,255,255,.18) 6px 7px, rgba(255,255,255,0) 7px 13px);}
+  .share.inv span::after{content:''; position:absolute; top:0; bottom:0; width:40%; left:-50%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent); animation:shimmer 5s ease-in-out infinite;}
+  .spk{position:absolute; width:12px; height:12px; margin-left:-6px; background:#fff; clip-path:polygon(50% 0,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0 50%,40% 40%); filter:drop-shadow(0 0 2px #a6c4ff); animation:twinkle 3.6s ease-in-out infinite;}
+  .spk.s2{width:9px; height:9px; animation-delay:1.2s;} .spk.s3{display:none;}
+  @keyframes shimmer{0%{left:-50%}45%,100%{left:120%}}
+  @keyframes twinkle{0%,100%{opacity:0; transform:scale(.4) rotate(0)}50%{opacity:.75; transform:scale(.85) rotate(45deg)}}
   @keyframes gemtext{0%,100%{background-position:0% 0}50%{background-position:100% 0}}
   @media (prefers-reduced-motion:reduce){ .share.inv span::after,.spk,.facet.gemmy .facet-num{animation:none;} }
   .duo-close{margin:0 0 36px; color:var(--sapphire-glint); font-size:16.5px; font-weight:500;}
