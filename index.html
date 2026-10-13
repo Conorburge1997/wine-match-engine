@@ -331,26 +331,31 @@
   @keyframes gemtext{0%,100%{background-position:0% 0}50%{background-position:100% 0}}
   @media (prefers-reduced-motion:reduce){ .share.inv span::after,.spk,.facet.gemmy .facet-num{animation:none;} }
   .duo-close{position:relative;}
-  .duo-close p{position:relative; z-index:2;}
+  .duo-close p{position:relative; z-index:2; background:radial-gradient(ellipse 30% 55% at 50% 66%, rgba(10,14,28,.88) 0%, rgba(10,14,28,.55) 60%, transparent 100%);}
+  @media (max-width:640px){ .duo-close p{background:radial-gradient(ellipse 50% 58% at 50% 66%, rgba(10,14,28,.88) 0%, rgba(10,14,28,.5) 62%, transparent 100%);} }
   .duo-close::before{content:''; position:absolute; inset:1px; z-index:0; clip-path:polygon(var(--t) 0, calc(100% - var(--t)) 0, 100% var(--t), 100% calc(100% - var(--t)), calc(100% - var(--t)) 100%, var(--t) 100%, 0 calc(100% - var(--t)), 0 var(--t));
     background:radial-gradient(60% 140% at 50% 0%, rgba(58,110,222,.28), transparent 70%), linear-gradient(180deg, #121a33, #0a0e1c);}
   .duo-close .crack{position:absolute; inset:1px; width:calc(100% - 2px); height:calc(100% - 2px); z-index:1; pointer-events:none;}
-  .duo-close .crack path{stroke-dasharray:1; stroke-dashoffset:0;}
   .duo-close::after{content:''; position:absolute; left:50%; top:0; width:120px; height:60px; margin-left:-60px; margin-top:-30px; background:radial-gradient(closest-side, rgba(220,235,255,.55), rgba(95,212,224,.12) 60%, transparent); pointer-events:none; z-index:1;}
-  .shard{position:absolute; left:50%; bottom:2px; width:7px; height:7px; background:linear-gradient(135deg,#ffffff,#a6c4ff 50%,#5fd4e0); opacity:0; pointer-events:none;
+  .shard{position:absolute; left:50%; bottom:2px; width:9px; height:9px; background:linear-gradient(135deg,rgba(255,255,255,.95),rgba(166,196,255,.55) 45%,rgba(95,212,224,.25)); filter:drop-shadow(0 0 3px rgba(166,196,255,.8)); opacity:0; pointer-events:none;
     clip-path:polygon(0 0,100% 30%,40% 100%);}
   .shard.s2{clip-path:polygon(20% 0,100% 60%,0 100%); width:9px; height:6px;} .shard.s4{width:5px;height:8px;} .shard.s5{clip-path:polygon(0 40%,100% 0,70% 100%);} .shard.s6{width:6px;height:5px;}
-  .js-smash .duo-close .crack path{stroke-dashoffset:1;}
   .js-smash .duo-close::after{opacity:0;}
-  .smash .duo-close .crack path{animation:crackdraw .55s cubic-bezier(.2,.8,.2,1) forwards;}
   .smash .duo-close::after{animation:impact 1.4s ease-out forwards;}
   .smash .shard{animation:shard 1.3s cubic-bezier(.15,.7,.3,1) forwards;}
   .shard.s1{--x:-46px; --y:-20px; --r:-160deg;} .shard.s2{--x:40px; --y:-26px; --r:200deg;} .shard.s3{--x:-24px; --y:-34px; --r:-90deg;}
   .shard.s4{--x:22px; --y:-38px; --r:120deg;} .shard.s5{--x:-64px; --y:-6px; --r:240deg;} .shard.s6{--x:60px; --y:-10px; --r:-220deg;}
-  @keyframes crackdraw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
   @keyframes impact{0%{opacity:0}12%{opacity:1; transform:scale(1.4)}100%{opacity:.55; transform:scale(1)}}
   @keyframes shard{0%{opacity:0; transform:translate(0,0) rotate(0)}10%{opacity:1}100%{opacity:0; transform:translate(var(--x),var(--y)) rotate(var(--r))}}
-  @media (prefers-reduced-motion:reduce){ .js-smash .duo-close .crack path{stroke-dashoffset:0;} .smash .duo-close .crack path,.smash .duo-close::after,.smash .shard{animation:none;} .js-smash .duo-close::after{opacity:.55;} }
+  .crack polygon{transition:opacity .35s ease-out, transform .35s ease-out;}
+  .crack .cell{opacity:0;}
+  .smash .crack .cell{opacity:1;}
+  .crack .drop{transition:transform 1.1s cubic-bezier(.5,0,.9,.6), opacity 1.1s ease-in;}
+  .smash .crack .drop.go{transform:translate(var(--dx),40px) rotate(var(--dr)); opacity:0;}
+  .duo-close .sheen{position:absolute; inset:1px; z-index:1; pointer-events:none; opacity:0;
+    background:linear-gradient(105deg, transparent 20%, rgba(255,255,255,.10) 32%, rgba(255,255,255,.02) 38%, transparent 46%, transparent 60%, rgba(166,196,255,.08) 68%, transparent 76%);}
+  .smash .duo-close .sheen{opacity:1; transition:opacity .8s .3s;}
+  @media (prefers-reduced-motion:reduce){ .crack polygon,.crack .drop{transition:none !important;} .smash .duo-close::after,.smash .shard{animation:none;} .js-smash .duo-close::after{opacity:.55;} }
   .duo-close{--t:12px; max-width:780px; margin:0 0 36px; padding:1px;
     clip-path:polygon(var(--t) 0, calc(100% - var(--t)) 0, 100% var(--t), 100% calc(100% - var(--t)), calc(100% - var(--t)) 100%, var(--t) 100%, 0 calc(100% - var(--t)), 0 var(--t));
     background:linear-gradient(90deg, rgba(95,212,224,.9), rgba(111,147,232,.8) 25%, rgba(220,232,255,1) 50%, rgba(111,147,232,.8) 75%, rgba(95,212,224,.9));
@@ -1176,17 +1181,9 @@
         <b class="shard s1"></b><b class="shard s2"></b><b class="shard s3"></b><b class="shard s4"></b><b class="shard s5"></b><b class="shard s6"></b>
       </div>
       <div class="duo-close">
-        <svg class="crack" viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true"><g fill="none" stroke="url(#crk)" stroke-width="1" vector-effect="non-scaling-stroke" stroke-linecap="round">
-          <defs><radialGradient id="crk" cx="50%" cy="0%" r="70%"><stop offset="0" stop-color="#ffffff" stop-opacity=".95"/><stop offset=".6" stop-color="#a6c4ff" stop-opacity=".5"/><stop offset="1" stop-color="#5fd4e0" stop-opacity=".15"/></radialGradient></defs>
-          <path pathLength="1" d="M50 0 L44 4 L33 6 L24 11 L12 17 L0 24"/>
-          <path pathLength="1" d="M50 0 L56 4 L67 6 L76 11 L88 17 L100 24"/>
-          <path pathLength="1" d="M24 11 L20 25 L14 40"/><path pathLength="1" d="M76 11 L80 25 L86 40"/>
-          <path pathLength="1" d="M12 17 L6 6 L4 0"/><path pathLength="1" d="M88 17 L94 6 L96 0"/>
-          <path pathLength="1" d="M33 6 L30 0"/><path pathLength="1" d="M67 6 L70 0"/>
-          <path pathLength="1" d="M20 25 L9 31 L0 33"/><path pathLength="1" d="M80 25 L91 31 L100 33"/>
-          <path pathLength="1" d="M44 4 L50 2 L56 4"/>
-        </g></svg>
-        <p>Our algorithm smashes the barriers</p>
+        <svg class="crack" aria-hidden="true"></svg>
+        <span class="sheen" aria-hidden="true"></span>
+        <p>Our algorithm smashes those barriers</p>
       </div>
       <div class="hero-cta">
         <a href="/match" class="btn btn-solid sheen">Find Your Match →</a>
@@ -2188,9 +2185,51 @@
 </script>
 <script src="/assets/chat-widget.js" defer></script>
 <script>
-(function(){var root=document.documentElement,el=document.querySelector('.duo-close');if(!el||!('IntersectionObserver' in window))return;
-root.classList.add('js-smash');var host=el.parentNode;
-var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){setTimeout(function(){host.classList.add('smash');},250);io.disconnect();}});},{threshold:.6});io.observe(el);})();
+(function(){
+var root=document.documentElement, el=document.querySelector('.duo-close'); if(!el) return;
+var svg=el.querySelector('.crack'), NS='http://www.w3.org/2000/svg';
+function rnd(a,b){return a+Math.random()*(b-a);}
+function build(){
+  while(svg.firstChild) svg.removeChild(svg.firstChild);
+  var w=el.clientWidth-2, h=el.clientHeight-2; if(w<10) return;
+  svg.setAttribute('viewBox','0 0 '+w+' '+h); svg.setAttribute('width',w); svg.setAttribute('height',h);
+  var cx=w/2, cy=0;
+  var base=[1,4,8,14,24,40,62,90,118,140,156,166,172,176,179];
+  var ang=base.map(function(d,i){return (d+(i&&i<base.length-1?rnd(-2.5,2.5):0))*Math.PI/180;});
+  var R=[0,7,16,30,52,85,130,200,300,440,620,900].filter(function(r,i,a){return i<2||a[i-1]<Math.hypot(w/2,h)*1.1;});
+  var pts=R.map(function(r,j){return ang.map(function(t){var rr=j?r*rnd(.86,1.14):0; return [cx+rr*Math.cos(t), cy+rr*Math.sin(t)];});});
+  var defs=document.createElementNS(NS,'defs');
+  defs.innerHTML='<linearGradient id="gl1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".5" stop-color="#a6c4ff" stop-opacity=".05"/><stop offset="1" stop-color="#5fd4e0" stop-opacity=".14"/></linearGradient><linearGradient id="gl2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".04"/><stop offset="1" stop-color="#c9dafd" stop-opacity=".2"/></linearGradient>';
+  svg.appendChild(defs);
+  var drops=0;
+  for(var j=0;j<R.length-1;j++) for(var i=0;i<ang.length-1;i++){
+    var q=[pts[j][i],pts[j][i+1],pts[j+1][i+1],pts[j+1][i]];
+    var poly=document.createElementNS(NS,'polygon');
+    poly.setAttribute('points',q.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' '));
+    var r=Math.random(), fill = r<.18?'url(#gl1)': r<.34?'url(#gl2)': 'rgba(255,255,255,'+rnd(0,.07).toFixed(3)+')';
+    poly.setAttribute('fill',fill);
+    var bright = Math.random()<.14;
+    poly.setAttribute('stroke', bright?'rgba(235,244,255,.8)':'rgba(190,212,255,'+rnd(.18,.38).toFixed(2)+')');
+    poly.setAttribute('stroke-width', bright?'.9':'.6'); poly.setAttribute('stroke-linejoin','round');
+    var d=Math.hypot((q[0][0]+q[2][0])/2-cx,(q[0][1]+q[2][1])/2-cy);
+    poly.setAttribute('class','cell'); poly.style.transitionDelay=Math.min(d*1.1,520).toFixed(0)+'ms';
+    if(j<=2 && j>=1){ var sh=[rnd(-1.6,1.6),rnd(0,1.4)]; poly.style.transform='translate('+sh[0].toFixed(1)+'px,'+sh[1].toFixed(1)+'px)'; }
+    svg.appendChild(poly);
+    if(j>=1 && j<=3 && drops<4 && Math.random()<.3){
+      var dp=poly.cloneNode(); dp.setAttribute('class','cell drop'); dp.setAttribute('fill','rgba(220,235,255,.35)'); dp.setAttribute('stroke','rgba(255,255,255,.9)');
+      dp.style.setProperty('--dx',rnd(-14,14).toFixed(0)+'px'); dp.style.setProperty('--dr',rnd(-70,70).toFixed(0)+'deg'); dp.style.transformOrigin='center'; dp.style.transformBox='fill-box';
+      svg.appendChild(dp); poly.setAttribute('fill','rgba(6,8,16,.55)'); drops++;
+    }
+  }
+}
+build();
+var host=el.parentNode;
+function go(){host.classList.add('smash'); setTimeout(function(){[].forEach.call(svg.querySelectorAll('.drop'),function(p){p.classList.add('go');});},450);}
+if(!('IntersectionObserver' in window)){go(); return;}
+root.classList.add('js-smash');
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){setTimeout(go,250);io.disconnect();}});},{threshold:.6});io.observe(el);
+var lw=el.clientWidth; window.addEventListener('resize',function(){if(Math.abs(el.clientWidth-lw)>20){lw=el.clientWidth; build(); if(host.classList.contains('smash')) [].forEach.call(svg.querySelectorAll('.drop'),function(p){p.classList.add('go');});}});
+})();
 </script>
 </body>
 </html>
