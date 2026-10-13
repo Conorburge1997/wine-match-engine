@@ -326,8 +326,15 @@
   @keyframes twinkle{0%,100%{opacity:0; transform:scale(.4) rotate(0)}50%{opacity:.75; transform:scale(.85) rotate(45deg)}}
   @keyframes gemtext{0%,100%{background-position:0% 0}50%{background-position:100% 0}}
   @media (prefers-reduced-motion:reduce){ .share.inv span::after,.spk,.facet.gemmy .facet-num{animation:none;} }
-  .duo-close{margin:0 0 36px; color:var(--sapphire-glint); font-size:16.5px; font-weight:500;}
-  .duo-close span{color:var(--cyan); font-size:11px; margin-right:6px; vertical-align:2px;}
+  .duo-close{--t:26px; max-width:780px; margin:0 0 36px; padding:1px;
+    clip-path:polygon(0 50%, var(--t) 0, calc(100% - var(--t)) 0, 100% 50%, calc(100% - var(--t)) 100%, var(--t) 100%);
+    background:linear-gradient(90deg, rgba(95,212,224,.85), rgba(58,110,222,.55) 25%, rgba(166,196,255,.9) 50%, rgba(58,110,222,.55) 75%, rgba(95,212,224,.85));
+    filter:drop-shadow(0 10px 24px rgba(58,110,222,.28));}
+  .duo-close p{margin:0; padding:13px calc(var(--t) + 10px); text-align:center;
+    clip-path:polygon(0 50%, var(--t) 0, calc(100% - var(--t)) 0, 100% 50%, calc(100% - var(--t)) 100%, var(--t) 100%);
+    background:radial-gradient(60% 140% at 50% 0%, rgba(58,110,222,.28), transparent 70%), linear-gradient(180deg, #121a33, #0a0e1c);
+    font-family:'Fraunces',serif; font-style:italic; font-size:19px; letter-spacing:.01em;
+    color:var(--sapphire-glint);}
   @media (max-width:640px){
     .duo{gap:8px;}
     .facet{--c:14px;}
@@ -337,7 +344,7 @@
     .share{height:4px; margin:0 0 9px;} .share.inv{height:5px;}
     .spk{transform:scale(.8);}
     .facet p{font-size:11.5px; line-height:1.45;}
-    .duo-close{font-size:15px;}
+    .duo-close{--t:16px; margin-top:-8px;} .duo-close p{font-size:15px; padding:10px calc(var(--t) + 6px);}
   }
   .hero-cta{display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:72px;}
 
@@ -1138,7 +1145,7 @@
           <p>Australian wineries whose <b>award-winning wine rarely reaches your customers&rsquo; glasses</b>.</p>
         </div></div>
       </div>
-      <p class="duo-close"><span>&#9670;</span> Our algorithm breaks down the barriers.</p>
+      <div class="duo-close"><p>Our algorithm breaks down the barriers</p></div>
       <div class="hero-cta">
         <a href="/match" class="btn btn-solid sheen">Find Your Match →</a>
         <a href="#engine" class="btn btn-ghost">See The Engine</a>
