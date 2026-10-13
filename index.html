@@ -290,10 +290,8 @@
   .hero p.lead strong{color:var(--sapphire-glint); font-weight:500;}
 
   .duo{display:grid; grid-template-columns:1fr 1fr; gap:14px; max-width:780px; margin:0;}
-  .duo-link{position:relative; max-width:780px; height:34px;}
-  .duo-link svg{position:absolute; inset:0; width:100%; height:100%; overflow:visible;}
-  .duo-link i{position:absolute; left:50%; top:40%; width:11px; height:11px; margin:-5.5px 0 0 -5.5px; transform:rotate(45deg);
-    background:linear-gradient(135deg,#ffffff,#a6c4ff 40%,#5fd4e0); box-shadow:0 0 10px rgba(166,196,255,.8), 0 0 22px rgba(95,212,224,.4);}
+  .duo-link{position:relative; max-width:780px; height:14px;}
+  .duo-link svg{position:absolute; inset:0; width:100%; height:100%; overflow:visible; display:none; filter:blur(1.5px);}
   .facet{--c:22px; position:relative; padding:1px; background:linear-gradient(135deg, rgba(166,196,255,.75), rgba(33,44,74,.9) 38%, rgba(33,44,74,.9) 62%, rgba(95,212,224,.6));
     clip-path:polygon(0 0, calc(100% - var(--c)) 0, 100% var(--c), 100% 100%, var(--c) 100%, 0 calc(100% - var(--c)));
     filter:drop-shadow(0 20px 30px rgba(58,110,222,.18));}
@@ -375,7 +373,7 @@
     .share{height:4px; margin:0 0 9px;} .share.inv{height:5px;}
     .spk{transform:scale(.8);}
     .facet p{font-size:11.5px; line-height:1.45;}
-    .duo-close{--t:9px;} .duo-link{height:26px;} .duo-link i{width:9px; height:9px; margin:-4.5px 0 0 -4.5px;} .duo-close p{font-size:15px; padding:6px 10px;} .duo-close p span{padding:0 6px;}
+    .duo-close{--t:9px;} .duo-link{height:30px;} .duo-link svg{display:block;} .duo-close p{font-size:15px; padding:6px 10px;} .duo-close p span{padding:0 6px;}
   }
   .hero-cta{display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:72px;}
 
@@ -1176,10 +1174,11 @@
           <p>Australian wineries whose <b>award-winning wine rarely reaches your customers&rsquo; glasses</b>.</p>
         </div></div>
       </div>
-      <div class="duo-link" aria-hidden="true">
-        <svg viewBox="0 0 100 30" preserveAspectRatio="none"><defs><linearGradient id="dlg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a6ede" stop-opacity=".35"/><stop offset="1" stop-color="#a6c4ff"/></linearGradient></defs>
-          <path d="M25 0 V12 H50 M75 0 V12 H50 M50 12 V30" fill="none" stroke="url(#dlg)" stroke-width="1.2" vector-effect="non-scaling-stroke"/></svg>
-        <i></i>
+      <div class="duo-link beams" aria-hidden="true">
+        <svg viewBox="0 0 100 30" preserveAspectRatio="none"><defs>
+          <linearGradient id="bmL" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4d5f93" stop-opacity="0"/><stop offset="1" stop-color="#a6c4ff" stop-opacity=".75"/></linearGradient>
+          <linearGradient id="bmR" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5fd4e0" stop-opacity="0"/><stop offset="1" stop-color="#e6efff" stop-opacity=".9"/></linearGradient></defs>
+          <polygon points="18,0 32,0 50,30" fill="url(#bmL)"/><polygon points="68,0 82,0 50,30" fill="url(#bmR)"/></svg>
         <b class="shard s1"></b><b class="shard s2"></b><b class="shard s3"></b><b class="shard s4"></b><b class="shard s5"></b><b class="shard s6"></b>
       </div>
       <div class="duo-close">
