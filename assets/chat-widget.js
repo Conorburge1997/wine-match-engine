@@ -16,10 +16,15 @@
     ".spc-btn{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:900;display:flex;align-items:center;gap:8px;padding:11px 16px;border-radius:999px;border:1px solid #3a6ede;background:#0f1a3d;color:#f4f5fa;font:500 14px/1 Inter,system-ui,sans-serif;cursor:pointer;box-shadow:0 8px 28px rgba(0,0,0,.45)}" +
     ".spc-btn:hover{background:#16245a}.spc-btn:focus-visible{outline:2px solid #a6c4ff;outline-offset:3px}" +
     ".spc-btn svg{width:18px;height:18px;flex:none}" +
-    ".spc-panel{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:901;width:min(380px,calc(100vw - 32px));height:min(560px,calc(100vh - 40px));display:flex;flex-direction:column;background:#0e1324;border:1px solid #212c4a;border-radius:6px;box-shadow:0 18px 60px rgba(0,0,0,.55);color:#f4f5fa;font:400 14.5px/1.5 Inter,system-ui,sans-serif;overflow:hidden}" +
+    ".spc-panel{padding:0;margin:0;position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:901;width:min(380px,calc(100vw - 32px));height:min(560px,calc(100vh - 40px));display:flex;flex-direction:column;background:#0e1324;border:1px solid #212c4a;border-radius:6px;box-shadow:0 18px 60px rgba(0,0,0,.55);color:#f4f5fa;font:400 14.5px/1.5 Inter,system-ui,sans-serif;overflow:hidden}" +
     ".spc-panel[hidden],.spc-btn[hidden]{display:none}" +
     ".spc-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 14px;border-bottom:1px solid #212c4a;background:#0a0e1c}" +
     ".spc-title{font:400 17px/1.2 Fraunces,Georgia,serif}.spc-sub{font-size:12px;color:#7c85a6}" +
+    ".spc-acts{display:flex;gap:6px;flex:none}" +
+    ".spc-exp{background:none;border:1px solid #212c4a;color:#b3bad2;border-radius:4px;width:30px;padding:0;display:flex;align-items:center;justify-content:center;cursor:pointer}.spc-exp:hover{color:#f4f5fa}.spc-exp:focus-visible{outline:2px solid #a6c4ff}.spc-exp svg{width:15px;height:15px}" +
+    ".spc-exp .i-in{display:none}.spc-full .spc-exp .i-in{display:block}.spc-full .spc-exp .i-out{display:none}" +
+    ".spc-panel{transition:width .2s ease,height .2s ease}" +
+    ".spc-panel.spc-full{width:min(560px,calc(100vw - 32px));height:min(760px,calc(100vh - 40px))}" +
     ".spc-x{background:none;border:1px solid #212c4a;color:#b3bad2;border-radius:4px;padding:4px 9px;cursor:pointer;font:inherit;font-size:13px}.spc-x:hover{color:#f4f5fa}.spc-x:focus-visible{outline:2px solid #a6c4ff}" +
     ".spc-log{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}" +
     ".spc-m{max-width:86%;padding:9px 12px;border-radius:6px;white-space:pre-wrap;overflow-wrap:anywhere}" +
@@ -33,7 +38,7 @@
     ".spc-in:focus{outline:none;border-color:#6f93e8}" +
     ".spc-send{background:#3a6ede;color:#fff;border:0;border-radius:4px;padding:0 14px;font:inherit;font-weight:600;cursor:pointer}.spc-send:disabled{opacity:.5;cursor:default}.spc-send:focus-visible{outline:2px solid #a6c4ff;outline-offset:2px}" +
     ".spc-foot{font-size:11.5px;color:#7c85a6;padding:0 12px 10px;background:#0a0e1c}" +
-    "@media (max-width:480px){.spc-panel{right:0;left:0;bottom:0;width:100%;height:calc(100% - 40px);border-radius:10px 10px 0 0}.spc-btn{right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));width:48px;height:48px;padding:0;justify-content:center;gap:0}.spc-btn span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.spc-btn svg{width:21px;height:21px}}";
+    "@media (max-width:480px){.spc-panel{right:10px;left:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));width:auto;height:min(440px,58vh);height:min(440px,58dvh);border-radius:10px}.spc-panel.spc-full{right:0;left:0;bottom:0;width:100%;height:calc(100% - 40px);height:calc(100dvh - 40px);border-radius:10px 10px 0 0}.spc-sub{display:none}.spc-head{padding:10px 12px}.spc-foot{padding:0 12px 8px;font-size:11px}.spc-btn{right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));width:48px;height:48px;padding:0;justify-content:center;gap:0}.spc-btn span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.spc-btn svg{width:21px;height:21px}}";
   var st = document.createElement("style"); st.textContent = css; document.head.appendChild(st);
 
   var btn = document.createElement("button");
@@ -44,7 +49,7 @@
   panel.className = "spc-panel"; panel.hidden = true;
   panel.setAttribute("role", "dialog"); panel.setAttribute("aria-label", "Chat with the Sapphire Panda assistant");
   panel.innerHTML =
-    '<div class="spc-head"><div><div class="spc-title">Ask Sapphire Panda</div><div class="spc-sub">AI assistant · the team follows up on anything it can\'t answer</div></div><button type="button" class="spc-x">Close</button></div>' +
+    '<div class="spc-head"><div><div class="spc-title">Ask Sapphire Panda</div><div class="spc-sub">AI assistant · the team follows up on anything it can\'t answer</div></div><div class="spc-acts"><button type="button" class="spc-exp" aria-label="Expand chat" aria-pressed="false" title="Expand"><svg class="i-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></svg><svg class="i-in" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10h-6V4M4 14h6v6M14 10l7-7M10 14l-7 7"/></svg></button><button type="button" class="spc-x">Close</button></div></div>' +
     '<div class="spc-log" aria-live="polite"></div>' +
     '<form class="spc-form"><label class="spc-sr" for="spc-in" style="position:absolute;left:-9999px">Your message</label><textarea id="spc-in" class="spc-in" rows="1" maxlength="1000" placeholder="Type your question"></textarea><button class="spc-send" type="submit">Send</button></form>' +
     '<div class="spc-foot">Answers are AI-generated and can be wrong. Please don\'t share sensitive details.</div>';
@@ -84,6 +89,13 @@
 
   btn.addEventListener("click", open);
   panel.querySelector(".spc-x").addEventListener("click", close);
+  var exp = panel.querySelector(".spc-exp");
+  exp.addEventListener("click", function () {
+    var on = panel.classList.toggle("spc-full");
+    exp.setAttribute("aria-pressed", on ? "true" : "false");
+    exp.setAttribute("aria-label", on ? "Shrink chat" : "Expand chat"); exp.title = on ? "Shrink" : "Expand";
+    log.scrollTop = log.scrollHeight;
+  });
   panel.addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
   input.addEventListener("keydown", function (e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event("submit", { cancelable: true })); } });
   input.addEventListener("input", function () { input.style.height = "auto"; input.style.height = Math.min(120, input.scrollHeight) + "px"; });
