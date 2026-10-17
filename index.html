@@ -289,7 +289,7 @@
   }
   .hero p.lead strong{color:var(--sapphire-glint); font-weight:500;}
 
-  .duo{display:grid; grid-template-columns:1fr 1fr; gap:14px; max-width:780px; margin:0;}
+  .duo{display:grid; grid-template-columns:1fr 1fr; gap:14px; max-width:780px; margin:0 0 36px;}
   .duo-link{position:relative; max-width:780px; height:14px;}
   .duo-link svg{position:absolute; inset:0; width:100%; height:100%; overflow:visible; display:none; filter:blur(1.5px);}
   .facet{--c:22px; position:relative; padding:1px; background:linear-gradient(135deg, rgba(166,196,255,.75), rgba(33,44,74,.9) 38%, rgba(33,44,74,.9) 62%, rgba(95,212,224,.6));
@@ -1174,18 +1174,7 @@
           <p>of Australia&rsquo;s <b>award-winning wineries rarely reach your customers&rsquo; glasses</b>.</p>
         </div></div>
       </div>
-      <div class="duo-link beams" aria-hidden="true">
-        <svg viewBox="0 0 100 30" preserveAspectRatio="none"><defs>
-          <linearGradient id="bmL" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4d5f93" stop-opacity="0"/><stop offset="1" stop-color="#a6c4ff" stop-opacity=".75"/></linearGradient>
-          <linearGradient id="bmR" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5fd4e0" stop-opacity="0"/><stop offset="1" stop-color="#e6efff" stop-opacity=".9"/></linearGradient></defs>
-          <polygon points="18,0 32,0 50,30" fill="url(#bmL)"/><polygon points="68,0 82,0 50,30" fill="url(#bmR)"/></svg>
-        <b class="shard s1"></b><b class="shard s2"></b><b class="shard s3"></b><b class="shard s4"></b><b class="shard s5"></b><b class="shard s6"></b>
-      </div>
-      <div class="duo-close">
-        <svg class="crack" aria-hidden="true"></svg>
-        <span class="sheen" aria-hidden="true"></span>
-        <p><span>Our platform smashes those barriers</span></p>
-      </div>
+
       <div class="hero-cta">
         <a href="/match" class="btn btn-solid sheen">Find Your Match →</a>
         <a href="#engine" class="btn btn-ghost">See The Engine</a>
@@ -2185,54 +2174,5 @@
 })();
 </script>
 <script src="/assets/chat-widget.js" defer></script>
-<script>
-(function(){
-var root=document.documentElement, el=document.querySelector('.duo-close'); if(!el) return;
-var svg=el.querySelector('.crack'), NS='http://www.w3.org/2000/svg';
-function rnd(a,b){return a+Math.random()*(b-a);}
-function build(){
-  while(svg.firstChild) svg.removeChild(svg.firstChild);
-  var w=el.clientWidth-2, h=el.clientHeight-2; if(w<10) return;
-  svg.setAttribute('viewBox','0 0 '+w+' '+h); svg.setAttribute('width',w); svg.setAttribute('height',h);
-  var cx=w/2, cy=0;
-  var base=[1,4,8,14,24,40,62,90,118,140,156,166,172,176,179];
-  var ang=base.map(function(d,i){return (d+(i&&i<base.length-1?rnd(-2.5,2.5):0))*Math.PI/180;});
-  var R=[0,7,16,30,52,85,130,200,300,440,620,900].filter(function(r,i,a){return i<2||a[i-1]<Math.hypot(w/2,h)*1.1;});
-  var pts=R.map(function(r,j){return ang.map(function(t){var rr=j?r*rnd(.86,1.14):0; return [cx+rr*Math.cos(t), cy+rr*Math.sin(t)];});});
-  var defs=document.createElementNS(NS,'defs');
-  defs.innerHTML='<linearGradient id="gl1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".5" stop-color="#a6c4ff" stop-opacity=".05"/><stop offset="1" stop-color="#5fd4e0" stop-opacity=".14"/></linearGradient><linearGradient id="gl2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".04"/><stop offset="1" stop-color="#c9dafd" stop-opacity=".2"/></linearGradient>';
-  svg.appendChild(defs);
-  var drops=0;
-  for(var j=0;j<R.length-1;j++) for(var i=0;i<ang.length-1;i++){
-    var q=[pts[j][i],pts[j][i+1],pts[j+1][i+1],pts[j+1][i]];
-    var poly=document.createElementNS(NS,'polygon');
-    poly.setAttribute('points',q.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' '));
-    var r=Math.random(), fill = r<.18?'url(#gl1)': r<.34?'url(#gl2)': 'rgba(255,255,255,'+rnd(0,.07).toFixed(3)+')';
-    poly.setAttribute('fill',fill);
-    var bright = Math.random()<.14;
-    poly.setAttribute('stroke', bright?'rgba(235,244,255,.8)':'rgba(190,212,255,'+rnd(.18,.38).toFixed(2)+')');
-    poly.setAttribute('stroke-width', bright?'.9':'.6'); poly.setAttribute('stroke-linejoin','round');
-    var d=Math.hypot((q[0][0]+q[2][0])/2-cx,(q[0][1]+q[2][1])/2-cy);
-    var mx=(q[0][0]+q[1][0]+q[2][0]+q[3][0])/4, tw=(el.querySelector('p span')||el).offsetWidth/2+20, inText=Math.abs(mx-cx)<tw;
-    if(inText){ poly.setAttribute('stroke','rgba(190,212,255,.16)'); poly.setAttribute('stroke-width','.5'); if(fill.indexOf('url')<0) poly.setAttribute('fill','rgba(255,255,255,.015)'); }
-    poly.setAttribute('class','cell'); poly.style.transitionDelay=Math.min(d*1.1,520).toFixed(0)+'ms';
-    if(j<=2 && j>=1){ var sh=[rnd(-1.6,1.6),rnd(0,1.4)]; poly.style.transform='translate('+sh[0].toFixed(1)+'px,'+sh[1].toFixed(1)+'px)'; }
-    svg.appendChild(poly);
-    if(j>=1 && j<=3 && drops<4 && Math.random()<.3){
-      var dp=poly.cloneNode(); dp.setAttribute('class','cell drop'); dp.setAttribute('fill','rgba(220,235,255,.35)'); dp.setAttribute('stroke','rgba(255,255,255,.9)');
-      dp.style.setProperty('--dx',rnd(-14,14).toFixed(0)+'px'); dp.style.setProperty('--dr',rnd(-70,70).toFixed(0)+'deg'); dp.style.transformOrigin='center'; dp.style.transformBox='fill-box';
-      svg.appendChild(dp); poly.setAttribute('fill','rgba(6,8,16,.55)'); drops++;
-    }
-  }
-}
-build();
-var host=el.parentNode;
-function go(){host.classList.add('smash'); setTimeout(function(){[].forEach.call(svg.querySelectorAll('.drop'),function(p){p.classList.add('go');});},450);}
-if(!('IntersectionObserver' in window)){go(); return;}
-root.classList.add('js-smash');
-var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){setTimeout(go,250);io.disconnect();}});},{threshold:.6});io.observe(el);
-var lw=el.clientWidth; window.addEventListener('resize',function(){if(Math.abs(el.clientWidth-lw)>20){lw=el.clientWidth; build(); if(host.classList.contains('smash')) [].forEach.call(svg.querySelectorAll('.drop'),function(p){p.classList.add('go');});}});
-})();
-</script>
 </body>
 </html>
