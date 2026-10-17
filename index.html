@@ -356,6 +356,13 @@
     background:linear-gradient(105deg, transparent 20%, rgba(255,255,255,.10) 32%, rgba(255,255,255,.02) 38%, transparent 46%, transparent 60%, rgba(166,196,255,.08) 68%, transparent 76%);}
   .smash .duo-close .sheen{opacity:1; transition:opacity .8s .3s;}
   @media (prefers-reduced-motion:reduce){ .crack polygon,.crack .drop{transition:none !important;} .smash .duo-close::after,.smash .shard{animation:none;} .js-smash .duo-close::after{opacity:.55;} }
+  .gemfield{display:flex; justify-content:space-between; align-items:center; height:12px; margin:0 0 14px; overflow:visible;}
+  .gemfield .g{flex:none; width:var(--s); height:var(--s); transform:rotate(45deg); background:rgba(111,147,232,var(--o)); }
+  .gemfield .g.lit{background:linear-gradient(135deg,#ffffff,#a6c4ff 45%,#5fd4e0); opacity:.9; box-shadow:0 0 6px rgba(166,196,255,.7);}
+  .gemfield .g.tw{animation:gemtw 4.2s ease-in-out infinite;}
+  @keyframes gemtw{0%,100%{box-shadow:0 0 4px rgba(166,196,255,.5); opacity:.8}45%{box-shadow:0 0 12px 2px rgba(220,235,255,.95); opacity:1}55%{box-shadow:0 0 6px rgba(166,196,255,.6)}}
+  @media (prefers-reduced-motion:reduce){ .gemfield .g.tw{animation:none;} }
+  @media (max-width:640px){ .gemfield{height:10px; margin:0 0 9px;} .gemfield .g:nth-child(n+19){display:none;} .gemfield .g{width:calc(var(--s) - 1px); height:calc(var(--s) - 1px);} }
   .duo-close{--t:12px; max-width:780px; margin:0 0 36px; padding:1px;
     clip-path:polygon(var(--t) 0, calc(100% - var(--t)) 0, 100% var(--t), 100% calc(100% - var(--t)), calc(100% - var(--t)) 100%, var(--t) 100%, 0 calc(100% - var(--t)), 0 var(--t));
     background:linear-gradient(90deg, rgba(95,212,224,.9), rgba(111,147,232,.8) 25%, rgba(220,232,255,1) 50%, rgba(111,147,232,.8) 75%, rgba(95,212,224,.9));
@@ -1170,7 +1177,7 @@
         <div class="facet gemmy"><div class="facet-in">
           <div class="facet-k">Hidden gems rarely leave Australia</div>
           <div class="facet-num">1,000+</div>
-          <div class="share inv" aria-hidden="true"><span></span><i class="spk" style="left:79%;top:-7px"></i><i class="spk s2" style="left:90%;top:-9px"></i><i class="spk s3" style="left:97%;top:3px"></i></div>
+          <div class="gemfield" aria-hidden="true"><i class="g" style="--s:6px;--o:0.37"></i><i class="g" style="--s:6px;--o:0.31"></i><i class="g" style="--s:5px;--o:0.34"></i><i class="g lit" style="--s:5px;--o:0.25"></i><i class="g" style="--s:5px;--o:0.36"></i><i class="g" style="--s:5px;--o:0.19"></i><i class="g" style="--s:6px;--o:0.26"></i><i class="g" style="--s:5px;--o:0.20"></i><i class="g" style="--s:6px;--o:0.19"></i><i class="g lit tw" style="--s:7px;--o:0.20;animation-delay:0.0s"></i><i class="g" style="--s:5px;--o:0.31"></i><i class="g" style="--s:7px;--o:0.37"></i><i class="g" style="--s:7px;--o:0.30"></i><i class="g" style="--s:5px;--o:0.38"></i><i class="g lit tw" style="--s:5px;--o:0.29;animation-delay:3.4s"></i><i class="g" style="--s:5px;--o:0.24"></i><i class="g" style="--s:5px;--o:0.29"></i><i class="g" style="--s:7px;--o:0.24"></i><i class="g" style="--s:5px;--o:0.20"></i><i class="g" style="--s:7px;--o:0.31"></i><i class="g lit tw" style="--s:6px;--o:0.20;animation-delay:1.3s"></i><i class="g" style="--s:5px;--o:0.29"></i><i class="g" style="--s:7px;--o:0.22"></i><i class="g" style="--s:7px;--o:0.27"></i><i class="g" style="--s:6px;--o:0.27"></i><i class="g" style="--s:6px;--o:0.25"></i><i class="g lit" style="--s:5px;--o:0.34"></i><i class="g" style="--s:5px;--o:0.20"></i><i class="g" style="--s:6px;--o:0.29"></i><i class="g" style="--s:6px;--o:0.33"></i><i class="g" style="--s:6px;--o:0.30"></i><i class="g lit tw" style="--s:5px;--o:0.20;animation-delay:2.6s"></i><i class="g" style="--s:6px;--o:0.21"></i><i class="g" style="--s:6px;--o:0.21"></i><i class="g lit" style="--s:6px;--o:0.26"></i><i class="g" style="--s:5px;--o:0.33"></i></div>
           <p>of Australia&rsquo;s <b>award-winning wineries rarely reach your customers&rsquo; glasses</b>.</p>
         </div></div>
       </div>
