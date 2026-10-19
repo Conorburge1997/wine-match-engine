@@ -37,7 +37,7 @@
     ".spc-in{flex:1;min-width:0;resize:none;max-height:120px;background:#060810;color:#f4f5fa;border:1px solid #212c4a;border-radius:4px;padding:9px 10px;font:inherit;font-size:16px}" +
     ".spc-in:focus{outline:none;border-color:#6f93e8}" +
     ".spc-send{background:#3a6ede;color:#fff;border:0;border-radius:4px;padding:0 14px;font:inherit;font-weight:600;cursor:pointer}.spc-send:disabled{opacity:.5;cursor:default}.spc-send:focus-visible{outline:2px solid #a6c4ff;outline-offset:2px}" +
-    ".spc-foot{font-size:11.5px;color:#7c85a6;padding:0 12px 10px;background:#0a0e1c}" +
+    ".spc-foot{font-size:11.5px;color:#7c85a6;padding:0 12px 10px;background:#0a0e1c}.spc-foot a{color:#a6c4ff;text-decoration:underline;text-underline-offset:2px}.spc-foot a:hover{color:#f4f5fa}" +
     "@media (max-width:480px){.spc-panel{right:10px;left:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));width:auto;height:min(440px,58vh);height:min(440px,58dvh);border-radius:10px}.spc-panel.spc-full{right:0;left:0;bottom:0;width:100%;height:calc(100% - 40px);height:calc(100dvh - 40px);border-radius:10px 10px 0 0}.spc-sub{display:none}.spc-head{padding:10px 12px}.spc-foot{padding:0 12px 8px;font-size:11px}.spc-btn{right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));width:48px;height:48px;padding:0;justify-content:center;gap:0}.spc-btn span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.spc-btn svg{width:21px;height:21px}}";
   var st = document.createElement("style"); st.textContent = css; document.head.appendChild(st);
 
@@ -49,10 +49,10 @@
   panel.className = "spc-panel"; panel.hidden = true;
   panel.setAttribute("role", "dialog"); panel.setAttribute("aria-label", "Chat with the Sapphire Panda assistant");
   panel.innerHTML =
-    '<div class="spc-head"><div><div class="spc-title">Ask Sapphire Panda</div><div class="spc-sub">AI assistant · the team follows up on anything it can\'t answer</div></div><div class="spc-acts"><button type="button" class="spc-exp" aria-label="Expand chat" aria-pressed="false" title="Expand"><svg class="i-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></svg><svg class="i-in" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10h-6V4M4 14h6v6M14 10l7-7M10 14l-7 7"/></svg></button><button type="button" class="spc-x">Close</button></div></div>' +
+    '<div class="spc-head"><div><div class="spc-title">Ask Sapphire Panda</div></div><div class="spc-acts"><button type="button" class="spc-exp" aria-label="Expand chat" aria-pressed="false" title="Expand"><svg class="i-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></svg><svg class="i-in" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10h-6V4M4 14h6v6M14 10l7-7M10 14l-7 7"/></svg></button><button type="button" class="spc-x">Close</button></div></div>' +
     '<div class="spc-log" aria-live="polite"></div>' +
     '<form class="spc-form"><label class="spc-sr" for="spc-in" style="position:absolute;left:-9999px">Your message</label><textarea id="spc-in" class="spc-in" rows="1" maxlength="1000" placeholder="Type your question"></textarea><button class="spc-send" type="submit">Send</button></form>' +
-    '<div class="spc-foot">Answers are AI-generated and can be wrong. Please don\'t share sensitive details.</div>';
+    '<div class="spc-foot">Responses are AI-generated. <a href="/contact">Contact our team</a> for a reply within 24&ndash;48 hours.</div>';
 
   // Only show the chat once the server has an API key configured.
   btn.hidden = true;
