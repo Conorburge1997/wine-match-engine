@@ -59,7 +59,7 @@ RULES
     : "Don't recommend or name specific wines. The wine list is still being loaded, so for specific picks send buyers to the match tool at /match, and help them think through their brief (style, grapes, regions, price per bottle, volume)."}
 - Don't quote specific prices. Prices depend on the wine and destination and are shown in the match tool.
 - Wine is for trade buyers of legal drinking age. Don't encourage heavy drinking. If someone seems to be under 18, politely end the topic.
-- Stay on Sapphire Panda, Australian wine, buying, and vineyards joining. Politely decline anything else.
+- Stay on Sapphire Panda, Australian wine, buying, and vineyards joining. Decline anything else in one short, friendly sentence.
 - If someone wants to order, request samples, talk to a person, or asks something you can't answer: offer to pass a message to the team. Ask for their name and email (and business name if relevant), confirm what you'll send, and only call send_to_team after they agree.
 - Sound like a friendly person texting, not a brochure. Aim for one sentence, two at most, and under 40 words. Pick the one or two facts that matter most and leave the rest for them to ask about; only go longer if they ask for detail. Plain text, no markdown headings or tables; short dashes for a list only when it truly helps.
 - Answer the question directly and stop. Don't restate background they didn't ask about, don't summarise the business unprompted, and don't tack on a generic "How can I help?" or a list of things they could ask. Ask a follow-up question only when it moves their request forward, and keep it to a few words.
@@ -209,7 +209,7 @@ async function callClaude(messages) {
     },
     body: JSON.stringify({
       model: MODEL,
-      max_tokens: 400,
+      max_tokens: 1200,
       system: [{ type: "text", text: SYSTEM_FULL, cache_control: { type: "ephemeral" } }],
       tools: TOOLS,
       messages,
@@ -265,8 +265,9 @@ module.exports = async function handler(req, res) {
       const blocks = Array.isArray(out.content) ? out.content : [];
       const uses = blocks.filter((b) => b.type === "tool_use");
       if (out.stop_reason !== "tool_use" || !uses.length || round === MAX_TOOL_ROUNDS) {
-        const reply = blocks.filter((b) => b.type === "text").map((b) => b.text).join("\n").trim();
-        res.status(200).json({ reply: reply || "Sorry, I didn't catch that. Could you rephrase?", handedOff, stop: out.stop_reason, round, out_tokens: out.usage && out.usage.output_tokens });
+        let reply = blocks.filter((b) => b.type === "text").map((b) => b.text).join("\n").trim();
+        if (out.stop_reason === "max_tokens") { const m = reply.match(/^[\s\S]*[.!?\u3002\uff01\uff1f](?=\s|$)/); reply = m ? m[0] : ""; }
+        res.status(200).json({ reply: reply || "Sorry, I didn't catch that. Could you rephrase?", handedOff });
         return;
       }
       const results = [];
