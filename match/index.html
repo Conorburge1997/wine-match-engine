@@ -564,6 +564,8 @@
   .price-input-symbol{position:absolute; left:11px; top:50%; transform:translateY(-50%); color:var(--ink-dim); font-size:14px; pointer-events:none; white-space:nowrap;}
   .price-aud-hint{font-size:12px; color:var(--ink-dim); margin-top:6px; min-height:16px;}
   .currency-note{color:var(--cyan) !important; font-size:12px !important;}
+  .age-confirm{display:flex; gap:10px; align-items:flex-start; margin-top:20px; font-size:13px; font-weight:400; text-transform:none; letter-spacing:0; line-height:1.5; color:var(--ink-dim); cursor:pointer;}
+  .age-confirm input{margin-top:3px; flex:none; accent-color:var(--sapphire);}
   .checkout-note{font-size:12.5px; color:var(--ink-faint); margin-top:16px; line-height:1.6;}
 
   .empty-state{padding:60px 20px; text-align:center; color:var(--ink-dim);}
@@ -880,7 +882,8 @@
         <div class="card">
           <h2>Estimated Summary</h2>
           <div id="checkout-summary"></div>
-          <button class="btn btn-solid" id="btn-request" style="width:100%; padding:14px; margin-top:20px;">Request This Pallet →</button>
+          <label class="age-confirm"><input type="checkbox" id="age-ok"><span>I confirm that I am of legal drinking age in my country of residence.</span></label>
+          <button class="btn btn-solid" id="btn-request" style="width:100%; padding:14px; margin-top:14px;" disabled>Request This Pallet →</button>
           <div class="checkout-note">This is an estimate based on the listed prices, which include shipping and paperwork for your destination. Final pricing is confirmed once your pallet is locked with other buyers' orders.</div>
         </div>
       </div>
@@ -901,6 +904,7 @@
     </div>
     <div class="fine"><a href="/contact/" style="color:var(--ink-dim);text-decoration:none">Contact us</a> · <a href="/faq/" style="color:var(--ink-dim);text-decoration:none">FAQ</a> · © 2026 Sapphire Panda. Levelling the playing field for Australian wine.</div>
   </div>
+  <div class="foot-rd" style="font-size:12px;color:var(--ink-faint);margin-top:18px;line-height:1.5;">Sapphire Panda supplies wine only to customers of legal drinking age. Please enjoy responsibly.</div>
 </footer>
 
 <script>
@@ -2185,7 +2189,9 @@
 
   $("btn-back-results").addEventListener("click", function(){ showPanel(2); });
 
+  $("age-ok").addEventListener("change", function(){ $("btn-request").disabled = !this.checked; });
   $("btn-request").addEventListener("click", function(){
+    if (!$("age-ok").checked) return;
     const lines = pickedLines();
     const subject = encodeURIComponent("Pallet request — " + (state.brief ? state.brief.name : ""));
     const locationLabel = briefLocationLabel(state.brief);
