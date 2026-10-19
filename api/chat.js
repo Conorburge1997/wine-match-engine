@@ -279,6 +279,6 @@ module.exports = async function handler(req, res) {
     }
   } catch (e) {
     console.error("chat error", e.status || "", e.detail || e.message);
-    res.status(502).json({ error: "The assistant is unavailable right now.", fallback: true });
+    res.status(502).json({ error: "The assistant is unavailable right now.", fallback: true, code: e.status || (e.name === "AbortError" ? "timeout" : "network") });
   }
 };
