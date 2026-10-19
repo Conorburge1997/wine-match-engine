@@ -444,12 +444,10 @@
   .spx.one{min-height:262px;} .spx-stage{height:262px;}
   .spx-slide{padding-bottom:58px !important;}
   .spx-ship{position:absolute; left:168px; bottom:18px; width:48px; z-index:3; pointer-events:none; opacity:0; transform-origin:left bottom; animation:shipGo 24s linear infinite;}
-  .spx-ship .hull{animation:shipBob 3.2s ease-in-out infinite;}
   .spx-ship svg{display:block; width:100%; height:auto; overflow:visible;}
   .spx-ship .sh{fill:rgba(40,62,140,.28); stroke:rgba(160,192,255,.75); stroke-width:1; stroke-linejoin:round; filter:drop-shadow(0 0 3px rgba(120,160,255,.55));}
   .spx-ship:after{content:''; position:absolute; right:92%; bottom:1px; width:70px; height:1px; background:linear-gradient(90deg,transparent,rgba(160,192,255,.45));}
   @keyframes shipGo{0%{opacity:0; transform:translateX(0) scale(1)}6%{opacity:.95}70%{opacity:.75}100%{opacity:0; transform:translateX(min(720px,62vw)) scale(.55)}}
-  @keyframes shipBob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-1.5px) rotate(-1.2deg)}}
   @media (max-width:640px){
     .spx.one,.spx-stage{min-height:236px; height:236px;}
     .spx-slide{padding-bottom:44px !important;}
