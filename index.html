@@ -666,6 +666,13 @@
     content:""; position:absolute; inset:0 0 auto 0; height:2px;
     background:linear-gradient(90deg, var(--sapphire), var(--sapphire-glint), var(--cyan)); opacity:.65;
   }
+  .gem-list{list-style:none; margin:4px 0 0; padding:0; display:flex; flex-direction:column; gap:11px;}
+  .gem-list li{position:relative; padding-left:24px; font-size:14.5px; line-height:1.45; color:var(--ink);}
+  .gem-list li::before{content:''; position:absolute; left:2px; top:.42em; width:11px; height:9px;
+    clip-path:polygon(22% 0,78% 0,100% 34%,50% 100%,0 34%);
+    background:linear-gradient(135deg,#ffffff 0%,#a6c4ff 40%,#3a6ede 85%);
+    filter:drop-shadow(0 0 5px rgba(120,170,255,.75));}
+  .benefit .benefit-link{margin-top:16px;}
   .benefit-label{font-size:9.5px; letter-spacing:.1em; text-transform:uppercase; font-weight:600; color:var(--cyan); margin-bottom:10px; display:block;}
   .benefit h3{font-size:16px; margin-bottom:8px; font-weight:500;}
   .benefit p{color:var(--ink-dim); font-size:13.5px; margin:0; line-height:1.6;}
@@ -1266,18 +1273,18 @@
         <div class="benefit">
           <span class="benefit-label">For buyers</span>
           <h3>Variety in the quantities you need</h3>
-          <p>Mix wines from several independent vineyards on one pallet, instead of committing to a full pallet of a single label.</p>
+          <ul class="gem-list"><li>A cellar&rsquo;s worth of variety, on one pallet</li><li>Order by the case, not the container</li><li>Curated to your customers&rsquo; taste</li></ul>
         </div>
         <div class="benefit">
           <span class="benefit-label">For vineyards</span>
           <h3>Untapped markets within reach</h3>
-          <p>Get your wine tasted abroad without competing with the marketing budgets of large commercial brands. A few cases share a pallet, so many can export for the first time.</p>
+          <ul class="gem-list"><li>New buyers beyond borders</li><li>Discovered on merit, not marketing spend</li><li>Twelve bottles is all it takes</li></ul>
           <a class="benefit-link" href="/vineyards/">Register your interest &rsaquo;</a>
         </div>
         <div class="benefit">
           <span class="benefit-label">For everyone</span>
-          <h3>One contact, nothing to chase</h3>
-          <p>One point of contact, one invoice, one shipment, with the registrations and paperwork handled. Better matches mean happier buyers and more people enjoying hidden gems.</p>
+          <h3>Simplicity without compromise</h3>
+          <ul class="gem-list"><li>One contact, one invoice, nothing to chase</li><li>New relationships that travel well</li><li>Great wine, finally finding its audience</li></ul>
         </div>
       </div>
 
