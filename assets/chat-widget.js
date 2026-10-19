@@ -52,7 +52,7 @@
     '<div class="spc-head"><div><div class="spc-title">Ask Sapphire Panda</div></div><div class="spc-acts"><button type="button" class="spc-exp" aria-label="Expand chat" aria-pressed="false" title="Expand"><svg class="i-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></svg><svg class="i-in" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10h-6V4M4 14h6v6M14 10l7-7M10 14l-7 7"/></svg></button><button type="button" class="spc-x">Close</button></div></div>' +
     '<div class="spc-log" aria-live="polite"></div>' +
     '<form class="spc-form"><label class="spc-sr" for="spc-in" style="position:absolute;left:-9999px">Your message</label><textarea id="spc-in" class="spc-in" rows="1" maxlength="1000" placeholder="Type your question"></textarea><button class="spc-send" type="submit">Send</button></form>' +
-    '<div class="spc-foot">Responses are AI-generated. <a href="/contact">Contact our team</a> for a reply within 24&ndash;48 hours.</div>';
+    '<div class="spc-foot">Responses are AI-generated. <a href="/contact">Contact our team</a> for a reply within 24 hours.</div>';
 
   // Only show the chat once the server has an API key configured.
   btn.hidden = true;
