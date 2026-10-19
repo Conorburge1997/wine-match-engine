@@ -266,7 +266,7 @@ module.exports = async function handler(req, res) {
       const uses = blocks.filter((b) => b.type === "tool_use");
       if (out.stop_reason !== "tool_use" || !uses.length || round === MAX_TOOL_ROUNDS) {
         const reply = blocks.filter((b) => b.type === "text").map((b) => b.text).join("\n").trim();
-        res.status(200).json({ reply: reply || "Sorry, I didn't catch that. Could you rephrase?", handedOff });
+        res.status(200).json({ reply: reply || "Sorry, I didn't catch that. Could you rephrase?", handedOff, stop: out.stop_reason, round, out_tokens: out.usage && out.usage.output_tokens });
         return;
       }
       const results = [];
