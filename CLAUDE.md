@@ -20,3 +20,11 @@ Agreed with Conor, 11 Oct 2026:
 
 ## Private data
 - Winery contact details live in data/private/ (git-ignored). Never commit them.
+
+## Match page "coming soon" mode (added 20 Oct 2026)
+- While vineyards are being onboarded, /match shows the placeholder results
+  blurred behind a "Coming soon" notice.
+- To go live with real matches: remove the `cs-on` class from
+  `<div id="results-view">` in match/index.html. Everything else (pallet
+  sidebar, wine count, clickable cards, original intro line) comes back.
+- The full design before this mode is commit 3e1b7f8 on main.
