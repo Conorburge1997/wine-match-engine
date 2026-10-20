@@ -458,11 +458,13 @@
 
   /* ---- Results layout: wine groups on the left, pallet pinned on the right ---- */
   .results-layout{display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:36px; align-items:start;}
-  /* Coming soon: placeholder matches shown blurred behind a notice (remove once real vineyards are live) */
-  #results-view .results-layout{grid-template-columns:minmax(0,1fr);}
-  #pallet-side,#results-count{display:none !important;}
-  .cs-wrap{position:relative; min-height:420px;}
-  .cs-wrap #results-groups{filter:blur(1.5px) saturate(.85); opacity:.75; pointer-events:none; user-select:none;}
+  /* COMING SOON MODE: placeholder matches shown blurred behind a notice.
+     To go live with real matches, remove the "cs-on" class from #results-view. */
+  #results-view.cs-on .results-layout{grid-template-columns:minmax(0,1fr);}
+  .cs-on #pallet-side,.cs-on #results-count,.cs-on .intro-live,#results-view:not(.cs-on) .cs-overlay,#results-view:not(.cs-on) .intro-soon{display:none !important;}
+  .cs-wrap{position:relative;}
+  .cs-on .cs-wrap{min-height:420px;}
+  .cs-on .cs-wrap #results-groups{filter:blur(1.5px) saturate(.85); opacity:.75; pointer-events:none; user-select:none;}
   .cs-overlay{position:absolute; inset:0; display:flex; align-items:flex-start; justify-content:center; padding:90px 16px 0; z-index:5; background:radial-gradient(ellipse at 50% 35%, rgba(6,8,16,.55) 0%, rgba(6,8,16,.15) 70%, transparent 100%);}
   .cs-card{max-width:460px; text-align:center; padding:30px 28px; border:1px solid var(--border); background:linear-gradient(160deg, rgba(18,26,48,.94), rgba(10,14,28,.94)); box-shadow:inset 0 1px 0 rgba(166,196,255,.14), 0 30px 70px -20px rgba(0,0,0,.7), 0 0 50px -20px rgba(58,110,222,.5);}
   .cs-eyebrow{font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:var(--cyan); margin-bottom:10px;}
@@ -822,13 +824,13 @@
       </div>
     </div>
 
-    <div id="results-view" style="display:none;">
+    <div id="results-view" class="cs-on" style="display:none;">
       <div class="results-layout">
         <div class="results-main">
       <div class="step-intro">
         <div class="step-eyebrow">Step 2 of 3</div>
         <h1>Your matches.</h1>
-        <p>A preview of how your top matches per style and varietal will look.</p>
+        <p class="intro-soon">A preview of how your top matches per style and varietal will look.</p><p class="intro-live">Top 3 highest-ranked wines per style and varietal. Set a quantity on anything you'd like — watch your pallet build on the right.</p>
       </div>
       <div class="brief-recap" id="brief-recap"></div>
       <div class="results-summary">
