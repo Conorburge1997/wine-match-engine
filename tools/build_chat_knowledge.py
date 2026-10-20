@@ -27,7 +27,7 @@ PAGES = [
     ("/match", "match/index.html", "Find your match (buyer brief tool)"),
     ("/contact", "contact/index.html", "Contact"),
 ]
-SKIP_IDS = {"how", "engine", "news"}
+SKIP_IDS = {"engine", "news"}
 # Text fragments that mark illustrative content; any block containing one is dropped.
 SKIP_TEXT = ["Illustrative order", "Illustrative run", "Consolidating order"]
 

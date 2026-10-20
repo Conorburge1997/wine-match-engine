@@ -12,7 +12,7 @@ Agreed with Conor, 11 Oct 2026:
 ## Chat assistant
 - After editing any page, rerun `python3 tools/build_chat_knowledge.py` so the
   chat knows the new text. It skips sections listed in SKIP_IDS that aren't
-  accurate yet (how, engine, news).
+  accurate yet (engine, news).
 - `CATALOGUE_LIVE` in api/chat.js stays false until real wines replace the
   demo data in api/data/wines.json.
 - The API key is read from `ANTHROPIC_API_KEY` or `conor_claude_tokens`
