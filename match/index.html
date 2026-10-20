@@ -458,6 +458,18 @@
 
   /* ---- Results layout: wine groups on the left, pallet pinned on the right ---- */
   .results-layout{display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:36px; align-items:start;}
+  /* Coming soon: placeholder matches shown blurred behind a notice (remove once real vineyards are live) */
+  #results-view .results-layout{grid-template-columns:minmax(0,1fr);}
+  #pallet-side,#results-count{display:none !important;}
+  .cs-wrap{position:relative; min-height:420px;}
+  .cs-wrap #results-groups{filter:blur(1.5px) saturate(.85); opacity:.75; pointer-events:none; user-select:none;}
+  .cs-overlay{position:absolute; inset:0; display:flex; align-items:flex-start; justify-content:center; padding:90px 16px 0; z-index:5; background:radial-gradient(ellipse at 50% 35%, rgba(6,8,16,.55) 0%, rgba(6,8,16,.15) 70%, transparent 100%);}
+  .cs-card{max-width:460px; text-align:center; padding:30px 28px; border:1px solid var(--border); background:linear-gradient(160deg, rgba(18,26,48,.94), rgba(10,14,28,.94)); box-shadow:inset 0 1px 0 rgba(166,196,255,.14), 0 30px 70px -20px rgba(0,0,0,.7), 0 0 50px -20px rgba(58,110,222,.5);}
+  .cs-eyebrow{font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:var(--cyan); margin-bottom:10px;}
+  .cs-title{font-family:'Fraunces',serif; font-style:italic; font-size:40px; line-height:1.1; margin-bottom:14px; background:linear-gradient(100deg,#eef2fb 0%,#c9dafd 40%,#6f93e8 100%); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .cs-note{font-size:14.5px; line-height:1.6; color:var(--ink-dim); margin:0 0 20px;}
+  .cs-btn{display:inline-block; padding:12px 20px;}
+  @media (max-width:600px){ .cs-overlay{padding-top:60px;} .cs-title{font-size:32px;} .cs-card{padding:24px 20px;} }
   @media (max-width:980px){ .results-layout{grid-template-columns:minmax(0,1fr);} }
 
   /* The sidebar sticks to the viewport as the page scrolls, so the pallet
@@ -816,7 +828,7 @@
       <div class="step-intro">
         <div class="step-eyebrow">Step 2 of 3</div>
         <h1>Your matches.</h1>
-        <p>Top 3 highest-ranked wines per style and varietal. Set a quantity on anything you'd like — watch your pallet build on the right.</p>
+        <p>A preview of how your top matches per style and varietal will look.</p>
       </div>
       <div class="brief-recap" id="brief-recap"></div>
       <div class="results-summary">
@@ -824,7 +836,17 @@
         <button class="btn btn-ghost" id="btn-edit-brief" style="padding:8px 16px; font-size:11px;">← Edit Brief</button>
       </div>
 
-        <div id="results-groups"></div>
+        <div class="cs-wrap">
+          <div id="results-groups"></div>
+          <div class="cs-overlay" role="status">
+            <div class="cs-card">
+              <div class="cs-eyebrow">Matches</div>
+              <div class="cs-title">Coming soon</div>
+              <p class="cs-note">Sapphire Panda is currently onboarding vineyards across Australia. The wines shown are placeholders, and your personalised matches will appear here once our library is live.</p>
+              <a class="btn btn-solid cs-btn" href="/contact/">Get notified at launch</a>
+            </div>
+          </div>
+        </div>
         </div>
 
         <aside class="pallet-side" id="pallet-side">
